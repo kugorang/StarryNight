@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 74e495cb78c80814181479b48110935e
+timeCreated: 1502809376
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: HYbdaM
+  fontNames:
+  - HYbdaM
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
