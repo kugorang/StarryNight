@@ -8,8 +8,8 @@ public class RaycastTest : MonoBehaviour
 
     private void OnMouseDown()
     {
-        //CameraController.focusOnItem = true;
-        //Debug.Log("focusOnItem : " + CameraController.focusOnItem);
+        CameraController.FocusOnItem = true;
+        Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
         start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
     }
 
@@ -28,8 +28,8 @@ public class RaycastTest : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         GetComponent<BoxCollider2D>().isTrigger = false;
-        //CameraController.focusOnItem = false;
-        //Debug.Log("focusOnItem : " + CameraController.focusOnItem);
+        CameraController.FocusOnItem = false;
+        Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
 
         // 아이템이 인벤토리 밖으로 벗어날 경우 아이템 드래그 전 위치로 다시 이동
         if (Input.mousePosition.x > 7 * Screen.width / 8 || Input.mousePosition.x < Screen.width / 8 || Input.mousePosition.y > 7 * Screen.height / 8 || Input.mousePosition.y < Screen.height / 3)

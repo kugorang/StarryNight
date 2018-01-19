@@ -2264,7 +2264,6 @@ GameObject:
   - component: {fileID: 346259871}
   - component: {fileID: 346259870}
   - component: {fileID: 346259869}
-  - component: {fileID: 346259872}
   m_Layer: 5
   m_Name: ScreenMoveButton
   m_TagString: Untagged
@@ -2329,7 +2328,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 346259872}
+      - m_Target: {fileID: 1621300566}
         m_MethodName: OnClickRightBtn
         m_Mode: 1
         m_Arguments:
@@ -2375,18 +2374,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 346259867}
---- !u!114 &346259872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 346259867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc59a7d3770c7744c81b6556c880331f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1621300560}
 --- !u!1 &353094860
 GameObject:
   m_ObjectHideFlags: 0
@@ -8929,7 +8916,6 @@ GameObject:
   - component: {fileID: 1359169480}
   - component: {fileID: 1359169479}
   - component: {fileID: 1359169478}
-  - component: {fileID: 1359169481}
   m_Layer: 5
   m_Name: ScreenMoveButton
   m_TagString: Untagged
@@ -8994,7 +8980,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1359169481}
+      - m_Target: {fileID: 1621300566}
         m_MethodName: OnClickLeftBtn
         m_Mode: 1
         m_Arguments:
@@ -9040,18 +9026,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1359169476}
---- !u!114 &1359169481
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1359169476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc59a7d3770c7744c81b6556c880331f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1621300560}
 --- !u!1 &1362162282
 GameObject:
   m_ObjectHideFlags: 0
@@ -10580,7 +10554,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1621300560}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 540, y: 0, z: -10}
+  m_LocalPosition: {x: -540, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 404.09036, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -10597,7 +10571,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc59a7d3770c7744c81b6556c880331f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
+  minimumX: 210
+  mainCamera: {fileID: 1621300560}
 --- !u!1 &1631531812
 GameObject:
   m_ObjectHideFlags: 0

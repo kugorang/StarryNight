@@ -10,14 +10,14 @@ public class GameStart : MonoBehaviour {
     public Button start;
     public Text loading;
 
-    private Image startImg;
+    public Image startImg;
     
     private void Awake()
     {
         Color textColor = new Vector4(1, 1, 1, 0);
         loading.color = textColor;
         loading.enabled = false;
-        startImg = start.GetComponent<Image>();
+
     }
 
     private void Start()
@@ -54,7 +54,7 @@ public class GameStart : MonoBehaviour {
 
     IEnumerator FadeBtn()
     {
-        for (float i = -1f; i <= 1; i += 0.05f)
+        for (float i = -0.7f; i <= 0.7; i += 0.05f)
         {
             yield return new WaitForSeconds(0.1f);
             Color color = new Vector4(1, 1, 1, 1-Mathf.Abs(i));
