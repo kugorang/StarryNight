@@ -13,7 +13,8 @@ public class CreateItem : MonoBehaviour
     public Image img_earthback; // 게이지 이미지
     public Button btn;
 
-    private ItemDictionary itemDic;
+    private 
+        DataDictionary dataDic;
 
     public Button combineButton;
 
@@ -38,7 +39,7 @@ public class CreateItem : MonoBehaviour
     private void Awake()
     {
         energyPerClick = DataController.GetInstance().EnergyPerClick;
-        itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
+        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
         //combineButton.gameObject.SetActive(false); 개편으로 필요성 상실
     }
@@ -65,7 +66,7 @@ public class CreateItem : MonoBehaviour
                 {
                     GenerateItem(entry.Key, false);
 
-                    SetItemInfo setItemInfo = ItemDictionary.GetInstance().CheckSetItemCombine(entry.Key);
+                    SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(entry.Key);
 
                     if (setItemInfo.result != 0 && !tmpSetItemInfo.Contains(setItemInfo))
                     {
@@ -178,7 +179,7 @@ public class CreateItem : MonoBehaviour
         }
 
         ItemInfo itemInfo = newItem.GetComponent<ItemInfo>();
-        ItemInfo findItemInfo = itemDic.findDic[productID];
+        ItemInfo findItemInfo = dataDic.findDic[productID];
 
         itemInfo.index = productID;
         itemInfo.mtName = findItemInfo.mtName;
@@ -189,7 +190,7 @@ public class CreateItem : MonoBehaviour
         itemInfo.imagePath = findItemInfo.imagePath;
 
         newItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(itemDic.findDic[productID].imagePath);
+        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[productID].imagePath);
     }
 
     void OnClick(SetItemInfo setItemInfo)

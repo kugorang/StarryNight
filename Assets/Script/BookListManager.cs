@@ -7,7 +7,7 @@ public class BookListManager : MonoBehaviour
     int setIdxStart;
     int setIdxMax;
 
-    ItemDictionary itemDic;
+    DataDictionary dataDic;
 
     public GameObject panelPrefab, itemInfoPanel;
 
@@ -33,10 +33,10 @@ public class BookListManager : MonoBehaviour
 
     private void Awake()
     {
-        itemDic = DataController.GetInstance().GetComponent<ItemDictionary>();
+        dataDic = DataController.GetInstance().GetComponent<DataDictionary>();
 
         setIdxStart = 4000;
-        setIdxMax = setIdxStart + itemDic.setNum;
+        setIdxMax = setIdxStart + dataDic.setNum;
         setContentPanel = GameObject.Find("SetContentPanel").transform;
     }
 
@@ -56,7 +56,7 @@ public class BookListManager : MonoBehaviour
 
         ItemInfo itemInfo = itemBtn.GetComponent<ItemInfo>();
 
-        ItemInfo findItemInfo = itemDic.findDic[idx];
+        ItemInfo findItemInfo = dataDic.findDic[idx];
 
         itemInfo.index = idx;
         itemInfo.mtName = findItemInfo.mtName;

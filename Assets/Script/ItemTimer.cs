@@ -16,7 +16,7 @@ public class ItemTimer : MonoBehaviour
     
 
     private int sec, sec_1, sec_10, min;
-    private ItemDictionary itemDic;
+    private DataDictionary dataDic;
 
     public Button combineButton;
 
@@ -25,7 +25,7 @@ public class ItemTimer : MonoBehaviour
 
     private void Awake()
     {
-        itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
+        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
         LeftTimer = DataController.GetInstance();
     }
 
@@ -122,7 +122,7 @@ public class ItemTimer : MonoBehaviour
 
         DataController.GetInstance().InsertItem(productID, 1);
 
-        SetItemInfo setItemInfo = ItemDictionary.GetInstance().CheckSetItemCombine(productID);
+        SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(productID);
 
         if (setItemInfo.result != 0)
         {
@@ -131,7 +131,7 @@ public class ItemTimer : MonoBehaviour
         }
 
         ItemInfo itemInfo = setItem.GetComponent<ItemInfo>();
-        ItemInfo findItemInfo = itemDic.findDic[productID];
+        ItemInfo findItemInfo = dataDic.findDic[productID];
 
         itemInfo.index = productID;
         itemInfo.mtName = findItemInfo.mtName;
@@ -142,7 +142,7 @@ public class ItemTimer : MonoBehaviour
         itemInfo.imagePath = findItemInfo.imagePath;
 
         setItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(itemDic.findDic[productID].imagePath);
+        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[productID].imagePath);
     }
 
     void OnClick(SetItemInfo setItemInfo)
