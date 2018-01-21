@@ -19,8 +19,8 @@ public class PlayerPrefsEditorUtility : MonoBehaviour
             haveDic.Clear();
             itemOpenList.Clear();
 
-            dataController.SaveGameData(haveDic, dataController.haveDicPath);
-            dataController.SaveGameData(itemOpenList, dataController.itemOpenListPath);
+            dataController.SaveGameData(haveDic, dataController.HaveDicPath);
+            dataController.SaveGameData(itemOpenList, dataController.ItemOpenListPath);
         }
         
         Debug.Log("All PlayerPrefs deleted");

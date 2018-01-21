@@ -9,7 +9,7 @@ public class RaycastTest : MonoBehaviour
     private void OnMouseDown()
     {
         CameraController.FocusOnItem = true;
-        Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
+        //Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
         start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
     }
 
@@ -38,14 +38,19 @@ public class RaycastTest : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        ItemInfo collItemInfo = collision.GetComponent<ItemInfo>();
-
-        if (collision.tag == "Material" && collision.isTrigger && !collItemInfo.checkDestroy)
+        if (collision.tag == "Material" && collision.isTrigger)
         {
+            ItemInfo collItemInfo = collision.GetComponent<Item>().itemInfo;
+
+            if (collItemInfo.checkDestroy)
+            {
+                return;
+            }
+
             // 조합표에 있는 조합식인지 검색한다.
             ItemDictionary itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
 
-            ItemInfo myItemInfo = GetComponent<ItemInfo>();
+            ItemInfo myItemInfo = GetComponent<Item>().itemInfo;
 
             int key1 = myItemInfo.index;
             int key2 = collItemInfo.index;

@@ -25,10 +25,10 @@ public class DataController : MonoBehaviour
     private int invenMaxLv, energyPerClickMaxLv;
 
     // haveDic 정보 저장 경로
-    public string haveDicPath { get; private set; }
+    public string HaveDicPath { get; private set; }
 
     // itemOpenList 정보 저장 경로
-    public string itemOpenListPath { get; private set; }
+    public string ItemOpenListPath { get; private set; }
 
     private UpgradeDictionary upgradeDic;
 
@@ -43,7 +43,8 @@ public class DataController : MonoBehaviour
     /// NOTE: 열린 도감을 저장하는 Dictionary
     /// <para>-> key(int) : 도감이 열린 재료 index</para>
     /// </summary>
-    [HideInInspector] public List<int> itemOpenList;
+    [HideInInspector]
+    public List<int> itemOpenList;
 
     private static DataController instance;
 
@@ -76,7 +77,7 @@ public class DataController : MonoBehaviour
         m_gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
         m_itemcount = PlayerPrefs.GetInt("ItemCount", 0);
         m_questProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
-        m_leftTimer = new float[3] { PlayerPrefs.GetFloat("LeftTimer1", 300.0f), PlayerPrefs.GetFloat("LeftTimer2", 300.0f),PlayerPrefs.GetFloat("LeftTimer3", 300.0f)};
+        m_leftTimer = new float[3] { PlayerPrefs.GetFloat("LeftTimer1", 300.0f), PlayerPrefs.GetFloat("LeftTimer2", 300.0f), PlayerPrefs.GetFloat("LeftTimer3", 300.0f) };
         m_energy = PlayerPrefs.GetInt("Energy", 0);
 
         invenLv = PlayerPrefs.GetInt("InvenLevel", 0);
@@ -85,17 +86,17 @@ public class DataController : MonoBehaviour
         invenMaxLv = PlayerPrefs.GetInt("InvenMaxLevel", 0);
         energyPerClickMaxLv = PlayerPrefs.GetInt("EnergyPerClickMaxLevel", 0);
 
-        haveDicPath = "/haveDic.txt";
-        itemOpenListPath = "/itemOpenList.txt";
+        HaveDicPath = "/haveDic.txt";
+        ItemOpenListPath = "/itemOpenList.txt";
 
-        haveDic = LoadGameData(haveDicPath) as Dictionary<int, int>;
+        haveDic = LoadGameData(HaveDicPath) as Dictionary<int, int>;
 
         if (haveDic == null)
         {
             haveDic = new Dictionary<int, int>();
         }
 
-        itemOpenList = LoadGameData(itemOpenListPath) as List<int>;
+        itemOpenList = LoadGameData(ItemOpenListPath) as List<int>;
 
         if (itemOpenList == null)
         {
@@ -106,15 +107,14 @@ public class DataController : MonoBehaviour
     void Start()
     {
         // 종료 후 실행 시간 계산
-        for (int i=0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
             m_leftTimer[i] -= TimeAfterLastPlay;
         }
-       
 
-        InvokeRepeating("UpdateLastPlayDate", 0f, 5f);
+        InvokeRepeating("OnApplicationQuit", 0f, 5f);
 
-        LoadingFinish=true;
+        LoadingFinish = true;
     }
 
     void Update()
@@ -122,10 +122,9 @@ public class DataController : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             m_leftTimer[i] -= Time.deltaTime;
-            PlayerPrefs.SetFloat("LeftTimer"+(i+1), m_leftTimer[i]);
+            PlayerPrefs.SetFloat("LeftTimer" + (i + 1), m_leftTimer[i]);
         }
     }
-
 
     // 게임 데이터를 불러오는 함수
     public object LoadGameData(string dataPath)
@@ -178,22 +177,13 @@ public class DataController : MonoBehaviour
             return DateTime.Now;
         }
 
-        string timeBinaryInString = PlayerPrefs.GetString("Time");
-        long timeBinaryInLong = Convert.ToInt64(timeBinaryInString);
-
-        return DateTime.FromBinary(timeBinaryInLong);
-    }
-
-    // 플레이 종료 시간 저장
-    void UpdateLastPlayDate()
-    {
-        PlayerPrefs.SetString("Time", DateTime.Now.ToBinary().ToString());
+        return DateTime.FromBinary(Convert.ToInt64(PlayerPrefs.GetString("Time")));
     }
 
     // 어플 종료 시 플레이 시간 저장
     private void OnApplicationQuit()
     {
-        UpdateLastPlayDate();
+        PlayerPrefs.SetString("Time", DateTime.Now.ToBinary().ToString());
     }
 
     // 종료 후 지난 시간 계산
@@ -221,7 +211,6 @@ public class DataController : MonoBehaviour
             loadingFinish = value;
         }
     }
-
 
     /// <summary>
     /// gold 설정
@@ -279,7 +268,8 @@ public class DataController : MonoBehaviour
     // 인벤토리 레벨 가져오기
     public int InvenLv
     {
-        get {
+        get
+        {
             return invenLv;
         }
     }
@@ -346,7 +336,7 @@ public class DataController : MonoBehaviour
         if (!CheckExistItem(key))
         {
             itemOpenList.Add(key);
-            SaveGameData(itemOpenList, itemOpenListPath);
+            SaveGameData(itemOpenList, ItemOpenListPath);
 
             //Debug.Log("itemOpenList - DataSerialize");
 
@@ -357,7 +347,7 @@ public class DataController : MonoBehaviour
             haveDic[key] += addNum;
         }
 
-        SaveGameData(haveDic, haveDicPath);
+        SaveGameData(haveDic, HaveDicPath);
 
         //Debug.Log("InsertItem - haveDic DataSerialize");
     }
@@ -377,7 +367,7 @@ public class DataController : MonoBehaviour
         haveDic[key]--;
 
         //UM_Storage.Save("haveDic", DataSerialize(haveDic));
-        SaveGameData(haveDic, haveDicPath);
+        SaveGameData(haveDic, HaveDicPath);
 
         //Debug.Log("DeleteItem() - haveDic DataSerialize");
     }
@@ -424,26 +414,26 @@ public class DataController : MonoBehaviour
         PlayerPrefs.SetInt("QuestProcess", m_questProcess);
     }
 
-    
-        public float this[int index]
-        {
-            get
-            {
-                return m_leftTimer[index];
-            }
 
-            set
-            {
-                m_leftTimer[index] = value;
-                PlayerPrefs.SetFloat("LeftTimer1", m_leftTimer[index]);
-            }
+    public float this[int index]
+    {
+        get
+        {
+            return m_leftTimer[index];
         }
-    
-    
+
+        set
+        {
+            m_leftTimer[index] = value;
+            PlayerPrefs.SetFloat("LeftTimer1", m_leftTimer[index]);
+        }
+    }
+
+
     /// <summary>
     /// 최대 업그레이드 가능한 인벤토리 레벨
     /// </summary>
-   
+
     public int MaxInvenLv
     {
         get

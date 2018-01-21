@@ -122,40 +122,31 @@ public class ItemTimer : MonoBehaviour
 
         DataController.GetInstance().InsertItem(productID, 1);
 
-        SetItemInfo setItemInfo = ItemDictionary.GetInstance().CheckSetItemCombine(productID);
+        //SetItemInfo setItemInfo = ItemDictionary.GetInstance().CheckSetItemCombine(productID);
 
-        if (setItemInfo.result != 0)
-        {
-            combineButton.gameObject.SetActive(true);
-            combineButton.onClick.AddListener(() => OnClick(setItemInfo));
-        }
-
-        ItemInfo itemInfo = setItem.GetComponent<ItemInfo>();
+        //if (setItemInfo.result != 0)
+        //{
+        //    combineButton.gameObject.SetActive(true);
+        //    combineButton.onClick.AddListener(() => OnClick(setItemInfo));
+        //}
+        
         ItemInfo findItemInfo = itemDic.findDic[productID];
-
-        itemInfo.index = productID;
-        itemInfo.mtName = findItemInfo.mtName;
-        itemInfo.group = findItemInfo.group;
-        itemInfo.grade = findItemInfo.grade;
-        itemInfo.sellPrice = findItemInfo.sellPrice;
-        itemInfo.description = findItemInfo.description;
-        itemInfo.imagePath = findItemInfo.imagePath;
-
+        setItem.GetComponent<Item>().SetItemInfo(productID, findItemInfo);
         setItem.GetComponent<BoxCollider2D>().isTrigger = false;
         setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(itemDic.findDic[productID].imagePath);
     }
 
-    void OnClick(SetItemInfo setItemInfo)
-    {
-        DataController dataController = DataController.GetInstance();
+    //void OnClick(SetItemInfo setItemInfo)
+    //{
+    //    DataController dataController = DataController.GetInstance();
 
-        dataController.DeleteItem(setItemInfo.index1);
-        dataController.DeleteItem(setItemInfo.index2);
-        dataController.DeleteItem(setItemInfo.index3);
-        dataController.DeleteItem(setItemInfo.index4);
+    //    dataController.DeleteItem(setItemInfo.index1);
+    //    dataController.DeleteItem(setItemInfo.index2);
+    //    dataController.DeleteItem(setItemInfo.index3);
+    //    dataController.DeleteItem(setItemInfo.index4);
 
-        dataController.InsertItem(setItemInfo.result, 1);
+    //    dataController.InsertItem(setItemInfo.result, 1);
 
-        SceneManager.LoadScene("Main");
-    }
+    //    SceneManager.LoadScene("Main");
+    //}
 }

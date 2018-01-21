@@ -71,22 +71,12 @@ public class ItemListManager : MonoBehaviour
         Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
         Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo itemInfo = itemBtn.GetComponent<ItemInfo>();
-
         ItemInfo findItemInfo = itemDic.findDic[idx];
 
-        itemInfo.index = idx;
-        itemInfo.mtName = findItemInfo.mtName;
-        itemInfo.group = findItemInfo.group;
-        itemInfo.grade = findItemInfo.grade;
-        itemInfo.sellPrice = findItemInfo.sellPrice;
-        itemInfo.description = findItemInfo.description;
-        itemInfo.imagePath = findItemInfo.imagePath;
-
         itemListPanel.transform.SetParent(tf);
-        itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(itemInfo.imagePath);
+        itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.imagePath);
 
-        if (DataController.GetInstance().itemOpenList.Contains(itemInfo.index))
+        if (DataController.GetInstance().itemOpenList.Contains(idx))
         {
             itemLock.gameObject.SetActive(false);
 
@@ -98,7 +88,7 @@ public class ItemListManager : MonoBehaviour
 
             itemBtn.colors = btnColors;
 
-            itemBtn.onClick.AddListener(() => ShowWindow(itemInfo));
+            itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
         }
     }
 

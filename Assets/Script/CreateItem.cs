@@ -6,16 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class CreateItem : MonoBehaviour
 {
-    private int energy = 0;  // 에너지 
-    private int energyPerClick; // 클릭당 에너지 증가량
-    private int energyMaxValue = 100; // 에너지 충전 최대량
-    public GameObject item; // 아이템
-    public Image img_earthback; // 게이지 이미지
+    private int energyPerClick;         // 클릭당 에너지 증가량
+    private int energyMaxValue;         // 에너지 충전 최대량
+    public GameObject item;             // 아이템
+    public Image img_earthback;         // 게이지 이미지
     public Button btn;
 
     private ItemDictionary itemDic;
 
     public Button combineButton;
+
+    private DataController dataController;
 
     private static CreateItem instance;
 
@@ -34,31 +35,34 @@ public class CreateItem : MonoBehaviour
 
         return instance;
     }
-    
+
     private void Awake()
     {
-        energyPerClick = DataController.GetInstance().EnergyPerClick;
+        //energyPerClick = DataController.GetInstance().EnergyPerClick;
+        energyPerClick = 100;   // 개발 시 시간 절약을 위해 100으로 설정.
+        energyMaxValue = 100;
         itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
 
-        //combineButton.gameObject.SetActive(false); 개편으로 필요성 상실
+        dataController = DataController.GetInstance();
     }
 
     void Start()
     {
         if (img_earthback == null)
+        {
             img_earthback = GameObject.Find("EarthBack").GetComponent<Image>();
+        }
 
         if (btn == null)
+        {
             btn = gameObject.GetComponent<Button>();
-
-        img_earthback.fillAmount = 0.0f; // 처음 버튼 게이지 0으로 -> 게이지 저장 가능 시 삭제해야함
+        }
 
         List<SetItemInfo> tmpSetItemInfo = new List<SetItemInfo>();
 
-        if (DataController.GetInstance().haveDic != null)
+        if (dataController.haveDic != null)
         {
-
-            foreach (KeyValuePair<int, int> entry in DataController.GetInstance().haveDic)
+            foreach (KeyValuePair<int, int> entry in dataController.haveDic)
             {
                 // do something with entry.Value or entry.Key
                 for (int i = 0; i < entry.Value; i++)
@@ -78,17 +82,14 @@ public class CreateItem : MonoBehaviour
             }
         }
 
-        energy = DataController.GetInstance().Energy;
-
-        img_earthback.fillAmount = (float)energy / energyMaxValue;
+        img_earthback.fillAmount = (float)dataController.Energy / energyMaxValue;
     }
 
     public void AddEnergy() // 클릭 수 증가
     {
-        energy += energyPerClick;
-        img_earthback.fillAmount = (float)energy / energyMaxValue;
-
-        DataController.GetInstance().Energy=energy;
+        int energy = dataController.Energy + energyPerClick;
+        img_earthback.fillAmount = energy / energyMaxValue;
+        dataController.Energy = energy;
     }
 
     public void ResetEnergy() // 클릭 수 초기화
@@ -107,8 +108,7 @@ public class CreateItem : MonoBehaviour
             img_earthback.fillAmount -= 0.1f;
         }
 
-        energy = 0;
-        DataController.GetInstance().Energy=energy;
+        dataController.Energy = 0;
         btn.enabled = true;
 
         yield return null;
@@ -125,9 +125,9 @@ public class CreateItem : MonoBehaviour
     // 아이템 생성
     private void NewObject()
     {
-        if (energy >= energyMaxValue)
+        if (dataController.Energy >= energyMaxValue)
         {
-            if (DataController.GetInstance().ItemCount >= DataController.GetInstance().ItemLimit) // 아이템 갯수 제한
+            if (dataController.ItemCount >= dataController.ItemLimit) // 아이템 갯수 제한
             {
                 Debug.Log("아이템 상자가 꽉 찼어요~");
 
@@ -157,18 +157,15 @@ public class CreateItem : MonoBehaviour
                 }
             }
 
-            DataController.GetInstance().AddItemCount();
+            dataController.AddItemCount();
             ResetEnergy();
 
             AudioManager.GetInstance().ItemSound();
-
-            //img.fillAmount = 0.0f;
         }
     }
 
     public void GenerateItem(int productID, bool isNew)
     {
-        //Instantiate(stick, new Vector3(-213, -396, 0), Quaternion.identity).transform.SetParent(GameObject.Find("Canvas").transform, false); // canvas 자식으로 상속해서 prifab생성
         GameObject newItem = Instantiate(item, new Vector3(-758, -284, -3), Quaternion.identity);
 
         // 현재 보유하고 있는 재료를 관리하는 Dictionary에 방금 생성한 item을 넣어준다.
@@ -177,17 +174,8 @@ public class CreateItem : MonoBehaviour
             DataController.GetInstance().InsertItem(productID, 1);
         }
 
-        ItemInfo itemInfo = newItem.GetComponent<ItemInfo>();
         ItemInfo findItemInfo = itemDic.findDic[productID];
-
-        itemInfo.index = productID;
-        itemInfo.mtName = findItemInfo.mtName;
-        itemInfo.group = findItemInfo.group;
-        itemInfo.grade = findItemInfo.grade;
-        itemInfo.sellPrice = findItemInfo.sellPrice;
-        itemInfo.description = findItemInfo.description;
-        itemInfo.imagePath = findItemInfo.imagePath;
-
+        newItem.GetComponent<Item>().SetItemInfo(productID, findItemInfo);
         newItem.GetComponent<BoxCollider2D>().isTrigger = false;
         newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(itemDic.findDic[productID].imagePath);
     }
@@ -204,7 +192,7 @@ public class CreateItem : MonoBehaviour
         dataController.SubItemCount();
         dataController.SubItemCount();
         dataController.SubItemCount();
-        
+
         dataController.InsertItem(setItemInfo.result, 1);
 
         SceneManager.LoadScene("Main");

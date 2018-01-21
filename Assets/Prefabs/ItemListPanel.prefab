@@ -56,7 +56,6 @@ GameObject:
   - component: {fileID: 222587153195900102}
   - component: {fileID: 114216753269622952}
   - component: {fileID: 114294729951129240}
-  - component: {fileID: 114173716429718076}
   - component: {fileID: 114251262882341610}
   m_Layer: 5
   m_Name: ItemListButton
@@ -92,17 +91,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114173716429718076
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1585834050917238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1741fb9cfd9bb23458c33b3dddad2f65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114216753269622952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -148,6 +136,7 @@ MonoBehaviour:
   m_PreferredHeight: 200
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &114294729951129240
 MonoBehaviour:
   m_ObjectHideFlags: 1

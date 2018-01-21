@@ -55,7 +55,8 @@ public class ItemDictionary : MonoBehaviour
     /// NOTE: 세트 아이템 조합식을 저장하는 Dictionary
     /// <para>-> key(int) : </para>
     /// </summary>
-    [HideInInspector] public List<SetItemInfo> setItemList;
+    [HideInInspector]
+    public List<SetItemInfo> setItemList;
 
     public int starNum { get; private set; }
     public int materialNum { get; private set; }
@@ -98,9 +99,7 @@ public class ItemDictionary : MonoBehaviour
     private void ReadDataFile(string fileName, FILEINFO fileType)
     {
         TextAsset txtFile = (TextAsset)Resources.Load(fileName) as TextAsset;
-        string txt = txtFile.text;
-        string[] stringOperators = new string[] { "\r\n" };
-        string[] lineList = txt.Split(stringOperators, StringSplitOptions.None);
+        string[] lineList = txtFile.text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
         int lineListLen = lineList.Length;
 
@@ -162,8 +161,7 @@ public class ItemDictionary : MonoBehaviour
                             break;
                     }
 
-                    findDic[index] = gameObject.AddComponent<ItemInfo>();
-                    findDic[index].Init(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
+                    findDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
 
                     break;
                 case FILEINFO.SETITEMTABLE:
