@@ -74,7 +74,7 @@ public class RaycastTest : MonoBehaviour
                 myItemInfo.description = findItemInfo.description;
                 myItemInfo.imagePath = findItemInfo.imagePath;
 
-                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[myItemInfo.index].imagePath);
+                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[myItemInfo.index].imagePath);
 
                 // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
                 DataController.GetInstance().DeleteItem(key2);

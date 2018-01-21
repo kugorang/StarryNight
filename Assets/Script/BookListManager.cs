@@ -32,17 +32,22 @@ public class BookListManager : MonoBehaviour
     private void Awake()
     {
         dataDic = DataController.GetInstance().GetComponent<DataDictionary>();
-
-        setIdxStart = 4000;
-        setIdxMax = setIdxStart + dataDic.setNum;
         setContentPanel = GameObject.Find("SetContentPanel").transform;
     }
 
     private void Start()
     {
-        for (int idx = setIdxStart + 1; idx <= setIdxMax; idx++)
+        int structNum = dataDic.SetComineList.Count;
+
+        for (int index = 0; index < structNum; index++)
         {
-            AddItemButton(idx, setContentPanel);
+            SetItemInfo setItemInfo = dataDic.SetComineList[index];
+
+            AddItemButton(setItemInfo.index1, setContentPanel);
+            AddItemButton(setItemInfo.index2, setContentPanel);
+            AddItemButton(setItemInfo.index3, setContentPanel);
+            AddItemButton(setItemInfo.index4, setContentPanel);
+            AddItemButton(setItemInfo.result, setContentPanel);
         }
     }
 
@@ -52,7 +57,7 @@ public class BookListManager : MonoBehaviour
         Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
         Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo findItemInfo = dataDic.findDic[idx];
+        ItemInfo findItemInfo = dataDic.FindDic[idx];
 
         itemListPanel.transform.SetParent(tf);
         itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.imagePath);
@@ -81,11 +86,11 @@ public class BookListManager : MonoBehaviour
 
         infoWindow.gameObject.SetActive(true);
 
-        infoWindow.itemImg.sprite = Resources.Load<Sprite>(itemInfo.imagePath);
-        infoWindow.itemName.text = itemInfo.mtName;
-        infoWindow.itemSort.text = itemInfo.group;
-        infoWindow.itemGrade.text = itemInfo.grade;
-        infoWindow.itemCost.text = "판매 가격 : " + itemInfo.sellPrice.ToString();
-        infoWindow.itemText.text = itemInfo.description;
+        infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.imagePath);
+        infoWindow.ItemName.text = itemInfo.mtName;
+        infoWindow.ItemSort.text = itemInfo.group;
+        infoWindow.ItemGrade.text = itemInfo.grade;
+        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.sellPrice.ToString();
+        infoWindow.ItemText.text = itemInfo.description;
     }
 }

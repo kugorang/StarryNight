@@ -108,7 +108,7 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
-            int nextInvenValue = 10 + dataDic.findUpDic[50001].value[currentInvenLv];
+            int nextInvenValue = 10 + dataDic.FindUpDic[50001].value[currentInvenLv];
             invenUp_Displayer.text = "인벤토리 +" + DataController.GetInstance().ItemLimit + " -> +" + nextInvenValue;
             invenUpCost_Displayer.text = dataDic.FindUpgrade(50001).cost[currentInvenLv] + "원";
         }
@@ -120,7 +120,7 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
-            int nextClickValue = 2 + dataDic.findUpDic[50002].value[currentPerClickLv];
+            int nextClickValue = 2 + dataDic.FindUpDic[50002].value[currentPerClickLv];
             energyPerClickUp_Displayer.text = "클릭당 게이지 +" + DataController.GetInstance().EnergyPerClick + " -> +" + nextClickValue;
             energyPerClickUpCost_Displayer.text = dataDic.FindUpgrade(50002).cost[currentPerClickLv] + "원";
         }

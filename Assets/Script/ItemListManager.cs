@@ -38,9 +38,9 @@ public class ItemListManager : MonoBehaviour
         materialIdxStart = 2000;
         combineIdxStart = 3000;
 
-        starIdxMax = starIdxStart + dataDic.starNum;
-        materialIdxMax = materialIdxStart + dataDic.materialNum;
-        combineIdxMax = combineIdxStart + dataDic.combineNum;
+        starIdxMax = starIdxStart + dataDic.StarNum;
+        materialIdxMax = materialIdxStart + dataDic.MaterialNum;
+        combineIdxMax = combineIdxStart + dataDic.CombineNum;
 
         starContentPanel = GameObject.Find("StarContentPanel").transform;
         materialContentPanel = GameObject.Find("MaterialContentPanel").transform;
@@ -71,7 +71,7 @@ public class ItemListManager : MonoBehaviour
         Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
         Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo findItemInfo = dataDic.findDic[idx];
+        ItemInfo findItemInfo = dataDic.FindDic[idx];
 
         itemListPanel.transform.SetParent(tf);
         itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.imagePath);
@@ -100,11 +100,11 @@ public class ItemListManager : MonoBehaviour
 
         infoWindow.gameObject.SetActive(true);
 
-        infoWindow.itemImg.sprite = Resources.Load<Sprite>(itemInfo.imagePath);
-        infoWindow.itemName.text = itemInfo.mtName;
-        infoWindow.itemSort.text = itemInfo.group;
-        infoWindow.itemGrade.text = itemInfo.grade;
-        infoWindow.itemCost.text = "판매 가격 : " + itemInfo.sellPrice.ToString();
-        infoWindow.itemText.text = itemInfo.description;
+        infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.imagePath);
+        infoWindow.ItemName.text = itemInfo.mtName;
+        infoWindow.ItemSort.text = itemInfo.group;
+        infoWindow.ItemGrade.text = itemInfo.grade;
+        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.sellPrice.ToString();
+        infoWindow.ItemText.text = itemInfo.description;
     }
 }

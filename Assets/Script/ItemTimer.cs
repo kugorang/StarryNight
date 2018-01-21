@@ -120,7 +120,7 @@ public class ItemTimer : MonoBehaviour
         GameObject setItem = Instantiate(prefab, vectors[index], Quaternion.identity);
 
         DataController.GetInstance().InsertItem(productID, 1);
-        setItem.GetComponent<Item>().SetItemInfo(productID, dataDic.findDic[productID]);
+        setItem.GetComponent<Item>().SetItemInfo(productID, dataDic.FindDic[productID]);
 
         // 아래 주석 코드는 조합 버튼이 사라졌으므로 현재는 필요 없음.
         // 또 다시 쓸 수 있으므로 주석으로 비활성화함.
@@ -133,7 +133,7 @@ public class ItemTimer : MonoBehaviour
         //}
 
         setItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[productID].imagePath);
+        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].imagePath);
     }
 
     //void OnClick(SetItemInfo setItemInfo)

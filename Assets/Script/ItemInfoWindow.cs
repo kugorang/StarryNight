@@ -5,21 +5,21 @@ public class ItemInfoWindow : MonoBehaviour
 {
     public GameObject itemInfoPanel;
 
-    public Image itemImg { get; set; }
-    public Text itemName { get; set; }
-    public Text itemSort { get; set; }
-    public Text itemGrade { get; set; }
-    public Text itemCost { get; set; }
-    public Text itemText { get; set; }
+    public Image ItemImg { get; set; }
+    public Text ItemName { get; set; }
+    public Text ItemSort { get; set; }
+    public Text ItemGrade { get; set; }
+    public Text ItemCost { get; set; }
+    public Text ItemText { get; set; }
 
     private void Awake()
     {
-        itemImg = GameObject.Find("ItemImage").GetComponent<Image>();
-        itemName = GameObject.Find("ItemName").GetComponent<Text>();
-        itemSort = GameObject.Find("ItemSort").GetComponent<Text>();
-        itemGrade = GameObject.Find("ItemGrade").GetComponent<Text>();
-        itemCost = GameObject.Find("ItemCost").GetComponent<Text>();
-        itemText = GameObject.Find("ItemText").GetComponent<Text>();
+        ItemImg = GameObject.Find("ItemImage").GetComponent<Image>();
+        ItemName = GameObject.Find("ItemName").GetComponent<Text>();
+        ItemSort = GameObject.Find("ItemSort").GetComponent<Text>();
+        ItemGrade = GameObject.Find("ItemGrade").GetComponent<Text>();
+        ItemCost = GameObject.Find("ItemCost").GetComponent<Text>();
+        ItemText = GameObject.Find("ItemText").GetComponent<Text>();
 
         itemInfoPanel.SetActive(false);
         gameObject.SetActive(false);

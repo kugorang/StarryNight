@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,40 +53,39 @@ public class DataDictionary : MonoBehaviour
     /// <para> -> key(int) : 재료 기준표 인덱스</para>
     /// <para> -> value(ItemInfo) : 재료 정보</para>
     /// </summary>
-    public Dictionary<int, ItemInfo> findDic;
+    public Dictionary<int, ItemInfo> FindDic { get; private set; }
 
     /// <summary>
     /// NOTE : 재료 조합식 Dictionary
     /// <para>-> key(int) : material1 인덱스</para>
     /// <para>-> value(int) : material1에 해당하는 조합식 list</para>
     /// </summary>
-    public Dictionary<Tuple<int, int>, List<int>> cbDic;
+    public Dictionary<Tuple<int, int>, List<int>> CombineDic { get; private set; }
 
     /// <summary>
     /// NOTE: 세트 아이템 조합식을 저장하는 Dictionary
     /// <para>-> key(int) : </para>
     /// </summary>
     [HideInInspector]
-    public List<SetItemInfo> setItemList;
+    public List<SetItemInfo> SetComineList { get; private set; }
 
     /// <summary>
     /// NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
     /// <para> -> key(int) : 퀘스트 기준표 인덱스</para>
     /// <para> -> value(ItemInfo) : 퀘스트 정보</para>
     /// </summary>
-    public Dictionary<int, QuestInfo> findQuestDic;
+    public Dictionary<int, QuestInfo> FindQuestDic { get; private set; }
 
     /// <summary>
     /// NOTE: 업그레이드를 찾을 때 사용하는 Dictionary
     /// <para> -> key(int) : 업그레이드 기준표 인덱스</para>
     /// <para> -> value(ItemInfo) : 업그레이드 정보</para>
     /// </summary>
-    public Dictionary<int, UpgradeInfo> findUpDic;
+    public Dictionary<int, UpgradeInfo> FindUpDic { get; private set; }
 
-    public int starNum { get; private set; }
-    public int materialNum { get; private set; }
-    public int combineNum { get; private set; }
-    public int setNum { get; private set; }
+    public int StarNum { get; private set; }
+    public int MaterialNum { get; private set; }
+    public int CombineNum { get; private set; }
 
     private static DataDictionary instance;
 
@@ -112,11 +110,11 @@ public class DataDictionary : MonoBehaviour
         DontDestroyOnLoad(this);
 
         // 두 Dictionary들을 초기화
-        findDic = new Dictionary<int, ItemInfo>();
-        cbDic = new Dictionary<Tuple<int, int>, List<int>>();
-        setItemList = new List<SetItemInfo>();
-        findQuestDic = new Dictionary<int, QuestInfo>();
-        findUpDic = new Dictionary<int, UpgradeInfo>();
+        FindDic = new Dictionary<int, ItemInfo>();
+        CombineDic = new Dictionary<Tuple<int, int>, List<int>>();
+        SetComineList = new List<SetItemInfo>();
+        FindQuestDic = new Dictionary<int, QuestInfo>();
+        FindUpDic = new Dictionary<int, UpgradeInfo>();
 
         // 읽어들이기
         ReadDataFile("dataTable/combineTable", FILEINFO.COMBINETABLE);
@@ -150,21 +148,21 @@ public class DataDictionary : MonoBehaviour
                     {
                         tuple = new Tuple<int, int>(material2, material1);
 
-                        cbDic[tuple] = new List<int>();
+                        CombineDic[tuple] = new List<int>();
 
                         for (int j = 0; j < resultNum; j++)
                         {
-                            cbDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
+                            CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
                         }
                     }
 
                     tuple = new Tuple<int, int>(material1, material2);
 
-                    cbDic[tuple] = new List<int>();
+                    CombineDic[tuple] = new List<int>();
 
                     for (int j = 0; j < resultNum; j++)
                     {
-                        cbDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
+                        CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
                     }
 
                     break;
@@ -176,28 +174,25 @@ public class DataDictionary : MonoBehaviour
                     switch (group)
                     {
                         case "별":
-                            starNum++;
+                            StarNum++;
                             break;
                         case "재료":
-                            materialNum++;
+                            MaterialNum++;
                             break;
                         case "아이템":
-                            combineNum++;
-                            break;
-                        case "서적":
-                            setNum++;
+                            CombineNum++;
                             break;
                         default:
                             break;
                     }
 
-                    findDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
+                    FindDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
 
                     break;
                 case FILEINFO.SETITEMTABLE:
                     SetItemInfo setItemInfo = new SetItemInfo(Convert.ToInt32(wordList[0]), Convert.ToInt32(wordList[1]), Convert.ToInt32(wordList[2]), Convert.ToInt32(wordList[3]), Convert.ToInt32(wordList[4]));
 
-                    setItemList.Add(setItemInfo);
+                    SetComineList.Add(setItemInfo);
 
                     break;
                 case FILEINFO.QUESTTABLE:
@@ -207,8 +202,8 @@ public class DataDictionary : MonoBehaviour
                     int reward = Convert.ToInt32(wordList[6]);
                     int rewardCount = Convert.ToInt32(wordList[7]);
 
-                    findQuestDic[index] = gameObject.AddComponent<QuestInfo>();
-                    findQuestDic[index].Init(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
+                    FindQuestDic[index] = gameObject.AddComponent<QuestInfo>();
+                    FindQuestDic[index].Init(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
                     break;
                 case FILEINFO.UPGRADETABLE:
                     index = Convert.ToInt32(wordList[0]);
@@ -233,7 +228,7 @@ public class DataDictionary : MonoBehaviour
                         upInfo.cost[j] = cost;
                     }
 
-                    findUpDic[index] = upInfo;
+                    FindUpDic[index] = upInfo;
                     break;
                 default:
                     break;
@@ -248,7 +243,7 @@ public class DataDictionary : MonoBehaviour
     /// <returns>리턴값</returns>
     public ItemInfo FindItem(int key)
     {
-        return findDic[key];
+        return FindDic[key];
     }
 
     /// <summary>
@@ -261,9 +256,9 @@ public class DataDictionary : MonoBehaviour
     {
         Tuple<int, int> tuple = new Tuple<int, int>(key1, key2);
 
-        if (cbDic.ContainsKey(tuple))
+        if (CombineDic.ContainsKey(tuple))
         {
-            return cbDic[tuple];
+            return CombineDic[tuple];
         }
 
         return null;
@@ -274,7 +269,7 @@ public class DataDictionary : MonoBehaviour
         DataController dataController = DataController.GetInstance();
         Dictionary<int, int> haveDic = dataController.haveDic;
 
-        foreach (SetItemInfo setItemInfo in setItemList)
+        foreach (SetItemInfo setItemInfo in SetComineList)
         {
             if (key == setItemInfo.index1)
             {
@@ -316,12 +311,11 @@ public class DataDictionary : MonoBehaviour
     /// <returns>리턴값</returns>
     public QuestInfo FindQuest(int key)
     {
-        return findQuestDic[key];
+        return FindQuestDic[key];
     }
 
     public UpgradeInfo FindUpgrade(int key)
     {
-        return findUpDic[key];
+        return FindUpDic[key];
     }
-
 }

@@ -72,7 +72,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     private void LoadBtnInfo()
     {
         QuestInfo questInfo = btn.GetComponent<QuestInfo>();
-        QuestInfo findQuestInfo = dataDic.findQuestDic[questIndex];
+        QuestInfo findQuestInfo = dataDic.FindQuestDic[questIndex];
 
         questInfo.index = questIndex;
         questInfo.act = findQuestInfo.act;
@@ -361,12 +361,12 @@ public class BlinkStar : MonoBehaviour, IClickables
             {
                 if (questIndex < DataController.GetInstance().QuestProcess)
                 {
-                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.findDic[termItemIndex].mtName + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.FindDic[termItemIndex].mtName + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.findDic[termItemIndex].mtName + DataController.GetInstance().GetItemNum(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindDic[termItemIndex].mtName + DataController.GetInstance().GetItemNum(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().termsCount;
                 }
             }
         }
@@ -386,7 +386,7 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
         else
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.findDic[btn.GetComponent<QuestInfo>().reward].mtName + " " + btn.GetComponent<QuestInfo>().rewardCount;
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindDic[btn.GetComponent<QuestInfo>().reward].mtName + " " + btn.GetComponent<QuestInfo>().rewardCount;
         }
     }
 

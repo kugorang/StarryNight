@@ -12,8 +12,7 @@ public class CreateItem : MonoBehaviour
     public Image img_earthback;         // 게이지 이미지
     public Button btn;
 
-    private
-        DataDictionary dataDic;
+    private DataDictionary dataDic;
 
     public Button combineButton;
 
@@ -174,10 +173,10 @@ public class CreateItem : MonoBehaviour
             DataController.GetInstance().InsertItem(productID, 1);
         }
 
-        ItemInfo findItemInfo = dataDic.findDic[productID];
+        ItemInfo findItemInfo = dataDic.FindDic[productID];
         newItem.GetComponent<Item>().SetItemInfo(productID, findItemInfo);
         newItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[productID].imagePath);
+        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].imagePath);
     }
 
     void OnClick(SetItemInfo setItemInfo)
