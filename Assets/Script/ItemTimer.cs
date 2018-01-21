@@ -7,16 +7,15 @@ using UnityEngine.SceneManagement;
 public class ItemTimer : MonoBehaviour
 {
     public GameObject prefab;
-    public Text timeDisplayer; // 남은 시간 표시
+    public Text timeDisplayer;  // 남은 시간 표시
     public Image img;
     public Button btn;
     public int index;
-    float cooltime = 300.0f; // 쿨타임 -> 타이머 쿨타임 업그레이드 추가 시 datacontroller에서 가져오는 걸로 수정필요. itemtimer2,3도 마찬가지
+    float cooltime = 300.0f;    // 쿨타임 -> 타이머 쿨타임 업그레이드 추가 시 datacontroller에서 가져오는 걸로 수정 필요. itemtimer 2,3도 마찬가지
     public bool disableOnStart = false;
-    
 
     private int sec, sec_1, sec_10, min;
-    private ItemDictionary itemDic;
+    private DataDictionary dataDic;
 
     public Button combineButton;
 
@@ -25,7 +24,7 @@ public class ItemTimer : MonoBehaviour
 
     private void Awake()
     {
-        itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
+        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
         LeftTimer = DataController.GetInstance();
     }
 
@@ -41,16 +40,16 @@ public class ItemTimer : MonoBehaviour
     // 시간당 게이지 채우기, 남은 시간 표시
     void Update()
     {
-        if (LeftTimer[index]> 0)
+        if (LeftTimer[index] > 0)
         {
             btn.enabled = false;
-            sec = (int)LeftTimer[index]% 60;
+            sec = (int)LeftTimer[index] % 60;
             sec_10 = sec / 10;
             sec_1 = sec % 10;
-            min = (int)LeftTimer[index]/ 60;
+            min = (int)LeftTimer[index] / 60;
             timeDisplayer.text = min + ":" + sec_10 + sec_1;
 
-            if (LeftTimer[index]< 0)
+            if (LeftTimer[index] < 0)
             {
                 LeftTimer[index] = 0;
 
@@ -69,7 +68,7 @@ public class ItemTimer : MonoBehaviour
         {
             timeDisplayer.text = "0:00";
             img.fillAmount = 1.0f;
-            
+
             LeftTimer[index] = 0;
 
             if (btn)
@@ -121,19 +120,20 @@ public class ItemTimer : MonoBehaviour
         GameObject setItem = Instantiate(prefab, vectors[index], Quaternion.identity);
 
         DataController.GetInstance().InsertItem(productID, 1);
+        setItem.GetComponent<Item>().SetItemInfo(productID, dataDic.findDic[productID]);
 
-        //SetItemInfo setItemInfo = ItemDictionary.GetInstance().CheckSetItemCombine(productID);
+        // 아래 주석 코드는 조합 버튼이 사라졌으므로 현재는 필요 없음.
+        // 또 다시 쓸 수 있으므로 주석으로 비활성화함.
+        //SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(productID);
 
         //if (setItemInfo.result != 0)
         //{
         //    combineButton.gameObject.SetActive(true);
         //    combineButton.onClick.AddListener(() => OnClick(setItemInfo));
         //}
-        
-        ItemInfo findItemInfo = itemDic.findDic[productID];
-        setItem.GetComponent<Item>().SetItemInfo(productID, findItemInfo);
+
         setItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(itemDic.findDic[productID].imagePath);
+        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[productID].imagePath);
     }
 
     //void OnClick(SetItemInfo setItemInfo)

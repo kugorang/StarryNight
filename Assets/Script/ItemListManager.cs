@@ -6,7 +6,7 @@ public class ItemListManager : MonoBehaviour
     int starIdxStart, materialIdxStart, combineIdxStart;
     int starIdxMax, materialIdxMax, combineIdxMax;
 
-    ItemDictionary itemDic;
+    DataDictionary dataDic;
 
     public GameObject panelPrefab, itemInfoPanel;
 
@@ -32,15 +32,15 @@ public class ItemListManager : MonoBehaviour
 
     private void Awake()
     {
-        itemDic = DataController.GetInstance().GetComponent<ItemDictionary>();
+        dataDic = DataController.GetInstance().GetComponent<DataDictionary>();
 
         starIdxStart = 1000;
         materialIdxStart = 2000;
         combineIdxStart = 3000;
 
-        starIdxMax = starIdxStart + itemDic.starNum;
-        materialIdxMax = materialIdxStart + itemDic.materialNum;
-        combineIdxMax = combineIdxStart + itemDic.combineNum;
+        starIdxMax = starIdxStart + dataDic.starNum;
+        materialIdxMax = materialIdxStart + dataDic.materialNum;
+        combineIdxMax = combineIdxStart + dataDic.combineNum;
 
         starContentPanel = GameObject.Find("StarContentPanel").transform;
         materialContentPanel = GameObject.Find("MaterialContentPanel").transform;
@@ -71,7 +71,7 @@ public class ItemListManager : MonoBehaviour
         Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
         Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo findItemInfo = itemDic.findDic[idx];
+        ItemInfo findItemInfo = dataDic.findDic[idx];
 
         itemListPanel.transform.SetParent(tf);
         itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.imagePath);

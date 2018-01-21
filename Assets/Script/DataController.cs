@@ -30,7 +30,7 @@ public class DataController : MonoBehaviour
     // itemOpenList 정보 저장 경로
     public string ItemOpenListPath { get; private set; }
 
-    private UpgradeDictionary upgradeDic;
+    private DataDictionary dataDic;
 
     /// <summary>
     /// NOTE: 현재 내가 소지하고 있는 재료 Dictionary
@@ -69,7 +69,7 @@ public class DataController : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
-        upgradeDic = GameObject.FindWithTag("DataController").GetComponent<UpgradeDictionary>();
+        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
         loadingFinish = false;
 
@@ -260,7 +260,7 @@ public class DataController : MonoBehaviour
             }
             else
             {
-                return 10 + upgradeDic.FindUpgrade(50001).value[invenLv - 1];
+                return 10 + dataDic.FindUpgrade(50001).value[invenLv - 1];
             }
         }
     }

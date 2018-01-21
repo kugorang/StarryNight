@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,13 +17,24 @@ public struct SetItemInfo
     }
 }
 
-public class ItemDictionary : MonoBehaviour
+public struct UpgradeInfo
 {
+    public int index;
+    public string name;
+    public int[] value;
+    public int[] cost;
+}
+
+public class DataDictionary : MonoBehaviour
+{
+    // 3개 합치자
     enum FILEINFO
     {
         COMBINETABLE,
         ITEMTABLE,
-        SETITEMTABLE
+        SETITEMTABLE,
+        QUESTTABLE,
+        UPGRADETABLE
     }
 
     public struct Tuple<T1, T2>
@@ -58,23 +70,37 @@ public class ItemDictionary : MonoBehaviour
     [HideInInspector]
     public List<SetItemInfo> setItemList;
 
+    /// <summary>
+    /// NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
+    /// <para> -> key(int) : 퀘스트 기준표 인덱스</para>
+    /// <para> -> value(ItemInfo) : 퀘스트 정보</para>
+    /// </summary>
+    public Dictionary<int, QuestInfo> findQuestDic;
+
+    /// <summary>
+    /// NOTE: 업그레이드를 찾을 때 사용하는 Dictionary
+    /// <para> -> key(int) : 업그레이드 기준표 인덱스</para>
+    /// <para> -> value(ItemInfo) : 업그레이드 정보</para>
+    /// </summary>
+    public Dictionary<int, UpgradeInfo> findUpDic;
+
     public int starNum { get; private set; }
     public int materialNum { get; private set; }
     public int combineNum { get; private set; }
     public int setNum { get; private set; }
 
-    private static ItemDictionary instance;
+    private static DataDictionary instance;
 
-    public static ItemDictionary GetInstance()
+    public static DataDictionary GetInstance()
     {
         if (instance == null)
         {
-            instance = FindObjectOfType<ItemDictionary>();
+            instance = FindObjectOfType<DataDictionary>();
 
             if (instance == null)
             {
-                GameObject container = new GameObject("ItemDictionary");
-                instance = container.AddComponent<ItemDictionary>();
+                GameObject container = new GameObject("DataDictionary");
+                instance = container.AddComponent<DataDictionary>();
             }
         }
 
@@ -88,25 +114,29 @@ public class ItemDictionary : MonoBehaviour
         // 두 Dictionary들을 초기화
         findDic = new Dictionary<int, ItemInfo>();
         cbDic = new Dictionary<Tuple<int, int>, List<int>>();
-
         setItemList = new List<SetItemInfo>();
+        findQuestDic = new Dictionary<int, QuestInfo>();
+        findUpDic = new Dictionary<int, UpgradeInfo>();
 
+        // 읽어들이기
         ReadDataFile("dataTable/combineTable", FILEINFO.COMBINETABLE);
         ReadDataFile("dataTable/itemTable", FILEINFO.ITEMTABLE);
         ReadDataFile("dataTable/setItemTable", FILEINFO.SETITEMTABLE);
+        ReadDataFile("dataTable/questTable", FILEINFO.QUESTTABLE);
+        ReadDataFile("dataTable/upgradeTable", FILEINFO.UPGRADETABLE);
     }
 
     private void ReadDataFile(string fileName, FILEINFO fileType)
     {
         TextAsset txtFile = (TextAsset)Resources.Load(fileName) as TextAsset;
-        string[] lineList = txtFile.text.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+        string[] lineList = txtFile.text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
         int lineListLen = lineList.Length;
 
         for (int i = 0; i < lineListLen; i++)
         {
             string[] wordList = lineList[i].Split(',');
-
+            int index;
             switch (fileType)
             {
                 case FILEINFO.COMBINETABLE:
@@ -139,7 +169,7 @@ public class ItemDictionary : MonoBehaviour
 
                     break;
                 case FILEINFO.ITEMTABLE:
-                    int index = Convert.ToInt32(wordList[0]);
+                    index = Convert.ToInt32(wordList[0]);
                     int sellPrice = Convert.ToInt32(wordList[5]);
                     string group = wordList[2];
 
@@ -169,6 +199,41 @@ public class ItemDictionary : MonoBehaviour
 
                     setItemList.Add(setItemInfo);
 
+                    break;
+                case FILEINFO.QUESTTABLE:
+                    index = Convert.ToInt32(wordList[0]);
+                    int termsItem = Convert.ToInt32(wordList[4]);
+                    int termsCount = Convert.ToInt32(wordList[5]);
+                    int reward = Convert.ToInt32(wordList[6]);
+                    int rewardCount = Convert.ToInt32(wordList[7]);
+
+                    findQuestDic[index] = gameObject.AddComponent<QuestInfo>();
+                    findQuestDic[index].Init(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
+                    break;
+                case FILEINFO.UPGRADETABLE:
+                    index = Convert.ToInt32(wordList[0]);
+
+                    UpgradeInfo upInfo;
+                    upInfo.index = index;
+                    upInfo.name = wordList[1];
+
+                    upInfo.value = new int[20];
+                    upInfo.cost = new int[20];
+
+                    for (int j = 0; j < 20; j++)
+                    {
+                        if (wordList.Length < 20) // 에러 회피용 임시코드. 50012번이 특수 아이템이라 wordList.Length가 2밖에 안됩니다.
+                        {
+                            break;
+                        }
+
+                        int value = Convert.ToInt32(wordList[2 * j + 2]);
+                        int cost = Convert.ToInt32(wordList[2 * j + 3]);
+                        upInfo.value[j] = value;
+                        upInfo.cost[j] = cost;
+                    }
+
+                    findUpDic[index] = upInfo;
                     break;
                 default:
                     break;
@@ -243,4 +308,20 @@ public class ItemDictionary : MonoBehaviour
 
         return new SetItemInfo(0, 0, 0, 0, 0);
     }
+
+    /// <summary>
+    /// 기준표에서 퀘스트를 찾는 함수
+    /// </summary>
+    /// <param name="key">findQuestDic의 key값</param>
+    /// <returns>리턴값</returns>
+    public QuestInfo FindQuest(int key)
+    {
+        return findQuestDic[key];
+    }
+
+    public UpgradeInfo FindUpgrade(int key)
+    {
+        return findUpDic[key];
+    }
+
 }

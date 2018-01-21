@@ -48,13 +48,13 @@ public class RaycastTest : MonoBehaviour
             }
 
             // 조합표에 있는 조합식인지 검색한다.
-            ItemDictionary itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
+            DataDictionary dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
             ItemInfo myItemInfo = GetComponent<Item>().itemInfo;
 
             int key1 = myItemInfo.index;
             int key2 = collItemInfo.index;
-            List<int> resultList = itemDic.FindCombine(key1, key2);
+            List<int> resultList = dataDic.FindCombine(key1, key2);
 
             if (resultList != null)
             {
@@ -64,7 +64,7 @@ public class RaycastTest : MonoBehaviour
                 // 조합 결과 개수를 얻어온다.
                 int resultNum = resultList.Count;
 
-                ItemInfo findItemInfo = itemDic.FindItem(resultList[Random.Range(0, resultNum)]);
+                ItemInfo findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
 
                 myItemInfo.index = findItemInfo.index;
                 myItemInfo.mtName = findItemInfo.mtName;
@@ -74,7 +74,7 @@ public class RaycastTest : MonoBehaviour
                 myItemInfo.description = findItemInfo.description;
                 myItemInfo.imagePath = findItemInfo.imagePath;
 
-                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(itemDic.findDic[myItemInfo.index].imagePath);
+                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.findDic[myItemInfo.index].imagePath);
 
                 // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
                 DataController.GetInstance().DeleteItem(key2);

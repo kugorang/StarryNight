@@ -17,9 +17,8 @@ public class BlinkStar : MonoBehaviour, IClickables
     private Color btnColor_d;
     private Color btnColor_a;
 
-    private QuestDictionary questDic;
-    private ItemDictionary itemDic;
-    private UpgradeDictionary upgradeDic;
+    private DataDictionary dataDic;
+    
 
     // 현재 퀘스트
     private QuestInfo currentQuest;
@@ -32,9 +31,9 @@ public class BlinkStar : MonoBehaviour, IClickables
         //OnSceneLoaded 활성화 용
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        questDic = GameObject.FindWithTag("DataController").GetComponent<QuestDictionary>();
-        itemDic = GameObject.FindWithTag("DataController").GetComponent<ItemDictionary>();
-        upgradeDic = GameObject.FindWithTag("DataController").GetComponent<UpgradeDictionary>();
+        
+        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
+        
 
         btn = gameObject.GetComponent<Button>();
         btnImg = gameObject.GetComponent<Image>();
@@ -73,7 +72,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     private void LoadBtnInfo()
     {
         QuestInfo questInfo = btn.GetComponent<QuestInfo>();
-        QuestInfo findQuestInfo = questDic.findQuestDic[questIndex];
+        QuestInfo findQuestInfo = dataDic.findQuestDic[questIndex];
 
         questInfo.index = questIndex;
         questInfo.act = findQuestInfo.act;
@@ -91,7 +90,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     {
         AudioManager.GetInstance().QuestStarSound();
         Debug.Log(DataController.GetInstance().QuestProcess+", beforefind");
-        currentQuest = questDic.FindQuest(DataController.GetInstance().QuestProcess);
+        currentQuest = dataDic.FindQuest(DataController.GetInstance().QuestProcess);
 
         // 진행중인 퀘스트 조건 아이템의 인덱스
         int checkItemIndex = currentQuest.termsItem;
@@ -218,7 +217,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     // 퀘스트 진행 상태에 따른 별 이미지 가져오기
     public void OnOtherClick()
     {
-        Debug.Log("Hi");
+        //Debug.Log("Hi");
         if (questIndex > DataController.GetInstance().QuestProcess)
         {
             btn.enabled = false;
@@ -355,7 +354,7 @@ public class BlinkStar : MonoBehaviour, IClickables
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = upgradeDic.FindUpgrade(termItemIndex).name + DataController.GetInstance().CheckUpgradeLevel(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.GetInstance().CheckUpgradeLevel(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().termsCount;
                 }
             }
             else
@@ -367,7 +366,7 @@ public class BlinkStar : MonoBehaviour, IClickables
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.findDic[termItemIndex].mtName + DataController.GetInstance().GetItemNum(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.findDic[termItemIndex].mtName + DataController.GetInstance().GetItemNum(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().termsCount;
                 }
             }
         }
@@ -383,11 +382,11 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
         else if (rewardIndex > 50000)
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = upgradeDic.FindUpgrade(rewardIndex).name + " Lv." + btn.GetComponent<QuestInfo>().rewardCount + " 오픈";
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(rewardIndex).name + " Lv." + btn.GetComponent<QuestInfo>().rewardCount + " 오픈";
         }
         else
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = itemDic.findDic[btn.GetComponent<QuestInfo>().reward].mtName + " " + btn.GetComponent<QuestInfo>().rewardCount;
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.findDic[btn.GetComponent<QuestInfo>().reward].mtName + " " + btn.GetComponent<QuestInfo>().rewardCount;
         }
     }
 

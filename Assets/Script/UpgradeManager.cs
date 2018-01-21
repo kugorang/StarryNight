@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UpgradeManager : MonoBehaviour
 {
-    private UpgradeDictionary upgradeDic;
+    private DataDictionary dataDic;
 
     // 업그레이드 잠금 표시
     private GameObject invenUnlock;
@@ -25,7 +25,7 @@ public class UpgradeManager : MonoBehaviour
 
     private void Awake()
     {
-        upgradeDic = GameObject.FindWithTag("DataController").GetComponent<UpgradeDictionary>();
+        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
         invenUnlock = GameObject.Find("Inven Unlock Panel");
         perClickUnlock = GameObject.Find("PerClick Unlock Panel");
@@ -60,7 +60,7 @@ public class UpgradeManager : MonoBehaviour
         else
         {
             // 업그레이드 비용이 충분한지 확인
-            if (DataController.GetInstance().Gold < (ulong)upgradeDic.FindUpgrade(50001).cost[currentInvenLv])
+            if (DataController.GetInstance().Gold < (ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv])
             {
                 invenUpBtn.enabled = false;
                 invenUnlock.SetActive(true);
@@ -88,7 +88,7 @@ public class UpgradeManager : MonoBehaviour
         else
         {
             // 업그레이드 비용이 충분한지 확인
-            if (DataController.GetInstance().Gold < (ulong)upgradeDic.FindUpgrade(50002).cost[currentPerClickLv])
+            if (DataController.GetInstance().Gold < (ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv])
             {
                 energyPerClickUpBtn.enabled = false;
                 perClickUnlock.SetActive(true);
@@ -108,9 +108,9 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
-            int nextInvenValue = 10 + upgradeDic.findUpDic[50001].value[currentInvenLv];
+            int nextInvenValue = 10 + dataDic.findUpDic[50001].value[currentInvenLv];
             invenUp_Displayer.text = "인벤토리 +" + DataController.GetInstance().ItemLimit + " -> +" + nextInvenValue;
-            invenUpCost_Displayer.text = upgradeDic.FindUpgrade(50001).cost[currentInvenLv] + "원";
+            invenUpCost_Displayer.text = dataDic.FindUpgrade(50001).cost[currentInvenLv] + "원";
         }
 
         if (currentPerClickLv == 20)
@@ -120,9 +120,9 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
-            int nextClickValue = 2 + upgradeDic.findUpDic[50002].value[currentPerClickLv];
+            int nextClickValue = 2 + dataDic.findUpDic[50002].value[currentPerClickLv];
             energyPerClickUp_Displayer.text = "클릭당 게이지 +" + DataController.GetInstance().EnergyPerClick + " -> +" + nextClickValue;
-            energyPerClickUpCost_Displayer.text = upgradeDic.FindUpgrade(50002).cost[currentPerClickLv] + "원";
+            energyPerClickUpCost_Displayer.text = dataDic.FindUpgrade(50002).cost[currentPerClickLv] + "원";
         }
 
     }
@@ -131,7 +131,7 @@ public class UpgradeManager : MonoBehaviour
     public void InvenUpgrade()
     {
         // 골드 빼고
-        DataController.GetInstance().Gold-=(ulong)upgradeDic.FindUpgrade(50001).cost[currentInvenLv];
+        DataController.GetInstance().Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv];
 
         // 공간 늘려주고
         DataController.GetInstance().UpgradeInvenLv();
@@ -141,7 +141,7 @@ public class UpgradeManager : MonoBehaviour
     public void EnergyPerClickUpgrade()
     {
         // 골드 빼고
-        DataController.GetInstance().Gold-=(ulong)upgradeDic.FindUpgrade(50002).cost[currentPerClickLv];
+        DataController.GetInstance().Gold-=(ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv];
 
         // 클릭 당 게이지 증가시켜주고
         DataController.GetInstance().UpgradeEnergyPerClickLv();
