@@ -42,7 +42,7 @@ public class CreateItem : MonoBehaviour
         energyPerClick = 100;   // 개발 시 시간 절약을 위해 100으로 설정.
         energyMaxValue = 100;
         dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
-        dataController = DataController.GetInstance();
+        dataController = DataController.Instance;
     }
 
     void Start()
@@ -68,7 +68,7 @@ public class CreateItem : MonoBehaviour
                 {
                     GenerateItem(entry.Key, false);
 
-                    SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(entry.Key);
+                    SetItemInfo setItemInfo = DataDictionary.Instance.CheckSetItemCombine(entry.Key);
 
                     if (setItemInfo.result != 0 && !tmpSetItemInfo.Contains(setItemInfo))
                     {
@@ -170,18 +170,18 @@ public class CreateItem : MonoBehaviour
         // 현재 보유하고 있는 재료를 관리하는 Dictionary에 방금 생성한 item을 넣어준다.
         if (isNew)
         {
-            DataController.GetInstance().InsertItem(productID, 1);
+            DataController.Instance.InsertItem(productID, 1);
         }
 
         ItemInfo findItemInfo = dataDic.FindDic[productID];
         newItem.GetComponent<Item>().SetItemInfo(productID, findItemInfo);
         newItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].imagePath);
+        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].ImagePath);
     }
 
     void OnClick(SetItemInfo setItemInfo)
     {
-        DataController dataController = DataController.GetInstance();
+        DataController dataController = DataController.Instance;
 
         dataController.DeleteItem(setItemInfo.index1);
         dataController.DeleteItem(setItemInfo.index2);

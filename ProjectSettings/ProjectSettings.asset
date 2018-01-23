@@ -244,7 +244,7 @@ PlayerSettings:
   AndroidTargetDevice: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/1reds/Desktop/UnityProject/StarryNight/starrynight.keystore
+  AndroidKeystoreName: C:/Users/samsung/Documents/GitHub/StarryNight/starrynight.keystore
   AndroidKeyaliasName: starrynight
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
@@ -264,7 +264,7 @@ PlayerSettings:
       m_Icon: {fileID: 2800000, guid: 5eed909be84e63f4487fbee3671014ad, type: 3}
       m_Width: 128
       m_Height: 128
-      m_Kind: 36551
+      m_Kind: 0
   m_BuildTargetBatching: []
   m_BuildTargetGraphicsAPIs: []
   m_BuildTargetVRSettings: []

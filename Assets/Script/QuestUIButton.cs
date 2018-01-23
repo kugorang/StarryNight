@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class QuestUIButton : MonoBehaviour {
 
+    private const int FIRST_QUEST = 90101;
+    private const int LAST_QUEST = 90123;//원래는 90247
+
     private static int showingQuestIndex;
     public static int ShowingQuestIndex
     {
@@ -14,13 +17,13 @@ public class QuestUIButton : MonoBehaviour {
         }
         set
         {
-            if (value < 90101)
+            if (value < FIRST_QUEST)
             {
-                showingQuestIndex = 90101;
+                showingQuestIndex = FIRST_QUEST;
             }
-            else if (value > 90123)
+            else if (value > LAST_QUEST)
             {
-                showingQuestIndex = 90123;
+                showingQuestIndex = LAST_QUEST;
             }
             else
             {
@@ -29,12 +32,16 @@ public class QuestUIButton : MonoBehaviour {
         }
     }
 
+    private List<int> FirstQuestsOf;
+   // private Dictionary<int, string> CurrentSceneName;
+    
     public void Start()
     {
-        if (ShowingQuestIndex<90101)//값이 할당되지 않은 경우
+        if (ShowingQuestIndex<FIRST_QUEST)//값이 할당되지 않은 경우
         {
-            ShowingQuestIndex = DataController.GetInstance().QuestProcess;
+            ShowingQuestIndex = DataController.Instance.QuestProcess;
         }
+        FirstQuestsOf = DataDictionary.Instance.FirstQuestsOfScene;
     }
 
     public void OnEnable()
@@ -46,12 +53,12 @@ public class QuestUIButton : MonoBehaviour {
             star.GetComponent<BlinkStar>().OnClick();
         }
     }
-
+    
     public void OnLeftQuestBtnClick()
     {
         ShowingQuestIndex -= 1;
         Debug.Log(ShowingQuestIndex + ", Left");
-        if (ShowingQuestIndex <= 90104 && SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aris"))
+        if (ShowingQuestIndex < FirstQuestsOf[1] && SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aris"))
         {
             AudioManager.GetInstance().ActSound();
             SceneManager.LoadScene("Aris");
@@ -71,7 +78,7 @@ public class QuestUIButton : MonoBehaviour {
         GameObject star;
         ShowingQuestIndex += 1;
         Debug.Log(ShowingQuestIndex + ", Right");
-        if (ShowingQuestIndex > DataController.GetInstance().QuestProcess)//progress이 진행중 퀘스트
+        if (ShowingQuestIndex > DataController.Instance.QuestProcess)//progress이 진행중 퀘스트
         {
             star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
             if (star != null)
@@ -79,9 +86,9 @@ public class QuestUIButton : MonoBehaviour {
                 star.GetComponent<BlinkStar>().OnClick();
 
             }
-            ShowingQuestIndex = DataController.GetInstance().QuestProcess;
+            ShowingQuestIndex = DataController.Instance.QuestProcess;
         }
-        if (90104 < ShowingQuestIndex && ShowingQuestIndex <= 90123)
+        if (FirstQuestsOf[1] <= ShowingQuestIndex && ShowingQuestIndex < FirstQuestsOf[2])
         {
             if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Taurus"))
             {

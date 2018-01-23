@@ -9,7 +9,7 @@ public class PlayerPrefsEditorUtility : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
 
-        DataController dataController = DataController.GetInstance();
+        DataController dataController = DataController.Instance;
 
         if (dataController != null)
         {

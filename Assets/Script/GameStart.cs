@@ -37,7 +37,7 @@ public class GameStart : MonoBehaviour {
         yield return new WaitForSeconds(0.2f);
         loading.text = "Loading...";
         loading.color = new Vector4(1, 1, 1, 1);
-        while (!DataController.GetInstance().LoadingFinish)
+        while (!DataController.Instance.LoadingFinish)
         {
             yield return new WaitForSeconds(0.2f);
             loading.text = "Loading.";

@@ -8,7 +8,7 @@ public class DebugResetButton : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
 
-        DataController dataController = DataController.GetInstance();
+        DataController dataController = DataController.Instance;
 
         if (dataController != null)
         {

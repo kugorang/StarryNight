@@ -40,9 +40,9 @@ public class RaycastTest : MonoBehaviour
     {
         if (collision.tag == "Material" && collision.isTrigger)
         {
-            ItemInfo collItemInfo = collision.GetComponent<Item>().itemInfo;
+            ItemInfo collItemInfo = collision.GetComponent<Item>().ItemInfo;
 
-            if (collItemInfo.checkDestroy)
+            if (collItemInfo.CheckDestroy)
             {
                 return;
             }
@@ -50,10 +50,10 @@ public class RaycastTest : MonoBehaviour
             // 조합표에 있는 조합식인지 검색한다.
             DataDictionary dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
-            ItemInfo myItemInfo = GetComponent<Item>().itemInfo;
+            ItemInfo myItemInfo = GetComponent<Item>().ItemInfo;
 
-            int key1 = myItemInfo.index;
-            int key2 = collItemInfo.index;
+            int key1 = myItemInfo.Index;
+            int key2 = collItemInfo.Index;
             List<int> resultList = dataDic.FindCombine(key1, key2);
 
             if (resultList != null)
@@ -66,28 +66,28 @@ public class RaycastTest : MonoBehaviour
 
                 ItemInfo findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
 
-                myItemInfo.index = findItemInfo.index;
-                myItemInfo.mtName = findItemInfo.mtName;
-                myItemInfo.group = findItemInfo.group;
-                myItemInfo.grade = findItemInfo.grade;
-                myItemInfo.sellPrice = findItemInfo.sellPrice;
-                myItemInfo.description = findItemInfo.description;
-                myItemInfo.imagePath = findItemInfo.imagePath;
+                myItemInfo.Index = findItemInfo.Index;
+                myItemInfo.MtName = findItemInfo.MtName;
+                myItemInfo.Group = findItemInfo.Group;
+                myItemInfo.Grade = findItemInfo.Grade;
+                myItemInfo.SellPrice = findItemInfo.SellPrice;
+                myItemInfo.Description = findItemInfo.Description;
+                myItemInfo.ImagePath = findItemInfo.ImagePath;
 
-                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[myItemInfo.index].imagePath);
+                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[myItemInfo.Index].ImagePath);
 
                 // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
-                DataController.GetInstance().DeleteItem(key2);
-                DataController.GetInstance().DeleteItem(key1);
+                DataController.Instance.DeleteItem(key2);
+                DataController.Instance.DeleteItem(key1);
 
-                DataController.GetInstance().InsertItem(myItemInfo.index, 1);
+                DataController.Instance.InsertItem(myItemInfo.Index, 1);
 
                 // 조합 후 충돌한 물체를 파괴한다.
-                collItemInfo.checkDestroy = true;
+                collItemInfo.CheckDestroy = true;
 
                 Destroy(collision.gameObject);
 
-                DataController.GetInstance().SubItemCount();
+                DataController.Instance.SubItemCount();
             }
             //else
             //{

@@ -3,48 +3,48 @@
 public class ItemInfo
 {
     // 재료 기준 표 index
-    public int index { get; set; }
+    public int Index { get; set; }
 
     // 재료 이름
-    public string mtName { get; set; }
+    public string MtName { get; set; }
 
     // 재료 분류
-    public string group { get; set; }
+    public string Group { get; set; }
 
     // 재료 등급
-    public string grade { get; set; }
+    public string Grade { get; set; }
 
     // 재료 판매 가격
-    public int sellPrice { get; set; }
+    public int SellPrice { get; set; }
 
     // 재료 설명
-    public string description { get; set; }
+    public string Description { get; set; }
 
     // 재료 이미지 경로
-    public string imagePath { get; set; }
+    public string ImagePath { get; set; }
 
     // 없어진지 확인하는 플래그
-    public bool checkDestroy { get; set; }
+    public bool CheckDestroy { get; set; }
 
     public ItemInfo(int _index, string _name, string _group, string _grade, int _sellPrice, string _description, string _imagePath)
     {
-        index = _index;
-        mtName = _name;
-        group = _group;
-        grade = _grade;
-        sellPrice = _sellPrice;
-        description = _description;
-        imagePath = _imagePath;
-        checkDestroy = false;
+        Index = _index;
+        MtName = _name;
+        Group = _group;
+        Grade = _grade;
+        SellPrice = _sellPrice;
+        Description = _description;
+        ImagePath = _imagePath;
+        CheckDestroy = false;
     }
 }
 
 public class Item : MonoBehaviour
 {
-    public ItemInfo itemInfo { get; set; }
+    public ItemInfo ItemInfo { get; set; }
 
     // 아이템 위치
-    public Vector2 pos { get; set; }
+    public Vector2 Pos { get; set; }
 
     // Use this for initialization
     private void Start()
@@ -57,11 +57,11 @@ public class Item : MonoBehaviour
     private void Update()
     {
         Vector3 transfromPos = gameObject.transform.position;
-        pos = new Vector2(transfromPos.x, transfromPos.y);
+        Pos = new Vector2(transfromPos.x, transfromPos.y);
     }
 
     public void SetItemInfo(int productID, ItemInfo findItemInfo)
     {
-        itemInfo = new ItemInfo(productID, findItemInfo.mtName, findItemInfo.group, findItemInfo.grade, findItemInfo.sellPrice, findItemInfo.description, findItemInfo.imagePath);
+        ItemInfo = new ItemInfo(productID, findItemInfo.MtName, findItemInfo.Group, findItemInfo.Grade, findItemInfo.SellPrice, findItemInfo.Description, findItemInfo.ImagePath);
     }
 }

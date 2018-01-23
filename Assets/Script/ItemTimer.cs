@@ -25,7 +25,7 @@ public class ItemTimer : MonoBehaviour
     private void Awake()
     {
         dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
-        LeftTimer = DataController.GetInstance();
+        LeftTimer = DataController.Instance;
     }
 
     void Start()
@@ -91,7 +91,7 @@ public class ItemTimer : MonoBehaviour
     {
         if (btn) // 버튼 활성화 시
         {
-            if (DataController.GetInstance().ItemCount >= DataController.GetInstance().ItemLimit) // 아이템 갯수 제한
+            if (DataController.Instance.ItemCount >= DataController.Instance.ItemLimit) // 아이템 갯수 제한
             {
                 Debug.Log("아이템 상자가 꽉 찼어요");
                 return;
@@ -111,7 +111,7 @@ public class ItemTimer : MonoBehaviour
             LeftTimer[index] = cooltime;
             btn.enabled = false;
 
-            DataController.GetInstance().AddItemCount();
+            DataController.Instance.AddItemCount();
         }
     }
 
@@ -119,7 +119,7 @@ public class ItemTimer : MonoBehaviour
     {
         GameObject setItem = Instantiate(prefab, vectors[index], Quaternion.identity);
 
-        DataController.GetInstance().InsertItem(productID, 1);
+        DataController.Instance.InsertItem(productID, 1);
         setItem.GetComponent<Item>().SetItemInfo(productID, dataDic.FindDic[productID]);
 
         // 아래 주석 코드는 조합 버튼이 사라졌으므로 현재는 필요 없음.
@@ -133,7 +133,7 @@ public class ItemTimer : MonoBehaviour
         //}
 
         setItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].imagePath);
+        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].ImagePath);
     }
 
     //void OnClick(SetItemInfo setItemInfo)

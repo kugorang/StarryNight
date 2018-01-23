@@ -7,7 +7,7 @@ public class ButtonManager : MonoBehaviour
     public void OnQuestBtnClick()
     {
         //현재 퀘스트로 바로 이동
-        int process = DataController.GetInstance().QuestProcess;
+        int process = DataController.Instance.QuestProcess;
         if (process <= 90104)
         {
             AudioManager.GetInstance().ActSound();
@@ -52,7 +52,7 @@ public class ButtonManager : MonoBehaviour
     public void OnTaurusBtnClick()
     {
         // 퀘스트 인덱스 확인
-        if (90104 < DataController.GetInstance().QuestProcess)
+        if (90104 < DataController.Instance.QuestProcess)
         {
             AudioManager.GetInstance().ActSound();
             SceneManager.LoadScene("Cartoon");

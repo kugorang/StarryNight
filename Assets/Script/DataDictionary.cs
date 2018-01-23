@@ -26,7 +26,7 @@ public struct UpgradeInfo
 
 public class DataDictionary : MonoBehaviour
 {
-    // 3개 합치자
+
     enum FILEINFO
     {
         COMBINETABLE,
@@ -87,22 +87,27 @@ public class DataDictionary : MonoBehaviour
     public int MaterialNum { get; private set; }
     public int CombineNum { get; private set; }
 
+    public List<int> FirstQuestsOfScene = new List<int>();
+
     private static DataDictionary instance;
 
-    public static DataDictionary GetInstance()
+    public static DataDictionary Instance
     {
-        if (instance == null)
+        get
         {
-            instance = FindObjectOfType<DataDictionary>();
-
             if (instance == null)
             {
-                GameObject container = new GameObject("DataDictionary");
-                instance = container.AddComponent<DataDictionary>();
-            }
-        }
+                instance = FindObjectOfType<DataDictionary>();
 
-        return instance;
+                if (instance == null)
+                {
+                    GameObject container = new GameObject("DataDictionary");
+                    instance = container.AddComponent<DataDictionary>();
+                }
+            }
+
+            return instance;
+        }
     }
 
     private void Start()
@@ -130,6 +135,8 @@ public class DataDictionary : MonoBehaviour
         string[] lineList = txtFile.text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
         int lineListLen = lineList.Length;
+
+        string formerSceneName = "";
 
         for (int i = 0; i < lineListLen; i++)
         {
@@ -204,6 +211,14 @@ public class DataDictionary : MonoBehaviour
 
                     FindQuestDic[index] = gameObject.AddComponent<QuestInfo>();
                     FindQuestDic[index].Init(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
+
+                   
+                    if(wordList[1]!=formerSceneName)//씬의 첫 퀘스트의 인덱스 구하기
+                    {
+                        FirstQuestsOfScene.Add(index);
+                        formerSceneName = wordList[1];
+                    }
+
                     break;
                 case FILEINFO.UPGRADETABLE:
                     index = Convert.ToInt32(wordList[0]);
@@ -266,7 +281,7 @@ public class DataDictionary : MonoBehaviour
 
     public SetItemInfo CheckSetItemCombine(int key)
     {
-        DataController dataController = DataController.GetInstance();
+        DataController dataController = DataController.Instance;
         Dictionary<int, int> haveDic = dataController.haveDic;
 
         foreach (SetItemInfo setItemInfo in SetComineList)

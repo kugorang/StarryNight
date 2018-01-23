@@ -48,20 +48,23 @@ public class DataController : MonoBehaviour
 
     private static DataController instance;
 
-    public static DataController GetInstance()
+    public static DataController Instance
     {
-        if (instance == null)
+        get
         {
-            instance = FindObjectOfType<DataController>();
-
             if (instance == null)
             {
-                GameObject container = new GameObject("DataController");
-                instance = container.AddComponent<DataController>();
-            }
-        }
+                instance = FindObjectOfType<DataController>();
 
-        return instance;
+                if (instance == null)
+                {
+                    GameObject container = new GameObject("DataController");
+                    instance = container.AddComponent<DataController>();
+                }
+            }
+
+            return instance;
+        }
     }
 
     // 게임 초기화될 때 

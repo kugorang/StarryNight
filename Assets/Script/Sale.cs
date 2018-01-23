@@ -7,11 +7,11 @@ public class Sale : MonoBehaviour
         if (col.tag == "Material")
         {
             AudioManager.GetInstance().SaleSound();
-            ItemInfo itemInfo = col.GetComponent<Item>().itemInfo;
+            ItemInfo itemInfo = col.GetComponent<Item>().ItemInfo;
 
-            DataController.GetInstance().Gold+=(ulong)itemInfo.sellPrice;
-            DataController.GetInstance().SubItemCount();
-            DataController.GetInstance().DeleteItem(itemInfo.index);
+            DataController.Instance.Gold+=(ulong)itemInfo.SellPrice;
+            DataController.Instance.SubItemCount();
+            DataController.Instance.DeleteItem(itemInfo.Index);
 
             Destroy(col.gameObject);
 
