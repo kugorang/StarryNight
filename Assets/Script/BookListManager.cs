@@ -57,10 +57,10 @@ public class BookListManager : MonoBehaviour
         Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
         Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo findItemInfo = dataDic.FindDic[idx];
+        ItemInfo findItemInfo = dataDic.FindItemDic[idx];
 
         itemListPanel.transform.SetParent(tf);
-        itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.imagePath);
+        itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
 
         if (DataController.GetInstance().itemOpenList.Contains(idx))
         {
@@ -86,11 +86,11 @@ public class BookListManager : MonoBehaviour
 
         infoWindow.gameObject.SetActive(true);
 
-        infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.imagePath);
-        infoWindow.ItemName.text = itemInfo.mtName;
-        infoWindow.ItemSort.text = itemInfo.group;
-        infoWindow.ItemGrade.text = itemInfo.grade;
-        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.sellPrice.ToString();
-        infoWindow.ItemText.text = itemInfo.description;
+        infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
+        infoWindow.ItemName.text = itemInfo.Name;
+        infoWindow.ItemSort.text = itemInfo.Group;
+        infoWindow.ItemGrade.text = itemInfo.Grade;
+        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();
+        infoWindow.ItemText.text = itemInfo.Description;
     }
 }

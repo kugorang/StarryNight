@@ -3,10 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
 {
-
     public void OnQuestBtnClick()
     {
-        //현재 퀘스트로 바로 이동
+        // 현재 퀘스트로 바로 이동
         int process = DataController.GetInstance().QuestProcess;
         if (process <= 90104)
         {
