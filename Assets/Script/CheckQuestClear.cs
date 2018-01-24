@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class CheckQuestClear : MonoBehaviour {
 
-    private GameObject arisClear;
+    private GameObject ariesClear;
     private GameObject taurusClear;
 
     private void Awake()
     {
-        arisClear = GameObject.Find("Aris Clear");
+        ariesClear = GameObject.Find("Aries Clear");
         taurusClear = GameObject.Find("Taurus Clear");
 
-        arisClear.SetActive(false);
+        ariesClear.SetActive(false);
         taurusClear.SetActive(false);
 
         // 양자리 퀘스트 클리어 시 클리어 이미지 띄우기
         if (DataController.Instance.QuestProcess> 90104)
         {
-            arisClear.SetActive(true);
+            ariesClear.SetActive(true);
         }
 
         // 황소자리 퀘스트 클리어 시 클리어 이미지 띄우기

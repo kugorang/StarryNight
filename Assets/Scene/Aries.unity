@@ -222,7 +222,7 @@ Prefab:
       objectReference: {fileID: 210084601}
     - target: {fileID: 1369704311415940, guid: d24d8e2fb300a1241a8cfd6d4c056adc, type: 2}
       propertyPath: m_Name
-      value: Aris_90102
+      value: Aries_90102
       objectReference: {fileID: 0}
     - target: {fileID: 114639272335724994, guid: d24d8e2fb300a1241a8cfd6d4c056adc,
         type: 2}
@@ -404,7 +404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 474, y: 10}
+  m_AnchoredPosition: {x: 475, y: 0}
   m_SizeDelta: {x: 71, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &353702038
@@ -601,7 +601,7 @@ Prefab:
       objectReference: {fileID: 418536804}
     - target: {fileID: 1369704311415940, guid: d24d8e2fb300a1241a8cfd6d4c056adc, type: 2}
       propertyPath: m_Name
-      value: Aris_90104
+      value: Aries_90104
       objectReference: {fileID: 0}
     - target: {fileID: 114639272335724994, guid: d24d8e2fb300a1241a8cfd6d4c056adc,
         type: 2}
@@ -699,7 +699,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -474, y: 5}
+  m_AnchoredPosition: {x: -475, y: 0}
   m_SizeDelta: {x: 71, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &538920297
@@ -1049,7 +1049,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1369704311415940, guid: d24d8e2fb300a1241a8cfd6d4c056adc, type: 2}
       propertyPath: m_Name
-      value: Aris_90101
+      value: Aries_90101
       objectReference: {fileID: 0}
     - target: {fileID: 114639272335724994, guid: d24d8e2fb300a1241a8cfd6d4c056adc,
         type: 2}
@@ -1313,7 +1313,7 @@ Prefab:
       objectReference: {fileID: 1282629055}
     - target: {fileID: 1369704311415940, guid: d24d8e2fb300a1241a8cfd6d4c056adc, type: 2}
       propertyPath: m_Name
-      value: Aris_90103
+      value: Aries_90103
       objectReference: {fileID: 0}
     - target: {fileID: 114639272335724994, guid: d24d8e2fb300a1241a8cfd6d4c056adc,
         type: 2}
@@ -1967,7 +1967,7 @@ GameObject:
   - component: {fileID: 1830725707}
   - component: {fileID: 1830725706}
   m_Layer: 5
-  m_Name: Aris
+  m_Name: Aries
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

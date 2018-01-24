@@ -58,10 +58,10 @@ public class QuestUIButton : MonoBehaviour {
     {
         ShowingQuestIndex -= 1;
         Debug.Log(ShowingQuestIndex + ", Left");
-        if (ShowingQuestIndex < FirstQuestsOf[1] && SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aris"))
+        if (ShowingQuestIndex < FirstQuestsOf[1] && SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aries"))
         {
             AudioManager.GetInstance().ActSound();
-            SceneManager.LoadScene("Aris");
+            SceneManager.LoadScene("Aries");
             return;
         }
 

@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 222022422201830742}
   - component: {fileID: 114304705375851224}
   - component: {fileID: 114531415864878686}
-  - component: {fileID: 114577708469206936}
   - component: {fileID: 114639272335724994}
   m_Layer: 5
   m_Name: QuestStar
@@ -110,17 +109,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114577708469206936
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1369704311415940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbfffbcf4dec5d348b2f3f355bb1ff70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114639272335724994
 MonoBehaviour:
   m_ObjectHideFlags: 1

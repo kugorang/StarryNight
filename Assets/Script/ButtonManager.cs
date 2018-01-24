@@ -11,7 +11,7 @@ public class ButtonManager : MonoBehaviour
         if (process <= 90104)
         {
             AudioManager.GetInstance().ActSound();
-            SceneManager.LoadScene("Aris");
+            SceneManager.LoadScene("Aries");
         }
         else if (90104 < process && process <= 90123)
         {
@@ -42,7 +42,7 @@ public class ButtonManager : MonoBehaviour
     }
 
     //양자리 퀘스트 버튼
-    public void OnArisBtnClick()
+    public void OnAriesBtnClick()
     {
         AudioManager.GetInstance().ActSound();
         SceneManager.LoadScene("Cartoon");

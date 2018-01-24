@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 222353374133689784}
   - component: {fileID: 114589228934414434}
   - component: {fileID: 114319046907463558}
-  - component: {fileID: 114293854049096850}
   m_Layer: 5
   m_Name: Sheep_90104
   m_TagString: Untagged
@@ -41,7 +40,6 @@ GameObject:
   - component: {fileID: 222949068033636528}
   - component: {fileID: 114113668863483840}
   - component: {fileID: 114886235691839748}
-  - component: {fileID: 114827242292031722}
   m_Layer: 5
   m_Name: Sheep_90102
   m_TagString: Untagged
@@ -60,7 +58,6 @@ GameObject:
   - component: {fileID: 222752662715881150}
   - component: {fileID: 114083523749939810}
   - component: {fileID: 114680761926089710}
-  - component: {fileID: 114461901538067060}
   m_Layer: 5
   m_Name: Sheep_90101
   m_TagString: Untagged
@@ -96,7 +93,6 @@ GameObject:
   - component: {fileID: 222813047442675040}
   - component: {fileID: 114433361729648046}
   - component: {fileID: 114452604016767670}
-  - component: {fileID: 114328978591689420}
   m_Layer: 5
   m_Name: Sheep_90103
   m_TagString: Untagged
@@ -185,17 +181,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114293854049096850
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1023946197347980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbfffbcf4dec5d348b2f3f355bb1ff70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114319046907463558
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -248,17 +233,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114328978591689420
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1973938987061792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbfffbcf4dec5d348b2f3f355bb1ff70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114433361729648046
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -338,17 +312,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114461901538067060
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1619837779691972}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbfffbcf4dec5d348b2f3f355bb1ff70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114589228934414434
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -428,17 +391,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114827242292031722
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1571330695097914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbfffbcf4dec5d348b2f3f355bb1ff70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114886235691839748
 MonoBehaviour:
   m_ObjectHideFlags: 1

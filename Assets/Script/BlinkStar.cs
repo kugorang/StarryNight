@@ -5,6 +5,46 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+public class QuestInfo//목표:quest.cs로 BlinkStar, QuestUIButton로 퀘스트 부분만 떼서 통합정리
+{
+
+    // 퀘스트 기준 표 index
+    public int Index { get; set; }
+
+    // 퀘스트 발생 액트
+    public string Act { get; set; }
+
+    // 퀘스트 제목
+    public string Title { get; set; }
+
+    // 퀘스트 내용
+    public string Content { get; set; }
+
+    // 퀘스트 조건 아이템
+    public int TermsItem { get; set; }
+
+    // 퀘스트 조건 아이템 갯수
+    public int TermsCount { get; set; }
+
+    // 퀘스트 보상 아이템
+    public int Reward { get; set; }
+
+    // 퀘스트 보상 아이템 갯수
+    public int RewardCount { get; set; }
+
+    public QuestInfo(int _index, string _act, string _title, string _content, int _termsItem, int _termsCount, int _reward, int _rewardCount)
+    {
+        Index = _index;
+        Act = _act;
+        Title = _title;
+        Content = _content;
+        TermsItem = _termsItem;
+        TermsCount = _termsCount;
+        Reward = _reward;
+        RewardCount = _rewardCount;
+    }
+}
+
 public class BlinkStar : MonoBehaviour, IClickables
 {
     public int questIndex;
@@ -18,7 +58,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     private Color btnColor_a;
 
     private DataDictionary dataDic;
-    
+    private QuestInfo ownQuest;
 
     // 현재 퀘스트
     private QuestInfo currentQuest;
@@ -47,7 +87,10 @@ public class BlinkStar : MonoBehaviour, IClickables
 
         blinkAlive = true;
 
-        LoadBtnInfo();
+        
+        QuestInfo findQuestInfo = dataDic.FindQuestDic[questIndex];
+        ownQuest = new QuestInfo(questIndex, findQuestInfo.Act, findQuestInfo.Title, findQuestInfo.Content, findQuestInfo.TermsItem, findQuestInfo.TermsCount, findQuestInfo.Reward, findQuestInfo.RewardCount);
+        
 
         // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
         if (questIndex > DataController.Instance.QuestProcess) // 진행 전 퀘스트
@@ -69,20 +112,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     }
 
    
-    private void LoadBtnInfo()
-    {
-        QuestInfo questInfo = btn.GetComponent<QuestInfo>();
-        QuestInfo findQuestInfo = dataDic.FindQuestDic[questIndex];
-
-        questInfo.Index = questIndex;
-        questInfo.Act = findQuestInfo.Act;
-        questInfo.Title = findQuestInfo.Title;
-        questInfo.Content = findQuestInfo.Content;
-        questInfo.TermsItem = findQuestInfo.TermsItem;
-        questInfo.TermsCount = findQuestInfo.TermsCount;
-        questInfo.Reward = findQuestInfo.Reward;
-        questInfo.RewardCount = findQuestInfo.RewardCount;
-    }
+    
 
 
     // 퀘스트 정보 확인 및 퀘스트 완료 보상 지급
@@ -204,7 +234,7 @@ public class BlinkStar : MonoBehaviour, IClickables
         if (DataController.Instance.QuestProcess < 90105) // 양자리 일 때
         {
 
-            BlinkStar nextStar = GameObject.Find("Aris_" + DataController.Instance.QuestProcess).GetComponent<BlinkStar>();
+            BlinkStar nextStar = GameObject.Find("Aries_" + DataController.Instance.QuestProcess).GetComponent<BlinkStar>();
             nextStar.BlingBling();
         }
         else if (DataController.Instance.QuestProcess > 90104 && DataController.Instance.QuestProcess < 90124) // 황소자리일 때 수 주의.나중에 변수나 상수로 쓸 것
@@ -255,7 +285,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     public void ShowQuestInfo()
     {
         // 퀘스트 제목 출력
-        GameObject.Find("Name Displayer").GetComponent<Text>().text = btn.GetComponent<QuestInfo>().Title;
+        GameObject.Find("Name Displayer").GetComponent<Text>().text = ownQuest.Title;
 
         // 퀘스트 진행상태 출력
         if (questIndex == 90101)
@@ -268,12 +298,12 @@ public class BlinkStar : MonoBehaviour, IClickables
 
             if (questIndex < DataController.Instance.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 원석 " + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 원석 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
             {
-                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 원석 " + questItemNum + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 원석 " + questItemNum + "/" + ownQuest.TermsCount;
             }
         }
         else if (questIndex == 90102)
@@ -285,12 +315,12 @@ public class BlinkStar : MonoBehaviour, IClickables
             }
             if (questIndex < DataController.Instance.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 파편 " + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 파편 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
             {
-                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 파편 " + questItemNum + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 파편 " + questItemNum + "/" + ownQuest.TermsCount;
             }
         }
         else if (questIndex == 90103)
@@ -303,12 +333,12 @@ public class BlinkStar : MonoBehaviour, IClickables
 
             if (questIndex < DataController.Instance.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "재료 아이템 " + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "재료 아이템 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
             {
-                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "재료 아이템 " + questItemNum + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "재료 아이템 " + questItemNum + "/" + ownQuest.TermsCount;
             }
         }
         else if (questIndex == 90104)
@@ -322,71 +352,71 @@ public class BlinkStar : MonoBehaviour, IClickables
 
             if (questIndex < DataController.Instance.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "레벨 1 조합 아이템 " + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "레벨 1 조합 아이템 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
             {
-                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "레벨 1 조합 아이템 " + questItemNum + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                GameObject.Find("Progress Displayer").GetComponent<Text>().text = "레벨 1 조합 아이템 " + questItemNum + "/" + ownQuest.TermsCount;
             }
         }
         else
         {
-            int termItemIndex = btn.GetComponent<QuestInfo>().TermsItem;
+            int termItemIndex = ownQuest.TermsItem;
             if (termItemIndex == 9999) // 조건이 골드일 때
             {
                 if (questIndex < DataController.Instance.QuestProcess)
                 {
-                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + DataController.Instance.Gold + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + DataController.Instance.Gold + "/" + ownQuest.TermsCount;
                 }
             }
             else if (termItemIndex > 50000) // 조건이 업그레이드일 때
             {
                 if (questIndex < DataController.Instance.QuestProcess)
                 {
-                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = upgradeDic.FindUpgrade(termItemIndex).name + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = upgradeDic.FindUpgrade(termItemIndex).name + ownQuest.termsCount + "/" + ownQuest.termsCount;
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.Instance.CheckUpgradeLevel(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.Instance.CheckUpgradeLevel(termItemIndex) + "/" + ownQuest.TermsCount;
                 }
             }
             else
             {
                 if (questIndex < DataController.Instance.QuestProcess)
                 {
-                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.FindDic[termItemIndex].mtName + btn.GetComponent<QuestInfo>().termsCount + "/" + btn.GetComponent<QuestInfo>().termsCount;
+                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.FindDic[termItemIndex].mtName + ownQuest.termsCount + "/" + ownQuest.termsCount;
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindDic[termItemIndex].MtName + DataController.Instance.GetItemNum(termItemIndex) + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindDic[termItemIndex].MtName + DataController.Instance.GetItemNum(termItemIndex) + "/" + ownQuest.TermsCount;
                 }
             }
         }
 
         // 퀘스트 내용 출력
-        GameObject.Find("Content Displayer").GetComponent<Text>().text = btn.GetComponent<QuestInfo>().Content;
+        GameObject.Find("Content Displayer").GetComponent<Text>().text = ownQuest.Content;
 
         // 퀘스트 보상 출력
-        int rewardIndex = btn.GetComponent<QuestInfo>().Reward;
+        int rewardIndex = ownQuest.Reward;
         if (rewardIndex == 9999)
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = "골드 " + btn.GetComponent<QuestInfo>().RewardCount;
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = "골드 " + ownQuest.RewardCount;
         }
         else if (rewardIndex > 50000)
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(rewardIndex).name + " Lv." + btn.GetComponent<QuestInfo>().RewardCount + " 오픈";
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(rewardIndex).name + " Lv." + ownQuest.RewardCount + " 오픈";
         }
         else
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindDic[btn.GetComponent<QuestInfo>().Reward].MtName + " " + btn.GetComponent<QuestInfo>().RewardCount;
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindDic[ownQuest.Reward].MtName + " " + ownQuest.RewardCount;
         }
     }
 

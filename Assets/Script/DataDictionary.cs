@@ -209,8 +209,7 @@ public class DataDictionary : MonoBehaviour
                     int reward = Convert.ToInt32(wordList[6]);
                     int rewardCount = Convert.ToInt32(wordList[7]);
 
-                    FindQuestDic[index] = gameObject.AddComponent<QuestInfo>();
-                    FindQuestDic[index].Init(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
+                    FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
 
                    
                     if(wordList[1]!=formerSceneName)//씬의 첫 퀘스트의 인덱스 구하기
