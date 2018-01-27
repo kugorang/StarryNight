@@ -18,31 +18,39 @@ public class CreateItem : MonoBehaviour
 
     private DataController dataController;
 
+    // Item ID 공유 변수
+    public static int IdCount;
+
     private static CreateItem instance;
 
-    public static CreateItem GetInstance()
+    public static CreateItem Instance
     {
-        if (instance == null)
+        get
         {
-            instance = FindObjectOfType<CreateItem>();
-
             if (instance == null)
             {
-                GameObject container = new GameObject("CreateItem");
-                instance = container.AddComponent<CreateItem>();
-            }
-        }
+                instance = FindObjectOfType<CreateItem>();
 
-        return instance;
+                if (instance == null)
+                {
+                    GameObject container = new GameObject("CreateItem");
+                    instance = container.AddComponent<CreateItem>();
+                }
+            }
+
+            return instance;
+        }
     }
 
     private void Awake()
     {
-        //energyPerClick = DataController.GetInstance().EnergyPerClick;
+        dataController = DataController.Instance;
+        dataDic = DataDictionary.Instance;
+        //energyPerClick = DataController.Instance.EnergyPerClick;
         energyPerClick = 100;   // 개발 시 시간 절약을 위해 100으로 설정.
         energyMaxValue = 100;
-        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
-        dataController = DataController.Instance;
+
+        IdCount = PlayerPrefs.GetInt("IdCount", 0);
     }
 
     void Start()
@@ -57,27 +65,34 @@ public class CreateItem : MonoBehaviour
             btn = gameObject.GetComponent<Button>();
         }
 
-        List<SetItemInfo> tmpSetItemInfo = new List<SetItemInfo>();
+        //List<SetItemInfo> tmpSetItemInfo = new List<SetItemInfo>();
 
-        if (dataController.haveDic != null)
+        if (dataController.HaveDic != null)
         {
-            foreach (KeyValuePair<int, int> entry in dataController.haveDic)
+            foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in dataController.HaveDic)
             {
-                // do something with entry.Value or entry.Key
-                for (int i = 0; i < entry.Value; i++)
+                // do something with entry.Value or entry.Key                
+                foreach (KeyValuePair<int, SerializableVector3> secondEntry in entry.Value)
                 {
-                    GenerateItem(entry.Key, false);
-
-                    SetItemInfo setItemInfo = DataDictionary.Instance.CheckSetItemCombine(entry.Key);
-
-                    if (setItemInfo.result != 0 && !tmpSetItemInfo.Contains(setItemInfo))
-                    {
-                        tmpSetItemInfo.Add(setItemInfo);
-
-                        combineButton.gameObject.SetActive(true);
-                        combineButton.onClick.AddListener(() => OnClick(setItemInfo));
-                    }
+                    GenerateItem(entry.Key, false, secondEntry.Key, secondEntry.Value);
                 }
+
+                //int loopNum = entry.Value.Count;
+
+                //for (int index = 0; index < loopNum; index++)
+                //{
+                //    GenerateItem(entry.Key, false, entry.Value[index]);
+
+                //    //SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(entry.Key);
+
+                //    //if (setItemInfo.result != 0 && !tmpSetItemInfo.Contains(setItemInfo))
+                //    //{
+                //    //    tmpSetItemInfo.Add(setItemInfo);
+
+                //    //    combineButton.gameObject.SetActive(true);
+                //    //    combineButton.onClick.AddListener(() => OnClick(setItemInfo));
+                //    //}
+                //}
             }
         }
 
@@ -163,37 +178,52 @@ public class CreateItem : MonoBehaviour
         }
     }
 
+    // C#에서는 디폴트 파라미터를 허용하지 않기 때문에 이렇게 함수 오버로딩을 통해 구현하였습니다.
     public void GenerateItem(int productID, bool isNew)
     {
-        GameObject newItem = Instantiate(item, new Vector3(-758, -284, -3), Quaternion.identity);
+        GenerateItem(productID, isNew, -1, new Vector3(-758, -284, -3));
+    }
 
-        // 현재 보유하고 있는 재료를 관리하는 Dictionary에 방금 생성한 item을 넣어준다.
+    public void GenerateItem(int productID, bool isNew, int itemID, Vector3 itemPos)
+    {
+        GameObject newItem = Instantiate(item, itemPos, Quaternion.identity);
+
+        ItemInfo findItemInfo = dataDic.FindItemDic[productID];
+        Item itemInstance = newItem.GetComponent<Item>();
+        itemInstance.SetItemInfo(productID, findItemInfo);
+
+        newItem.GetComponent<BoxCollider2D>().isTrigger = false;
+        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindItemDic[productID].ImagePath);
+
+        // 새로 만들어진 아이템이라면 애니메이션을 실행한다.
         if (isNew)
         {
-            DataController.Instance.InsertItem(productID, 1);
+            itemInstance.Id = IdCount++;
+            PlayerPrefs.SetInt("IdCount", IdCount);
+
+            itemInstance.StartAnimation();
+            dataController.InsertNewItem(productID, itemInstance.Id, itemInstance.Pos);
         }
-
-        ItemInfo findItemInfo = dataDic.FindDic[productID];
-        newItem.GetComponent<Item>().SetItemInfo(productID, findItemInfo);
-        newItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        newItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindDic[productID].ImagePath);
+        else
+        {
+            itemInstance.Id = itemID;
+            dataController.SaveGameData(dataController.HaveDic, dataController.HaveDicPath);
+        }
     }
 
-    void OnClick(SetItemInfo setItemInfo)
-    {
-        DataController dataController = DataController.Instance;
+    //void OnClick(SetItemInfo setItemInfo)
+    //{
+    //    dataController.DeleteItem(setItemInfo.index1);
+    //    dataController.DeleteItem(setItemInfo.index2);
+    //    dataController.DeleteItem(setItemInfo.index3);
+    //    dataController.DeleteItem(setItemInfo.index4);
 
-        dataController.DeleteItem(setItemInfo.index1);
-        dataController.DeleteItem(setItemInfo.index2);
-        dataController.DeleteItem(setItemInfo.index3);
-        dataController.DeleteItem(setItemInfo.index4);
+    //    dataController.SubItemCount();
+    //    dataController.SubItemCount();
+    //    dataController.SubItemCount();
 
-        dataController.SubItemCount();
-        dataController.SubItemCount();
-        dataController.SubItemCount();
+    //    dataController.InsertNewItem(setItemInfo.result, 1);
 
-        dataController.InsertItem(setItemInfo.result, 1);
-
-        SceneManager.LoadScene("Main");
-    }
+    //    SceneManager.LoadScene("Main");
+    //}
 }

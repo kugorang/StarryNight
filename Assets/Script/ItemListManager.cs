@@ -12,6 +12,8 @@ public class ItemListManager : MonoBehaviour
 
     Transform starContentPanel, materialContentPanel, combineContentPanel;
 
+    DataController dataController;
+
     private static ItemListManager instance;
 
     public static ItemListManager GetInstance()
@@ -32,7 +34,9 @@ public class ItemListManager : MonoBehaviour
 
     private void Awake()
     {
-        dataDic = DataController.Instance.GetComponent<DataDictionary>();
+
+        dataController = DataController.Instance;
+        dataDic = DataDictionary.Instance;
 
         starIdxStart = 1000;
         materialIdxStart = 2000;
@@ -71,12 +75,12 @@ public class ItemListManager : MonoBehaviour
         Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
         Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo findItemInfo = dataDic.FindDic[idx];
+        ItemInfo findItemInfo = dataDic.FindItemDic[idx];
 
         itemListPanel.transform.SetParent(tf);
         itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
 
-        if (DataController.Instance.itemOpenList.Contains(idx))
+        if (dataController.itemOpenList.Contains(idx))
         {
             itemLock.gameObject.SetActive(false);
 
@@ -87,7 +91,6 @@ public class ItemListManager : MonoBehaviour
             btnColors.pressedColor = Color.white;
 
             itemBtn.colors = btnColors;
-
             itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
         }
     }
@@ -101,7 +104,7 @@ public class ItemListManager : MonoBehaviour
         infoWindow.gameObject.SetActive(true);
 
         infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
-        infoWindow.ItemName.text = itemInfo.MtName;
+        infoWindow.ItemName.text = itemInfo.Name;
         infoWindow.ItemSort.text = itemInfo.Group;
         infoWindow.ItemGrade.text = itemInfo.Grade;
         infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();

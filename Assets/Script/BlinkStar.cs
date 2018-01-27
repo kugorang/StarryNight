@@ -58,7 +58,9 @@ public class BlinkStar : MonoBehaviour, IClickables
     private Color btnColor_a;
 
     private DataDictionary dataDic;
+
     private QuestInfo ownQuest;
+    private DataController dataController;
 
     // 현재 퀘스트
     private QuestInfo currentQuest;
@@ -71,9 +73,8 @@ public class BlinkStar : MonoBehaviour, IClickables
         //OnSceneLoaded 활성화 용
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        
-        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
-        
+        dataDic = DataDictionary.Instance;
+        dataController = DataController.Instance;
 
         btn = gameObject.GetComponent<Button>();
         btnImg = gameObject.GetComponent<Image>();
@@ -93,7 +94,8 @@ public class BlinkStar : MonoBehaviour, IClickables
         
 
         // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
-        if (questIndex > DataController.Instance.QuestProcess) // 진행 전 퀘스트
+
+        if (questIndex > dataController.QuestProcess) // 진행 전 퀘스트
         {
             btn.enabled = false;
             btnImg.sprite = Resources.Load<Sprite>("questImg/quest_uncomplete");
@@ -103,7 +105,7 @@ public class BlinkStar : MonoBehaviour, IClickables
             btn.enabled = true;
             btnImg.sprite = Resources.Load<Sprite>("questImg/quest_complete");
 
-            if (questIndex == DataController.Instance.QuestProcess) // 진행중인 퀘스트
+            if (questIndex == dataController.QuestProcess) // 진행중인 퀘스트
             {
                 btnImg.sprite = Resources.Load<Sprite>("questImg/quest_ongoing");
                 StartCoroutine(Blink());
@@ -111,16 +113,13 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
     }
 
-   
-    
-
 
     // 퀘스트 정보 확인 및 퀘스트 완료 보상 지급
     public void OnClick()
     {
         AudioManager.GetInstance().QuestStarSound();
-        Debug.Log(DataController.Instance.QuestProcess+", beforefind");
-        currentQuest = dataDic.FindQuest(DataController.Instance.QuestProcess);
+        Debug.Log(dataController.QuestProcess + ", beforefind");
+        currentQuest = dataDic.FindQuest(dataController.QuestProcess);
 
         // 진행중인 퀘스트 조건 아이템의 인덱스
         int checkItemIndex = currentQuest.TermsItem;
@@ -132,11 +131,11 @@ public class BlinkStar : MonoBehaviour, IClickables
         // 조건이 [골드/업그레이드/아이템] 인지 확인
         if (checkItemIndex == 9999) // 골드일 때
         {
-            currentItemNum = (int)DataController.Instance.Gold;
+            currentItemNum = (int)dataController.Gold;
         }
         else if (checkItemIndex > 50000) // 업그레이드일 때
         {
-            currentItemNum = DataController.Instance.CheckUpgradeLevel(checkItemIndex);
+            currentItemNum = dataController.CheckUpgradeLevel(checkItemIndex);
         }
         else // 아이템일 때
         {
@@ -144,33 +143,33 @@ public class BlinkStar : MonoBehaviour, IClickables
             {
                 for (int i = 1001; i < 1004; i++)
                 {
-                    currentItemNum += DataController.Instance.GetItemNum(i);
+                    currentItemNum += dataController.GetItemNum(i);
                 }
             }
             else if (currentQuest.Index == 90102) // 퀘스트인덱스 90102의 경우
             {
                 for (int i = 1004; i < 1007; i++)
                 {
-                    currentItemNum += DataController.Instance.GetItemNum(i);
+                    currentItemNum += dataController.GetItemNum(i);
                 }
             }
             else if (currentQuest.Index == 90103) // 퀘스트인덱스 90103의 경우
             {
                 for (int i = 2001; i < 2007; i++)
                 {
-                    currentItemNum += DataController.Instance.GetItemNum(i);
+                    currentItemNum += dataController.GetItemNum(i);
                 }
             }
             else if (currentQuest.Index == 90104) // 퀘스트인덱스 90104의 경우
             {
                 for (int i = 3001; i < 3019; i++)
                 {
-                    currentItemNum += DataController.Instance.GetItemNum(i);
+                    currentItemNum += dataController.GetItemNum(i);
                 }
             }
             else
             {
-                currentItemNum = DataController.Instance.GetItemNum(checkItemIndex);
+                currentItemNum = dataController.GetItemNum(checkItemIndex);
             }
 
         }
@@ -180,40 +179,41 @@ public class BlinkStar : MonoBehaviour, IClickables
         {
             if (currentQuest.Reward == 9999) // 보상이 골드일 때
             {
-                DataController.Instance.Gold+=(ulong)currentQuest.RewardCount;
-              
+                dataController.Gold += (ulong)currentQuest.RewardCount;
             }
             else
             {
                 // 아이템 인벤토리가 꽉 차있는지 확인
-                if (DataController.Instance.ItemCount < DataController.Instance.ItemLimit)
+                if (dataController.ItemCount < dataController.ItemLimit)
                 {
                     if (currentQuest.Reward > 50000) // 보상이 업그레이드 오픈일 때
                     {
                         if (currentQuest.TermsItem == 9999) // 조건이 골드일 때 골드 감소
                         {
-                            DataController.Instance.Gold-=(ulong)currentQuest.TermsCount;
+                            dataController.Gold -= (ulong)currentQuest.TermsCount;
                         }
 
-                        DataController.Instance.SetMaxUpgradeLevel(currentQuest.Reward);
+                        dataController.SetMaxUpgradeLevel(currentQuest.Reward);
                     }
                     else
                     {
                         // 조건이 골드일 경우 골드 감소
                         if (currentQuest.TermsItem == 9999)
                         {
-                            DataController.Instance.Gold -= (ulong)currentQuest.TermsCount;
+                            dataController.Gold -= (ulong)currentQuest.TermsCount;
                         }
 
-                        DataController.Instance.InsertItem(currentQuest.Reward, currentQuest.RewardCount);
-                        DataController.Instance.AddItemCount();
+                        //dataController.InsertNewItem(currentQuest.Reward, currentQuest.RewardCount);
+                        dataController.AddItemCount();
                     }
 
-                   
+
                 }
             }
+
             OnQuestClear();
         }
+
         QuestUIButton.ShowingQuestIndex = questIndex;
         ShowQuestInfo();
 
@@ -227,19 +227,19 @@ public class BlinkStar : MonoBehaviour, IClickables
 
     private void OnQuestClear()
     {
-        DataController.Instance.NextQuest();
+        dataController.NextQuest();
         blinkAlive = false;
 
         // 다음 퀘스트 별 반짝 거리기
-        if (DataController.Instance.QuestProcess < 90105) // 양자리 일 때
+        if (dataController.QuestProcess < 90105) // 양자리 일 때
         {
 
-            BlinkStar nextStar = GameObject.Find("Aries_" + DataController.Instance.QuestProcess).GetComponent<BlinkStar>();
+            BlinkStar nextStar = GameObject.Find("Aries_" + dataController.QuestProcess).GetComponent<BlinkStar>();
             nextStar.BlingBling();
         }
-        else if (DataController.Instance.QuestProcess > 90104 && DataController.Instance.QuestProcess < 90124) // 황소자리일 때 수 주의.나중에 변수나 상수로 쓸 것
+        else if (dataController.QuestProcess > 90104 && dataController.QuestProcess < 90124) // 황소자리일 때 수 주의.나중에 변수나 상수로 쓸 것
         {
-            BlinkStar nextStar = GameObject.Find("Taurus_" + DataController.Instance.QuestProcess).GetComponent<BlinkStar>();
+            BlinkStar nextStar = GameObject.Find("Taurus_" + dataController.QuestProcess).GetComponent<BlinkStar>();
             nextStar.BlingBling();
         }
     }
@@ -248,7 +248,7 @@ public class BlinkStar : MonoBehaviour, IClickables
     public void OnOtherClick()
     {
         //Debug.Log("Hi");
-        if (questIndex > DataController.Instance.QuestProcess)
+        if (questIndex > dataController.QuestProcess)
         {
             btn.enabled = false;
             btnImg.sprite = Resources.Load<Sprite>("questImg/quest_uncomplete");
@@ -258,7 +258,7 @@ public class BlinkStar : MonoBehaviour, IClickables
             btn.enabled = true;
             btnImg.sprite = Resources.Load<Sprite>("questImg/quest_complete");
 
-            if (questIndex == DataController.Instance.QuestProcess)
+            if (questIndex == dataController.QuestProcess)
             {
                 btnImg.sprite = Resources.Load<Sprite>("questImg/quest_ongoing");
             }
@@ -269,8 +269,8 @@ public class BlinkStar : MonoBehaviour, IClickables
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         //Debug.Log(scene.name);
-        if (QuestUIButton.ShowingQuestIndex<90101&&DataController.Instance.QuestProcess==questIndex&&gameObject!=null)
-        { 
+        if (QuestUIButton.ShowingQuestIndex < 90101 && dataController.QuestProcess == questIndex && gameObject != null)
+        {
             OnClick();
         }
     }
@@ -293,12 +293,12 @@ public class BlinkStar : MonoBehaviour, IClickables
             int questItemNum = 0;
             for (int i = 1001; i < 1004; i++)
             {
-                questItemNum += DataController.Instance.GetItemNum(i);
+                questItemNum += dataController.GetItemNum(i);
             }
 
-            if (questIndex < DataController.Instance.QuestProcess)
+            if (questIndex < dataController.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 원석 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 원석 " + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
@@ -311,11 +311,11 @@ public class BlinkStar : MonoBehaviour, IClickables
             int questItemNum = 0;
             for (int i = 1004; i < 1007; i++)
             {
-                questItemNum += DataController.Instance.GetItemNum(i);
+                questItemNum += dataController.GetItemNum(i);
             }
-            if (questIndex < DataController.Instance.QuestProcess)
+            if (questIndex < dataController.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 파편 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "별의 파편 " + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
@@ -328,12 +328,12 @@ public class BlinkStar : MonoBehaviour, IClickables
             int questItemNum = 0;
             for (int i = 2001; i < 2007; i++)
             {
-                questItemNum += DataController.Instance.GetItemNum(i);
+                questItemNum += dataController.GetItemNum(i);
             }
 
-            if (questIndex < DataController.Instance.QuestProcess)
+            if (questIndex < dataController.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "재료 아이템 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "재료 아이템 " + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
@@ -347,12 +347,12 @@ public class BlinkStar : MonoBehaviour, IClickables
 
             for (int i = 3001; i < 3019; i++)
             {
-                questItemNum += DataController.Instance.GetItemNum(i);
+                questItemNum += dataController.GetItemNum(i);
             }
 
-            if (questIndex < DataController.Instance.QuestProcess)
+            if (questIndex < dataController.QuestProcess)
             {
-                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "레벨 1 조합 아이템 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
+                //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "레벨 1 조합 아이템 " + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
                 GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
             }
             else
@@ -365,38 +365,41 @@ public class BlinkStar : MonoBehaviour, IClickables
             int termItemIndex = ownQuest.TermsItem;
             if (termItemIndex == 9999) // 조건이 골드일 때
             {
-                if (questIndex < DataController.Instance.QuestProcess)
+                if (questIndex < dataController.QuestProcess)
                 {
                     //GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + ownQuest.termsCount + "/" + ownQuest.termsCount;
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + DataController.Instance.Gold + "/" + ownQuest.TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = "골드 " + dataController.Gold + "/" + ownQuest.TermsCount;
                 }
             }
             else if (termItemIndex > 50000) // 조건이 업그레이드일 때
             {
-                if (questIndex < DataController.Instance.QuestProcess)
+
+                if (questIndex < dataController.QuestProcess)
                 {
-                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = upgradeDic.FindUpgrade(termItemIndex).name + ownQuest.termsCount + "/" + ownQuest.termsCount;
+                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = upgradeDic.FindUpgrade(termItemIndex).name + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.Instance.CheckUpgradeLevel(termItemIndex) + "/" + ownQuest.TermsCount;
+                   GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + dataController.CheckUpgradeLevel(termItemIndex) + "/" + ownQuest.TermsCount;
                 }
             }
             else
             {
-                if (questIndex < DataController.Instance.QuestProcess)
+               if (questIndex < dataController.QuestProcess)
                 {
-                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.FindDic[termItemIndex].mtName + ownQuest.termsCount + "/" + ownQuest.termsCount;
+                    //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.FindItemDic[termItemIndex].Name + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
+
                     GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                 }
                 else
                 {
-                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindDic[termItemIndex].MtName + DataController.Instance.GetItemNum(termItemIndex) + "/" + ownQuest.TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindItemDic[termItemIndex].Name + dataController.GetItemNum(termItemIndex) + "/" + ownQuest.TermsCount;
+
                 }
             }
         }
@@ -416,8 +419,13 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
         else
         {
-            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindDic[ownQuest.Reward].MtName + " " + ownQuest.RewardCount;
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = dataDic.FindItem(rewardIndex).Name + " " + ownQuest.RewardCount;
         }
+    }
+
+    public void BlingBling()
+    {
+        StartCoroutine(Blink());
     }
 
     // 진행중인 별 깜박임
@@ -430,10 +438,5 @@ public class BlinkStar : MonoBehaviour, IClickables
             yield return new WaitForSeconds(0.5f);
             btnImg.color = btnColor_a;
         }
-    }
-
-    public void BlingBling()
-    {
-        StartCoroutine(Blink());
     }
 }

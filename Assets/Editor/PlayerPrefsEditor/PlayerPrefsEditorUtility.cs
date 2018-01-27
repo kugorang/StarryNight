@@ -13,7 +13,7 @@ public class PlayerPrefsEditorUtility : MonoBehaviour
 
         if (dataController != null)
         {
-            Dictionary<int, int> haveDic = dataController.haveDic;
+            Dictionary<int, Dictionary<int, SerializableVector3>> haveDic = dataController.HaveDic;
             List<int> itemOpenList = dataController.itemOpenList;
 
             haveDic.Clear();

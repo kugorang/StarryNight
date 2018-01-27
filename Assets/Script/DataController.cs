@@ -4,6 +4,70 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
+/// <summary>
+/// Since unity doesn't flag the Vector3 as serializable, we need to create our own version. This one will automatically convert between Vector3 and SerializableVector3
+/// </summary>
+[Serializable]
+public struct SerializableVector3
+{
+    /// <summary>
+    /// x component
+    /// </summary>
+    public float x;
+
+    /// <summary>
+    /// y component
+    /// </summary>
+    public float y;
+
+    /// <summary>
+    /// z component
+    /// </summary>
+    public float z;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="rX"></param>
+    /// <param name="rY"></param>
+    /// <param name="rZ"></param>
+    public SerializableVector3(float rX, float rY, float rZ)
+    {
+        x = rX;
+        y = rY;
+        z = rZ;
+    }
+
+    /// <summary>
+    /// Returns a string representation of the object
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString()
+    {
+        return String.Format("[{0}, {1}, {2}]", x, y, z);
+    }
+
+    /// <summary>
+    /// Automatic conversion from SerializableVector3 to Vector3
+    /// </summary>
+    /// <param name="rValue"></param>
+    /// <returns></returns>
+    public static implicit operator Vector3(SerializableVector3 rValue)
+    {
+        return new Vector3(rValue.x, rValue.y, rValue.z);
+    }
+
+    /// <summary>
+    /// Automatic conversion from Vector3 to SerializableVector3
+    /// </summary>
+    /// <param name="rValue"></param>
+    /// <returns></returns>
+    public static implicit operator SerializableVector3(Vector3 rValue)
+    {
+        return new SerializableVector3(rValue.x, rValue.y, rValue.z);
+    }
+}
+
 public class DataController : MonoBehaviour
 {
     // 현재 보유 골드량
@@ -24,7 +88,7 @@ public class DataController : MonoBehaviour
     // 최대 업그레이드 가능한 - 인벤토리 레벨, 클릭 게이지 레벨
     private int invenMaxLv, energyPerClickMaxLv;
 
-    // haveDic 정보 저장 경로
+    // HaveDic 정보 저장 경로
     public string HaveDicPath { get; private set; }
 
     // itemOpenList 정보 저장 경로
@@ -35,13 +99,13 @@ public class DataController : MonoBehaviour
     /// <summary>
     /// NOTE: 현재 내가 소지하고 있는 재료 Dictionary
     /// <para>-> key(int) : 게임 오브젝트를 구별하는 id</para>
-    /// <para>-> value(HaveDicInfo) : 재료 기준표 정보</para>
+    /// <para>-> value(Dictionary<int, SerializableVector3>) : object ID, 위치</para>
     /// </summary>
-    public Dictionary<int, int> haveDic;
+    public Dictionary<int, Dictionary<int, SerializableVector3>> HaveDic { get; private set; }
 
     /// <summary>
     /// NOTE: 열린 도감을 저장하는 Dictionary
-    /// <para>-> key(int) : 도감이 열린 재료 index</para>
+    /// <para>-> key(int) : 도감이 열린 재료 Index</para>
     /// </summary>
     [HideInInspector]
     public List<int> itemOpenList;
@@ -72,7 +136,7 @@ public class DataController : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
-        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
+        dataDic = DataDictionary.Instance;
 
         loadingFinish = false;
 
@@ -92,11 +156,11 @@ public class DataController : MonoBehaviour
         HaveDicPath = "/haveDic.txt";
         ItemOpenListPath = "/itemOpenList.txt";
 
-        haveDic = LoadGameData(HaveDicPath) as Dictionary<int, int>;
+        HaveDic = LoadGameData(HaveDicPath) as Dictionary<int, Dictionary<int, SerializableVector3>>;
 
-        if (haveDic == null)
+        if (HaveDic == null)
         {
-            haveDic = new Dictionary<int, int>();
+            HaveDic = new Dictionary<int, Dictionary<int, SerializableVector3>>();
         }
 
         itemOpenList = LoadGameData(ItemOpenListPath) as List<int>;
@@ -333,8 +397,8 @@ public class DataController : MonoBehaviour
     /// <summary>
     /// 아이템을 추가하는 함수
     /// </summary>
-    /// <param name="key">추가하는 아이템의 index</param>
-    public void InsertItem(int key, int addNum)
+    /// <param name="key">추가하는 아이템의 Index</param>
+    public void InsertNewItem(int key, int itemId, Vector3 itemPos)
     {
         if (!CheckExistItem(key))
         {
@@ -343,36 +407,46 @@ public class DataController : MonoBehaviour
 
             //Debug.Log("itemOpenList - DataSerialize");
 
-            haveDic.Add(key, 1);
+            Dictionary<int, SerializableVector3> posList = new Dictionary<int, SerializableVector3>
+            {
+                { itemId, itemPos }
+            };
+
+            HaveDic.Add(key, posList);
         }
         else
         {
-            haveDic[key] += addNum;
+            HaveDic[key].Add(itemId, itemPos);
         }
 
-        SaveGameData(haveDic, HaveDicPath);
+        SaveGameData(HaveDic, HaveDicPath);
 
-        //Debug.Log("InsertItem - haveDic DataSerialize");
+        //Debug.Log("InsertNewItem - HaveDic DataSerialize");
     }
+
+    // 퀘스트에 쓰이는 아이템 추가 함수
+    // 퀘스트 쪽 로직을 아직 잘 몰라 일단 돌아가게끔 추가했고
+    // 필요 없으면 삭제 등의 조치를 취할 것.
+    //public void InsertNewItem(int key, int itemNum)
+    //{
+    //    for (int i = 0; i < itemNum; i++)
+    //    {
+    //        InsertNewItem(key, new Vector3(UnityEngine.Random.Range(175, 953), UnityEngine.Random.Range(616, -227), -3));
+    //    }
+    //}
 
     /// <summary>
     /// 아이템을 삭제하는 함수
     /// </summary>
     /// <param name="key">삭제할 아이템의 key값</param>
-    public void DeleteItem(int key)
+    public void DeleteItem(int key, int itemId)
     {
-        if (haveDic[key] < 0)
+        if (!HaveDic[key].Remove(itemId))
         {
-            // 디버깅용 코드
-            Debug.LogError("Delete Item is under 0");
+            Debug.Log("DataController - DeleteItem : Item Cannot Delete.");
         }
 
-        haveDic[key]--;
-
-        //UM_Storage.Save("haveDic", DataSerialize(haveDic));
-        SaveGameData(haveDic, HaveDicPath);
-
-        //Debug.Log("DeleteItem() - haveDic DataSerialize");
+        SaveGameData(HaveDic, HaveDicPath);
     }
 
     /// <summary>
@@ -382,7 +456,7 @@ public class DataController : MonoBehaviour
     /// <returns></returns>
     public bool CheckExistItem(int key)
     {
-        return haveDic.ContainsKey(key);
+        return HaveDic.ContainsKey(key);
     }
 
     /// <summary>
@@ -394,7 +468,7 @@ public class DataController : MonoBehaviour
     {
         if (CheckExistItem(key))
         {
-            return haveDic[key];
+            return HaveDic[key].Count;
         }
 
         return 0;
@@ -417,7 +491,6 @@ public class DataController : MonoBehaviour
         PlayerPrefs.SetInt("QuestProcess", m_questProcess);
     }
 
-
     public float this[int index]
     {
         get
@@ -432,11 +505,9 @@ public class DataController : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// 최대 업그레이드 가능한 인벤토리 레벨
     /// </summary>
-
     public int MaxInvenLv
     {
         get

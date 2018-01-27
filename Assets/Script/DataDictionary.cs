@@ -53,7 +53,7 @@ public class DataDictionary : MonoBehaviour
     /// <para> -> key(int) : 재료 기준표 인덱스</para>
     /// <para> -> value(ItemInfo) : 재료 정보</para>
     /// </summary>
-    public Dictionary<int, ItemInfo> FindDic { get; private set; }
+    public Dictionary<int, ItemInfo> FindItemDic { get; private set; }
 
     /// <summary>
     /// NOTE : 재료 조합식 Dictionary
@@ -115,7 +115,7 @@ public class DataDictionary : MonoBehaviour
         DontDestroyOnLoad(this);
 
         // 두 Dictionary들을 초기화
-        FindDic = new Dictionary<int, ItemInfo>();
+        FindItemDic = new Dictionary<int, ItemInfo>();
         CombineDic = new Dictionary<Tuple<int, int>, List<int>>();
         SetComineList = new List<SetItemInfo>();
         FindQuestDic = new Dictionary<int, QuestInfo>();
@@ -193,7 +193,7 @@ public class DataDictionary : MonoBehaviour
                             break;
                     }
 
-                    FindDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
+                    FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
 
                     break;
                 case FILEINFO.SETITEMTABLE:
@@ -257,7 +257,7 @@ public class DataDictionary : MonoBehaviour
     /// <returns>리턴값</returns>
     public ItemInfo FindItem(int key)
     {
-        return FindDic[key];
+        return FindItemDic[key];
     }
 
     /// <summary>
@@ -281,34 +281,34 @@ public class DataDictionary : MonoBehaviour
     public SetItemInfo CheckSetItemCombine(int key)
     {
         DataController dataController = DataController.Instance;
-        Dictionary<int, int> haveDic = dataController.haveDic;
+        Dictionary<int, Dictionary<int, SerializableVector3>> haveDic = dataController.HaveDic;
 
         foreach (SetItemInfo setItemInfo in SetComineList)
         {
             if (key == setItemInfo.index1)
             {
-                if (haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2] > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3] > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4] > 0)
+                if (haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4].Count > 0)
                 {
                     return setItemInfo;
                 }
             }
             else if (key == setItemInfo.index2)
             {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1] > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3] > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4] > 0)
+                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4].Count > 0)
                 {
                     return setItemInfo;
                 }
             }
             else if (key == setItemInfo.index3)
             {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1] > 0 && haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2] > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4] > 0)
+                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 && haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4].Count > 0)
                 {
                     return setItemInfo;
                 }
             }
             else if (key == setItemInfo.index4)
             {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1] > 0 && haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2] > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3] > 0)
+                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 && haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0)
                 {
                     return setItemInfo;
                 }

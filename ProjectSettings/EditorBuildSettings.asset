@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scene/Quest.unity
     guid: ff41cfe3e019b214fb5790e8e0d3f8d6
   - enabled: 1
-    path: Assets/Scene/Aris.unity
+    path: Assets/Scene/Aries.unity
     guid: 0281501b078900b4a85836620c155247
   - enabled: 1
     path: Assets/Scene/Taurus.unity
