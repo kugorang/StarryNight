@@ -386,6 +386,7 @@ MonoBehaviour:
   panelPrefab: {fileID: 1052184090568086, guid: 20e125ceaeebf584d9becab3c192e1c5,
     type: 2}
   itemInfoPanel: {fileID: 355010976}
+  NewItemAlert: {fileID: 21300000, guid: 4b8261414b97a024e8ea3ad050558736, type: 3}
 --- !u!1 &355010976
 GameObject:
   m_ObjectHideFlags: 0

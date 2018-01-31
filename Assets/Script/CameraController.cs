@@ -9,10 +9,10 @@ public class CameraController : MonoBehaviour
     private bool CheckLeftScene
     {
         get {
-            Debug.Log("get");
+           
             return PlayerPrefs.GetInt("isLeftScene", 1) > 0; }
         set {
-            Debug.Log("set");
+           
             int v = 0;
             if (value)
             {

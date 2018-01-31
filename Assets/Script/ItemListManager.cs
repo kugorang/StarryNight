@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemListManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class ItemListManager : MonoBehaviour
     DataDictionary dataDic;
 
     public GameObject panelPrefab, itemInfoPanel;
+    public Sprite NewItemAlert;
 
     Transform starContentPanel, materialContentPanel, combineContentPanel;
 
@@ -82,7 +84,7 @@ public class ItemListManager : MonoBehaviour
 
         if (dataController.itemOpenList.Contains(idx))
         {
-            itemLock.gameObject.SetActive(false);
+            
 
             ColorBlock btnColors = itemBtn.colors;
 
@@ -92,6 +94,17 @@ public class ItemListManager : MonoBehaviour
 
             itemBtn.colors = btnColors;
             itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
+            if (dataController.newItemList.Contains(idx))
+            {
+                //새 아이템 표시 추가할 것
+                itemLock.sprite = NewItemAlert;
+                itemLock.raycastTarget = false;
+                itemBtn.onClick.AddListener(()=> RemoveAlert(idx,itemLock));
+            }
+            else
+            {
+                itemLock.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -110,4 +123,12 @@ public class ItemListManager : MonoBehaviour
         infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();
         infoWindow.ItemText.text = itemInfo.Description;
     }
+
+    public void RemoveAlert(int idx, Image lockImg)
+    {
+        dataController.newItemList.Remove(idx);
+        dataController.SaveGameData(dataController.newItemList, dataController.NewItemListPath);
+        lockImg.gameObject.SetActive(false);
+    }
+   
 }

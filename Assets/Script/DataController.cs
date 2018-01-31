@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
+
 /// <summary>
 /// Since unity doesn't flag the Vector3 as serializable, we need to create our own version. This one will automatically convert between Vector3 and SerializableVector3
 /// </summary>
@@ -110,6 +111,16 @@ public class DataController : MonoBehaviour
     [HideInInspector]
     public List<int> itemOpenList;
 
+    //신규 항목알림을 위한 더티 플래그. 서적과 아이템 리스트는 새로운 아이템들의 인덱스를 담음. 길이 0이면 신규 없음.
+    [HideInInspector]
+    //public bool newQuest; 나중에 사용 안 하면 지울 것.
+    //public bool newUpgrade;
+    public List<int> newBookList;
+    public List<int> newItemList;
+    public string NewBookListPath { get; private set; }
+    public string NewItemListPath { get; private set; }
+
+
     private static DataController instance;
 
     public static DataController Instance
@@ -155,6 +166,8 @@ public class DataController : MonoBehaviour
 
         HaveDicPath = "/haveDic.txt";
         ItemOpenListPath = "/itemOpenList.txt";
+        NewBookListPath = "/newBookList.txt";
+        NewItemListPath = "/newItemList.txt";
 
         HaveDic = LoadGameData(HaveDicPath) as Dictionary<int, Dictionary<int, SerializableVector3>>;
 
@@ -168,6 +181,20 @@ public class DataController : MonoBehaviour
         if (itemOpenList == null)
         {
             itemOpenList = new List<int>();
+        }
+
+        newBookList = LoadGameData(NewBookListPath) as List<int>;
+
+        if (newBookList == null)
+        {
+            newBookList = new List<int>();
+        }
+
+        newItemList = LoadGameData(NewItemListPath) as List<int>;
+
+        if (newItemList == null)
+        {
+            newItemList = new List<int>();
         }
     }
 
@@ -301,19 +328,43 @@ public class DataController : MonoBehaviour
         {
             return m_itemcount;
         }
+
+        private set
+        {
+            if (value < 0)
+            {
+                m_itemcount = 0;
+            }
+            else
+            {
+                m_itemcount = value;
+            }
+            PlayerPrefs.SetInt("ItemCount", m_itemcount);
+        }
+
     }
 
     // item 개수 더하는 함수
     public void AddItemCount()
     {
         m_itemcount += 1;
-        PlayerPrefs.SetInt("ItemCount", m_itemcount);
+
+    }
+
+    public void AddItemCount(int amount)
+    {
+        m_itemcount += amount;
+
     }
 
     public void SubItemCount()
     {
         m_itemcount -= 1;
-        PlayerPrefs.SetInt("ItemCount", m_itemcount);
+    }
+
+    public void SubItemCount(int amount)
+    {
+        m_itemcount -= amount;
     }
 
     // item 최대 개수 가져오기 
@@ -394,6 +445,11 @@ public class DataController : MonoBehaviour
         PlayerPrefs.SetInt("EnergyPerClickLevel", energyPerClickLv);
     }
 
+    public void InsertNewItem(int key, int itemId)
+    {
+        InsertNewItem(key, itemId, new Vector3(0, 0, 0));
+    }
+
     /// <summary>
     /// 아이템을 추가하는 함수
     /// </summary>
@@ -413,6 +469,23 @@ public class DataController : MonoBehaviour
             };
 
             HaveDic.Add(key, posList);
+
+            //!마크 띄우기
+            if (key > 4000)//서적
+            {
+                newBookList.Add(key);
+                SaveGameData(newBookList, NewBookListPath);
+                SetItemInfo setInfo = dataDic.CheckSetItemCombine(key);
+                if (setInfo.result != 0)
+                {
+                    InsertNewItem(setInfo.result, 1);
+                }
+            }
+            else//도감
+            {
+                newItemList.Add(key);
+                SaveGameData(newItemList, NewItemListPath);
+            }
         }
         else
         {
@@ -574,4 +647,48 @@ public class DataController : MonoBehaviour
             MaxPerClickLv = 20;
         }
     }
+
+
+
+
+    public void ResetForDebug()
+    {
+        PlayerPrefs.DeleteAll();
+
+
+          
+
+            HaveDic.Clear();
+            itemOpenList.Clear();
+            newBookList.Clear();
+            newItemList.Clear();
+
+           
+
+
+            SaveGameData(HaveDic, HaveDicPath);
+            SaveGameData(itemOpenList, ItemOpenListPath);
+            SaveGameData(newBookList, NewBookListPath);
+            SaveGameData(newItemList, NewItemListPath);
+
+            m_gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
+            m_itemcount = PlayerPrefs.GetInt("ItemCount", 0);
+            m_questProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
+            m_leftTimer = new float[3] { PlayerPrefs.GetFloat("LeftTimer1", 300.0f), PlayerPrefs.GetFloat("LeftTimer2", 300.0f), PlayerPrefs.GetFloat("LeftTimer3", 300.0f) };
+            m_energy = PlayerPrefs.GetInt("Energy", 0);
+
+            invenLv = PlayerPrefs.GetInt("InvenLevel", 0);
+            energyPerClickLv = PlayerPrefs.GetInt("EnergyPerClickLevel", 0);
+
+            invenMaxLv = PlayerPrefs.GetInt("InvenMaxLevel", 0);
+            energyPerClickMaxLv = PlayerPrefs.GetInt("EnergyPerClickMaxLevel", 0);
+
+        for (int i = 0; i < 3; i++)
+        {
+            this[i] = 0;
+        }
+
+
+    }
+
 }

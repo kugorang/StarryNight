@@ -71,9 +71,14 @@ public class CreateItem : MonoBehaviour
         {
             foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in dataController.HaveDic)
             {
+                if(entry.Key > 4000)//서적이면 만들지 않는다.
+                {
+                    continue;
+                }
                 // do something with entry.Value or entry.Key                
                 foreach (KeyValuePair<int, SerializableVector3> secondEntry in entry.Value)
                 {
+                    
                     GenerateItem(entry.Key, false, secondEntry.Key, secondEntry.Value);
                 }
 

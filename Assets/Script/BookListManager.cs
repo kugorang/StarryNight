@@ -9,6 +9,8 @@ public class BookListManager : MonoBehaviour
 
     public GameObject panelPrefab, itemInfoPanel;
 
+    public Sprite NewItemAlert;
+
     Transform setContentPanel;
 
     private static BookListManager instance;
@@ -64,7 +66,7 @@ public class BookListManager : MonoBehaviour
 
         if (DataController.Instance.itemOpenList.Contains(idx))
         {
-            itemLock.gameObject.SetActive(false);
+            
 
             ColorBlock btnColors = itemBtn.colors;
 
@@ -75,6 +77,17 @@ public class BookListManager : MonoBehaviour
             itemBtn.colors = btnColors;
 
             itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
+        }
+        if (DataController.Instance.newBookList.Contains(idx))
+        {
+            //새 아이템 표시 추가할 것
+            itemLock.sprite = NewItemAlert;
+            itemLock.raycastTarget = false;
+            itemBtn.onClick.AddListener(() => RemoveAlert(idx,itemLock));
+        }
+        else
+        {
+            itemLock.gameObject.SetActive(false);
         }
     }
 
@@ -92,5 +105,13 @@ public class BookListManager : MonoBehaviour
         infoWindow.ItemGrade.text = itemInfo.Grade;
         infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();
         infoWindow.ItemText.text = itemInfo.Description;
+    }
+
+    public void RemoveAlert(int idx, Image lockImg)
+    {
+        DataController dataController = DataController.Instance;
+        dataController.newBookList.Remove(idx);
+        dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
+        lockImg.gameObject.SetActive(false);
     }
 }

@@ -203,8 +203,8 @@ public class BlinkStar : MonoBehaviour, IClickables
                             dataController.Gold -= (ulong)currentQuest.TermsCount;
                         }
 
-                        //dataController.InsertNewItem(currentQuest.Reward, currentQuest.RewardCount);
-                        dataController.AddItemCount();
+                        dataController.InsertNewItem(currentQuest.Reward, currentQuest.RewardCount);
+                        //dataController.AddItemCount(); 서적 아이템 인벤토리 차지 안 함;
                     }
 
 
@@ -233,14 +233,19 @@ public class BlinkStar : MonoBehaviour, IClickables
         // 다음 퀘스트 별 반짝 거리기
         if (dataController.QuestProcess < 90105) // 양자리 일 때
         {
-
+            if(SceneManager.GetActiveScene().name == "Aries")
+            { 
             BlinkStar nextStar = GameObject.Find("Aries_" + dataController.QuestProcess).GetComponent<BlinkStar>();
             nextStar.BlingBling();
+            }
         }
         else if (dataController.QuestProcess > 90104 && dataController.QuestProcess < 90124) // 황소자리일 때 수 주의.나중에 변수나 상수로 쓸 것
         {
-            BlinkStar nextStar = GameObject.Find("Taurus_" + dataController.QuestProcess).GetComponent<BlinkStar>();
-            nextStar.BlingBling();
+            if (SceneManager.GetActiveScene().name == "Taurus")
+            {
+                BlinkStar nextStar = GameObject.Find("Taurus_" + dataController.QuestProcess).GetComponent<BlinkStar>();
+                nextStar.BlingBling();
+            }
         }
     }
 

@@ -49,16 +49,7 @@ public class ItemTimer : MonoBehaviour
             min = (int)LeftTimer[index] / 60;
             timeDisplayer.text = min + ":" + sec_10 + sec_1;
 
-            if (LeftTimer[index] < 0)
-            {
-                LeftTimer[index] = 0;
-
-                if (btn)
-                {
-                    btn.enabled = true;
-                }
-            }
-
+           
             float ratio = 1.0f - (LeftTimer[index] / cooltime);
 
             if (img)
@@ -105,17 +96,17 @@ public class ItemTimer : MonoBehaviour
                 id = Random.Range(4001, 4059);
             }
 
-            CreateSetItem(id);
+            DataController.Instance.InsertNewItem(id,1); //도감에 등록만 되면 됨
             AudioManager.GetInstance().ItemSound();
 
             LeftTimer[index] = cooltime;
             btn.enabled = false;
 
-            DataController.Instance.AddItemCount();
+            //DataController.Instance.AddItemCount(); 서적은 아이템 인벤토리에 해당 안 함
         }
     }
 
-    private void CreateSetItem(int productID)
+   /* private void CreateSetItem(int productID)
     {
         GameObject setItem = Instantiate(prefab, vectors[index], Quaternion.identity);
 
@@ -136,7 +127,7 @@ public class ItemTimer : MonoBehaviour
         setItem.GetComponent<BoxCollider2D>().isTrigger = false;
         setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindItemDic[productID].ImagePath);
     }
-
+    */
     //void OnClick(SetItemInfo setItemInfo)
     //{
     //    DataController dataController = DataController.GetInstance();
