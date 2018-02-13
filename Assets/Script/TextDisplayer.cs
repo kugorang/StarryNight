@@ -2,23 +2,15 @@
 using System.Collections;
 using UnityEngine.UI;
 
-
 public class TextDisplayer : MonoBehaviour
 {
     [Range(0.0f, 1.0f)]
     public float timeBetUpdateLetters;
-
-
-    public Text nameDisplayer;
-    public Text sayDisplayer;
+    public Text nameDisplayer, sayDisplayer;
 
     public GameObject dialougeWindowHolder;
 
-
-    public bool isTyping
-    {
-        get; private set;
-    }
+    public bool IsTyping { get; private set; }
 
     private string m_currentTypingDialgoue;
 
@@ -32,19 +24,16 @@ public class TextDisplayer : MonoBehaviour
         dialougeWindowHolder.SetActive(false);
     }
 
-
-
-    //Skip and Complete Current Dialogues
+    // Skip and Complete Current Dialogues
     public void SkipTypingLetter()
     {
         StopCoroutine("TypeText");
         StopCoroutine("TypeAndAddText");
 
-        isTyping = false;
+        IsTyping = false;
 
         sayDisplayer.text = m_currentTypingDialgoue;
     }
-
 
     public void SetSay(string dialogue)
     {
@@ -75,11 +64,10 @@ public class TextDisplayer : MonoBehaviour
         }
     }
 
-
-    //Upddate Text from buffer
+    // Update Text from buffer
     public IEnumerator TypeText(string texts)
     {
-        isTyping = true;
+        IsTyping = true;
 
         ShowDialogueHolder();
 
@@ -91,26 +79,22 @@ public class TextDisplayer : MonoBehaviour
             yield return new WaitForSeconds(timeBetUpdateLetters);
         }
 
-        isTyping = false;
+        IsTyping = false;
     }
 
     // Add Text, not replace 
     public IEnumerator TypeAndAddText(string texts)
     {
-        isTyping = true;
+        IsTyping = true;
 
         ShowDialogueHolder();
 
         foreach (char letter in texts.ToCharArray())
         {
-
             sayDisplayer.text += letter;
             yield return new WaitForSeconds(timeBetUpdateLetters);
-
         }
 
-        isTyping = false;
+        IsTyping = false;
     }
-
-
 }

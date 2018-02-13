@@ -8,10 +8,12 @@ public class RaycastTest : MonoBehaviour
     DataController dataController;
     Item item;
     Dictionary<int, Dictionary<int, SerializableVector3>> haveDic;
+    private DialogueManager dialogueManager;
 
     private void Awake()
     {
         dataController = DataController.Instance;
+        dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         haveDic = dataController.HaveDic;
         item = GetComponent<Item>();
     }
@@ -21,6 +23,11 @@ public class RaycastTest : MonoBehaviour
         CameraController.FocusOnItem = true;
         //Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
         start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
+        
+        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300305 && item.Info.Index >= 1001 && item.Info.Index <= 1003)
+        {
+            dialogueManager.ContinueDialogue();
+        }
     }
 
     private void OnMouseDrag()
@@ -79,6 +86,11 @@ public class RaycastTest : MonoBehaviour
 
             if (resultList != null)
             {
+                if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300306)
+                {
+                    dialogueManager.ContinueDialogue();
+                }
+
                 collItemInfo.CheckDestroy = true;
 
                 // 조합표에 있다면 충돌 당한 물체를 결과 재료로 바꾸어준다.
@@ -105,7 +117,7 @@ public class RaycastTest : MonoBehaviour
 
                 dataController.InsertNewItem(myItemInfo.Index, GetComponent<Item>().Id, transform.position);
 
-                dataController.SubItemCount();
+                dataController.ItemCount -= 1;
 
                 // 조합 후 충돌한 물체를 파괴한다.
                 Destroy(collision.gameObject);

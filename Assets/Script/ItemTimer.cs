@@ -15,16 +15,17 @@ public class ItemTimer : MonoBehaviour
     public bool disableOnStart = false;
 
     private int sec, sec_1, sec_10, min;
-    private DataDictionary dataDic;
+    //private DataDictionary dataDic;
 
     public Button combineButton;
 
     private DataController LeftTimer;
-    private Vector3[] vectors = new Vector3[3] { new Vector3(-670, 772, -3), new Vector3(-550, 700, -3), new Vector3(-480, 772, -3) };
+    public DialogueManager dialogueManager;
+    //private Vector3[] vectors = new Vector3[3] { new Vector3(-670, 772, -3), new Vector3(-550, 700, -3), new Vector3(-480, 772, -3) };
 
     private void Awake()
     {
-        dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
+        //dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
         LeftTimer = DataController.Instance;
     }
 
@@ -80,9 +81,14 @@ public class ItemTimer : MonoBehaviour
 
     public void ResetCooltime()
     {
+        if(LeftTimer.IsTutorialEnd == 0 && LeftTimer.NowIndex == 300619)
+        {
+            dialogueManager.ContinueDialogue();
+        }
+
         if (btn) // 버튼 활성화 시
         {
-            if (DataController.Instance.ItemCount >= DataController.Instance.ItemLimit) // 아이템 갯수 제한
+            if (LeftTimer.ItemCount >= LeftTimer.ItemLimit) // 아이템 갯수 제한
             {
                 Debug.Log("아이템 상자가 꽉 찼어요");
                 return;
@@ -96,7 +102,7 @@ public class ItemTimer : MonoBehaviour
                 id = Random.Range(4001, 4059);
             }
 
-            DataController.Instance.InsertNewItem(id,1); //도감에 등록만 되면 됨
+            LeftTimer.InsertNewItem(id,1); //도감에 등록만 되면 됨
             AudioManager.GetInstance().ItemSound();
 
             LeftTimer[index] = cooltime;

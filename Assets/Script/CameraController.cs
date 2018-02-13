@@ -4,23 +4,31 @@ using System;
 public class CameraController : MonoBehaviour
 {
     [Tooltip("지구본과 겹치지 않게 적절한 X를 주세요.")]
-    public float minimumX;//210 이상, 지구본과 겹치치 않게.
+    public float minimumX;              // 210 이상, 지구본과 겹치치 않게.
     private float startPosX;
+    private DataController dataController;
+    public DialogueManager dialogueManager;
+
     private bool CheckLeftScene
     {
-        get {
-           
-            return PlayerPrefs.GetInt("isLeftScene", 1) > 0; }
-        set {
-           
+        get
+        {
+            return PlayerPrefs.GetInt("isLeftScene", 1) > 0;
+        }
+        set
+        {
+
             int v = 0;
+
             if (value)
             {
                 v = 1;
             }
+
             PlayerPrefs.SetInt("isLeftScene", v);
         }
     }
+
     private int minimumDiff;
 
     public static bool FocusOnItem { get; set; }
@@ -30,16 +38,17 @@ public class CameraController : MonoBehaviour
         //CheckLeftScene = true;
         FocusOnItem = false;
         minimumDiff = Screen.width / 8;
+        dataController = DataController.Instance;
     }
 
     private void OnEnable()
     {
-        int sign = 1;//오른쪽으로
-        if (CheckLeftScene)//왼쪽으로 가야하면
+        int sign = 1;               // 오른쪽으로
+        if (CheckLeftScene)         // 왼쪽으로 가야하면
         {
-            sign = -1;//왼쪽으로
+            sign = -1;              // 왼쪽으로
         }
-        transform.position = new Vector3(540.0f * sign, transform.position.y,transform.position.z);
+        transform.position = new Vector3(540.0f * sign, transform.position.y, transform.position.z);
     }
 
     public GameObject mainCamera;
@@ -60,6 +69,11 @@ public class CameraController : MonoBehaviour
                 // 오른쪽에서 왼쪽
                 if (posXGap > 0 && !CheckLeftScene)
                 {
+                    if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300617)
+                    {
+                        dialogueManager.ContinueDialogue();
+                    }
+
                     iTween.MoveTo(gameObject, iTween.Hash("x", -540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
                     CheckLeftScene = true;
                 }
@@ -68,6 +82,11 @@ public class CameraController : MonoBehaviour
                 {
                     iTween.MoveTo(gameObject, iTween.Hash("x", 540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
                     CheckLeftScene = false;
+
+                    if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300131)
+                    {
+                        dialogueManager.ContinueDialogue();
+                    }
                 }
             }
         }
@@ -75,18 +94,28 @@ public class CameraController : MonoBehaviour
 
     public void OnClickLeftBtn()
     {
+        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300210 || dataController.NowIndex == 300617))
+        {
+            dialogueManager.ContinueDialogue();
+        }
+
         iTween.MoveTo(mainCamera, iTween.Hash("x", -540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
         CheckLeftScene = true;
     }
 
     public void OnClickRightBtn()
     {
+        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300215)
+        {
+            dialogueManager.ContinueDialogue();
+        }
+
         iTween.MoveTo(mainCamera, iTween.Hash("x", 540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
         CheckLeftScene = false;
     }
 
     public void OnApplicationQuit()
     {
-        CheckLeftScene=true;
+        CheckLeftScene = true;
     }
 }

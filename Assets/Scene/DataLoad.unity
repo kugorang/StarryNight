@@ -747,8 +747,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1834994926}
-  - component: {fileID: 1834994927}
   - component: {fileID: 1834994925}
+  - component: {fileID: 1834994927}
   m_Layer: 0
   m_Name: Data Manager
   m_TagString: DataController
@@ -767,6 +767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 183bf7ee2197f6e4ba27fed2a97b17bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FirstQuestsOfScene: 
 --- !u!4 &1834994926
 Transform:
   m_ObjectHideFlags: 0
@@ -792,6 +793,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemOpenList: 
+  newBookList: 
+  newItemList: 
 --- !u!1 &1899601957
 GameObject:
   m_ObjectHideFlags: 0

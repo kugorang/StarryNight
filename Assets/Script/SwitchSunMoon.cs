@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class SwitchSunMoon : MonoBehaviour {
-
-    public UnityEngine.UI.Button SunMoonbtn;
-    public int state;
-    public Sprite sun;
-    public Sprite moon;
+public class SwitchSunMoon : MonoBehaviour
+{
+    public Button SunMoonbtn;
+    public int State { get; set; }
+    public Sprite sun, moon;
+    private DataController dataController;
+    public DialogueManager dialogueManager;
 
     private static SwitchSunMoon instance;
 
@@ -25,38 +24,34 @@ public class SwitchSunMoon : MonoBehaviour {
                 instance = container.AddComponent<SwitchSunMoon>();
             }
         }
+
         return instance;
     }
-
-
 
     void Start()
     {
         if (SunMoonbtn == null)
-            SunMoonbtn = gameObject.GetComponent<UnityEngine.UI.Button>();
+        {
+            SunMoonbtn = gameObject.GetComponent<Button>();
+        }
+
+        dataController = DataController.Instance;
     }
 
     void Update()
     {
-        if (state == 1)
-            gameObject.GetComponent<Image>().sprite = sun;
-        else
-            gameObject.GetComponent<Image>().sprite = moon;
-
-    }
-
-    // 현재 스위치 상태 가져오기
-    public int GetState()
-    {
-        return state;
+        GetComponent<Image>().sprite = State == 1 ? sun : moon;
     }
 
     // 버튼 스위치
     public void CheckButton()
     {
-        if (state == 1) // 1이 sun 2가 moon
-            state = 0;
-        else
-            state = 1;
+        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300212)
+        {
+            dialogueManager.ContinueDialogue();
+        }
+
+        // 1이 sun, 2가 moon
+        State = State == 1 ? 0 : 1;
     }
 }

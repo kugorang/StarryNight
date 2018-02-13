@@ -20,12 +20,18 @@ public class UpgradeManager : MonoBehaviour
 
     //현재 인벤토리 레벨
     private int currentInvenLv;
+
     // 현재 클릭당 게이지 레벨
     private int currentPerClickLv;
+
+    private DataController dataController;
+    public DialogueManager dialogueManager;
 
     private void Awake()
     {
         dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
+
+        dataController = DataController.Instance;
 
         invenUnlock = GameObject.Find("Inven Unlock Panel");
         perClickUnlock = GameObject.Find("PerClick Unlock Panel");
@@ -40,13 +46,14 @@ public class UpgradeManager : MonoBehaviour
 
     void Update()
     {
-        currentInvenLv = DataController.Instance.InvenLv;
-        currentPerClickLv = DataController.Instance.EnergyPerClickLv;
+        currentInvenLv = dataController.InvenLv;
+        currentPerClickLv = dataController.EnergyPerClickLv;
 
         // 인벤 업그레이드 text 및 버튼 설정
-        if (currentInvenLv >= DataController.Instance.MaxInvenLv)
+        if (currentInvenLv >= dataController.MaxInvenLv)
         {
             invenUpBtn.enabled = false;
+
             if (currentInvenLv == 20)
             {
                 invenUnlock.SetActive(false);
@@ -54,13 +61,12 @@ public class UpgradeManager : MonoBehaviour
             else
             {
                 invenUnlock.SetActive(true);
-            }
-            
+            }            
         }
         else
         {
             // 업그레이드 비용이 충분한지 확인
-            if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv])
+            if (dataController.Gold < (ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv])
             {
                 invenUpBtn.enabled = false;
                 invenUnlock.SetActive(true);
@@ -73,7 +79,7 @@ public class UpgradeManager : MonoBehaviour
         }
 
         // 클릭 당 게이지 업그레이드 text 및 버튼 설정
-        if (currentPerClickLv >= DataController.Instance.MaxPerClickLv)
+        if (currentPerClickLv >= dataController.MaxPerClickLv)
         {
             energyPerClickUpBtn.enabled = false;
             if (currentPerClickLv == 20)
@@ -88,7 +94,7 @@ public class UpgradeManager : MonoBehaviour
         else
         {
             // 업그레이드 비용이 충분한지 확인
-            if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv])
+            if (dataController.Gold < (ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv])
             {
                 energyPerClickUpBtn.enabled = false;
                 perClickUnlock.SetActive(true);
@@ -109,7 +115,7 @@ public class UpgradeManager : MonoBehaviour
         else
         {
             int nextInvenValue = 10 + dataDic.FindUpDic[50001].value[currentInvenLv];
-            invenUp_Displayer.text = "인벤토리 +" + DataController.Instance.ItemLimit + " -> +" + nextInvenValue;
+            invenUp_Displayer.text = "인벤토리 +" + dataController.ItemLimit + " -> +" + nextInvenValue;
             invenUpCost_Displayer.text = dataDic.FindUpgrade(50001).cost[currentInvenLv] + "원";
         }
 
@@ -121,7 +127,7 @@ public class UpgradeManager : MonoBehaviour
         else
         {
             int nextClickValue = 2 + dataDic.FindUpDic[50002].value[currentPerClickLv];
-            energyPerClickUp_Displayer.text = "클릭당 게이지 +" + DataController.Instance.EnergyPerClick + " -> +" + nextClickValue;
+            energyPerClickUp_Displayer.text = "클릭당 게이지 +" + dataController.EnergyPerClick + " -> +" + nextClickValue;
             energyPerClickUpCost_Displayer.text = dataDic.FindUpgrade(50002).cost[currentPerClickLv] + "원";
         }
 
@@ -131,19 +137,24 @@ public class UpgradeManager : MonoBehaviour
     public void InvenUpgrade()
     {
         // 골드 빼고
-        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv];
+        dataController.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv];
 
         // 공간 늘려주고
-        DataController.Instance.UpgradeInvenLv();
+        dataController.UpgradeInvenLv();
+
+        if(dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300515)
+        {
+            dialogueManager.ContinueDialogue();
+        }
     }
 
     // 클릭당 게이지 업그레이드
     public void EnergyPerClickUpgrade()
     {
         // 골드 빼고
-        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv];
+        dataController.Gold-=(ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv];
 
         // 클릭 당 게이지 증가시켜주고
-        DataController.Instance.UpgradeEnergyPerClickLv();
+        dataController.UpgradeEnergyPerClickLv();
     }
 }
