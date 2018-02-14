@@ -135,7 +135,7 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
         else if (checkItemIndex > 50000) // 업그레이드일 때
         {
-            currentItemNum = dataController.CheckUpgradeLevel(checkItemIndex);
+            currentItemNum = DataController.upgradeLV[checkItemIndex];
         }
         else // 아이템일 때
         {
@@ -193,7 +193,7 @@ public class BlinkStar : MonoBehaviour, IClickables
                             dataController.Gold -= (ulong)currentQuest.TermsCount;
                         }
 
-                        dataController.SetMaxUpgradeLevel(currentQuest.Reward);
+                        dataController.LatestUpgradeIndex=currentQuest.Reward;//업그레이드가 순차적으로 열릴 것을 가정한 코드.
                     }
                     else
                     {
@@ -390,7 +390,7 @@ public class BlinkStar : MonoBehaviour, IClickables
                 }
                 else
                 {
-                   GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + dataController.CheckUpgradeLevel(termItemIndex) + "/" + ownQuest.TermsCount;
+                   GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.upgradeLV[termItemIndex] + "/" + ownQuest.TermsCount;
                 }
             }
             else

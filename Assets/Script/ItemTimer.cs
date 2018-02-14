@@ -82,11 +82,11 @@ public class ItemTimer : MonoBehaviour
     {
         if (btn) // 버튼 활성화 시
         {
-            if (DataController.Instance.ItemCount >= DataController.Instance.ItemLimit) // 아이템 갯수 제한
+            /*if (DataController.Instance.ItemCount >= DataController.Instance.ItemLimit) // 아이템 갯수 차지 안 함.
             {
                 Debug.Log("아이템 상자가 꽉 찼어요");
                 return;
-            }
+            }*/
 
             // 세트 아이템 랜덤 생성
             int id = Random.Range(4001, 4059);
@@ -98,6 +98,7 @@ public class ItemTimer : MonoBehaviour
 
             DataController.Instance.InsertNewItem(id,1); //도감에 등록만 되면 됨
             AudioManager.GetInstance().ItemSound();
+            PopUpAlert.Alert("[서적] "+DataDictionary.Instance.FindItemDic[id].Name+" 획득",this);
 
             LeftTimer[index] = cooltime;
             btn.enabled = false;

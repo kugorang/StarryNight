@@ -8,130 +8,187 @@ public class UpgradeManager : MonoBehaviour
     private DataDictionary dataDic;
 
     // 업그레이드 잠금 표시
-    private GameObject invenUnlock;
-    private GameObject perClickUnlock;
+    private Transform[] ParentPanels;
+    private GameObject[] UnlockPanels=new GameObject[12];
+    private Text[] UpgradeDisplayers=new Text[12];
+    private Text[] UpgradeCostDisplayers = new Text[12];
+    private Button[] UpgradeButtons = new Button[12];
+    private UpgradeClass currentUpgradeLV = DataController.upgradeLV;
 
-    private Text invenUp_Displayer;
-    private Text invenUpCost_Displayer;
-    private Text energyPerClickUp_Displayer;
-    private Text energyPerClickUpCost_Displayer;
-    private Button invenUpBtn;
-    private Button energyPerClickUpBtn;
+    private const int MAX_LEVEL = 20;
+    private const int LAST_UPGRADE_MAX_LEVEL = 1;
 
-    //현재 인벤토리 레벨
-    private int currentInvenLv;
-    // 현재 클릭당 게이지 레벨
-    private int currentPerClickLv;
+    public int[] successRate;
 
     private void Awake()
     {
         dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
-        invenUnlock = GameObject.Find("Inven Unlock Panel");
-        perClickUnlock = GameObject.Find("PerClick Unlock Panel");
+        ParentPanels = new Transform[12]
+        {
+            GameObject.Find("Inventory Panel").transform,
+            GameObject.Find("EnergyPerClick Panel").transform,
+            GameObject.Find("ItemTime1 Panel").transform,
+            GameObject.Find("Panel (3)").transform,
+            GameObject.Find("Panel (4)").transform,
+            GameObject.Find("Panel (5)").transform,
+            GameObject.Find("Panel (6)").transform,
+            GameObject.Find("Panel (7)").transform,
+            GameObject.Find("Panel (8)").transform,
+            GameObject.Find("Panel (9)").transform,
+            GameObject.Find("Panel (10)").transform,
+            GameObject.Find("Panel (11)").transform
+        };
 
-        invenUp_Displayer = GameObject.Find("Inven Upgrade Displayer").GetComponent<Text>();
-        invenUpCost_Displayer = GameObject.Find("Inven Upgrade Cost Displayer").GetComponent<Text>();
-        energyPerClickUp_Displayer = GameObject.Find("EnergyPerClick Upgrade Displayer").GetComponent<Text>();
-        energyPerClickUpCost_Displayer = GameObject.Find("EnergyPerClick Upgrade Cost Displayer").GetComponent<Text>();
-        invenUpBtn = GameObject.Find("Inven Upgrade Button").GetComponent<Button>();
-        energyPerClickUpBtn = GameObject.Find("EnergyPerClick Upgrade Button").GetComponent<Button>();
+        for(int i=0; i<12; i++)
+        {
+            UnlockPanels[i] = ParentPanels[i].Find("Unlock Panel").gameObject;
+            UpgradeDisplayers[i] = ParentPanels[i].Find("Upgrade Displayer").gameObject.GetComponent<Text>();
+            UpgradeButtons[i] = ParentPanels[i].Find("Upgrade Button").gameObject.GetComponent<Button>();
+            UpgradeCostDisplayers[i]= UpgradeButtons[i].transform.Find("Upgrade Cost Displayer").gameObject.GetComponent<Text>();
+        }
+
+        
+
+
     }
 
     void Update()
     {
-        currentInvenLv = DataController.Instance.InvenLv;
-        currentPerClickLv = DataController.Instance.EnergyPerClickLv;
-
-        // 인벤 업그레이드 text 및 버튼 설정
-        if (currentInvenLv >= DataController.Instance.MaxInvenLv)
+   
+        for(int i=0; i < 12; i++)
         {
-            invenUpBtn.enabled = false;
-            if (currentInvenLv == 20)
+            int upgradeIndex = 50001 + i;
+            //업그레이드 text 및 버튼 설정
+            if ( upgradeIndex> DataController.Instance.LatestUpgradeIndex)
             {
-                invenUnlock.SetActive(false);
+                UpgradeButtons[i].enabled = false;
+                if ( IsMaxUpgraded(upgradeIndex))
+                {
+                    UnlockPanels[i].SetActive(false);
+                }
+                else
+                {
+                    UnlockPanels[i].SetActive(true);
+                }
+
             }
             else
             {
-                invenUnlock.SetActive(true);
+                /*
+                // 업그레이드 비용이 충분한지 확인
+                if (!IsMaxUpgraded(upgradeIndex) && )
+                {
+                    UpgradeButtons[i].enabled = false;
+                    
+                }
+                else
+                {
+                   
+                    
+                }
+                */
+                UpgradeButtons[i].enabled = true;
+                UnlockPanels[i].SetActive(false);
             }
+
+            // value[current값] -> 꼭!
+            if (IsMaxUpgraded(upgradeIndex))
+            {
+                UpgradeDisplayers[i].text = "MAX";
+                UpgradeCostDisplayers[i].text = "MAX";
+            }
+            else
+            {
+                int nextUpgradeValue = dataDic.FindUpDic[upgradeIndex].value[currentUpgradeLV[i]];
+                string str="";
+                switch (i)
+                {
+                    case 0:
+                        str = "인벤토리 +" + DataController.Instance.ItemLimit + " -> +" + (10+nextUpgradeValue);
+                        break;
+                    case 1:
+                        str="클릭당 게이지 +" + DataController.Instance.EnergyPerClick + " -> +" + (2 + nextUpgradeValue);
+                        break;
+                    case 2:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 3:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 4:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 5:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 6:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 7:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 8:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 9:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    case 10:
+                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        break;
+                    default://최종업그레이드
+                        str = "골드 2배, 인벤토리 2배, 높은 등급 아이템 나올 확률 2배, 아이템 2개 나올 확률 2배";
+                        break;
+                }
+                UpgradeDisplayers[i].text =  str;
+                
+                UpgradeCostDisplayers[i].text = dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[i]] + "골드";
+            }
+
+        }
+      
+       
+             
+           
+        
+
+    }
+
+
+    public void Upgrade(int upgradeIndex)//아래 두 함수 하나로, 실패 구현
+    {
+        int id = upgradeIndex - 50001;
+        if (IsMaxUpgraded(upgradeIndex))
+        {
+            Debug.Log("Level Max");
+            return;
+        }
+        if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]])
+        {
+            PopUpAlert.Alert("골드가 부족해요.", this, true);
+            return;
+        }
+        Random.InitState((int)Time.time);
+       
+        if (Random.value<(successRate[currentUpgradeLV[id]]/100f))//업그레이드 레벨은 0~20이고 20에선 업글 불가
+        {
             
+            DataController.Instance.Gold -= (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]];
+            DataController.upgradeLV.LevelUp(id);
+            PopUpAlert.Alert("업그레이드 성공!", this, true);
         }
         else
         {
-            // 업그레이드 비용이 충분한지 확인
-            if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv])
-            {
-                invenUpBtn.enabled = false;
-                invenUnlock.SetActive(true);
-            }
-            else
-            {
-                invenUpBtn.enabled = true;
-                invenUnlock.SetActive(false);
-            }
+            PopUpAlert.Alert("업그레이드 실패...",this, true);
         }
-
-        // 클릭 당 게이지 업그레이드 text 및 버튼 설정
-        if (currentPerClickLv >= DataController.Instance.MaxPerClickLv)
-        {
-            energyPerClickUpBtn.enabled = false;
-            if (currentPerClickLv == 20)
-            {
-                perClickUnlock.SetActive(false);
-            }
-            else
-            {
-                perClickUnlock.SetActive(true);
-            }
-        }
-        else
-        {
-            // 업그레이드 비용이 충분한지 확인
-            if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv])
-            {
-                energyPerClickUpBtn.enabled = false;
-                perClickUnlock.SetActive(true);
-            }
-            else
-            {
-                energyPerClickUpBtn.enabled = true;
-                perClickUnlock.SetActive(false);
-            }
-        }
-
-        // value[current값] -> 꼭!
-        if (currentInvenLv == 20)
-        {
-            invenUp_Displayer.text = "MAX";
-            invenUpCost_Displayer.text = "MAX";
-        }
-        else
-        {
-            int nextInvenValue = 10 + dataDic.FindUpDic[50001].value[currentInvenLv];
-            invenUp_Displayer.text = "인벤토리 +" + DataController.Instance.ItemLimit + " -> +" + nextInvenValue;
-            invenUpCost_Displayer.text = dataDic.FindUpgrade(50001).cost[currentInvenLv] + "원";
-        }
-
-        if (currentPerClickLv == 20)
-        {
-            energyPerClickUp_Displayer.text = "MAX";
-            energyPerClickUpCost_Displayer.text = "MAX";
-        }
-        else
-        {
-            int nextClickValue = 2 + dataDic.FindUpDic[50002].value[currentPerClickLv];
-            energyPerClickUp_Displayer.text = "클릭당 게이지 +" + DataController.Instance.EnergyPerClick + " -> +" + nextClickValue;
-            energyPerClickUpCost_Displayer.text = dataDic.FindUpgrade(50002).cost[currentPerClickLv] + "원";
-        }
-
     }
 
     // 인벤토리 업그레이드
     public void InvenUpgrade()
     {
         // 골드 빼고
-        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentInvenLv];
+        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentUpgradeLV[0]];
 
         // 공간 늘려주고
         DataController.Instance.UpgradeInvenLv();
@@ -141,9 +198,26 @@ public class UpgradeManager : MonoBehaviour
     public void EnergyPerClickUpgrade()
     {
         // 골드 빼고
-        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50002).cost[currentPerClickLv];
+        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50002).cost[currentUpgradeLV[1]];
 
         // 클릭 당 게이지 증가시켜주고
         DataController.Instance.UpgradeEnergyPerClickLv();
+    }
+
+    public void RemoveAlert()// 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
+    {
+        DataController.Instance.NewUpgrade=false;
+    }
+
+    private bool IsMaxUpgraded(int upgradeIndex)
+    {
+        if (upgradeIndex == 50012)
+        {
+            return currentUpgradeLV[upgradeIndex] >= LAST_UPGRADE_MAX_LEVEL;
+        }
+        else
+        {
+            return currentUpgradeLV[upgradeIndex] >= MAX_LEVEL;
+        }
     }
 }

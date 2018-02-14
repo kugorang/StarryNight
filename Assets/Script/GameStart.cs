@@ -31,7 +31,7 @@ public class GameStart : MonoBehaviour {
         for (float i = 0f; i <= 1; i += 0.1f)
         {
             yield return new WaitForSeconds(0.1f);
-            Color color = new Vector4(1, 1, 1, 1);
+            Color color = new Vector4(1, 1, 1, i);
             logo.color = color;
         }
         yield return new WaitForSeconds(0.2f);

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,6 +7,9 @@ public class QuestUIButton : MonoBehaviour {
 
     private const int FIRST_QUEST = 90101;
     private const int LAST_QUEST = 90123;//원래는 90247
+
+    private float startPosX;
+    private float minimumDiff;
 
     private static int showingQuestIndex;
     public static int ShowingQuestIndex
@@ -42,6 +45,35 @@ public class QuestUIButton : MonoBehaviour {
             ShowingQuestIndex = DataController.Instance.QuestProcess;
         }
         FirstQuestsOf = DataDictionary.Instance.FirstQuestsOfScene;
+
+        minimumDiff= Screen.width / 8;
+    }
+
+    private void Update()//주석풀어서확인, 슬라이드 구현 ppt 12번 참조
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            startPosX = Input.mousePosition.x;
+            //Debug.Log(startPosX);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            float posXGap = Input.mousePosition.x - startPosX;
+
+            if (Math.Abs(posXGap) > minimumDiff)
+            {
+                // ->
+                if (posXGap > 0)
+                {
+                    OnLeftQuestBtnClick();
+                }
+                // <-
+                else if (posXGap < 0)
+                {
+                    OnRightQuestBtnClick();
+                }
+            }
+        }
     }
 
     public void OnEnable()

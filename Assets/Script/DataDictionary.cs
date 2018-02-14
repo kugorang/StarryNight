@@ -221,21 +221,16 @@ public class DataDictionary : MonoBehaviour
                     break;
                 case FILEINFO.UPGRADETABLE:
                     index = Convert.ToInt32(wordList[0]);
-
+                    int len = (wordList.Length - 2) / 2; //wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
                     UpgradeInfo upInfo;
                     upInfo.index = index;
                     upInfo.name = wordList[1];
 
-                    upInfo.value = new int[20];
-                    upInfo.cost = new int[20];
+                    upInfo.value = new int[len];
+                    upInfo.cost = new int[len];
 
-                    for (int j = 0; j < 20; j++)
+                    for (int j = 0; j < len; j++)
                     {
-                        if (wordList.Length < 20) // 에러 회피용 임시코드. 50012번이 특수 아이템이라 wordList.Length가 2밖에 안됩니다.
-                        {
-                            break;
-                        }
-
                         int value = Convert.ToInt32(wordList[2 * j + 2]);
                         int cost = Convert.ToInt32(wordList[2 * j + 3]);
                         upInfo.value[j] = value;

@@ -153,7 +153,7 @@ public class CreateItem : MonoBehaviour
                 return;
             }
 
-            if (SwitchSunMoon.GetInstance().GetState() == 1) // sun일 때 나뭇가지 등 생성해야함
+            if (SwitchSunMoon.Instance.State) // sun일 때 나뭇가지 등 생성해야함
             {
                 if (Random.Range(0, 100) >= 95)
                 {

@@ -69,6 +69,98 @@ public struct SerializableVector3
     }
 }
 
+//업그레이드 변수들 모아놓기
+public class UpgradeClass
+{
+    //업그레이드 관련 변수. 참조 쉽게 하려고 Array로.
+    public delegate void UpgradeMethod();
+    public UpgradeMethod[] UpgradeMethods;
+    public int[] MaxLV=new int[12];
+
+    public const int FIRST_UPGRADE_INDEX= 50001;
+
+    private int[] UpgradeLV = new int[12];
+
+    /// <summary>
+    /// id를 통해 현재 업그레이드 레벨을 반환합니다.
+    /// </summary>
+    /// <param name="id">양자리(0)~물고기자리(11)</param>
+    /// <returns></returns>
+    public int this[int id]
+    {
+        get
+        {
+            if (-1 < id && id < 12)
+            {
+                return UpgradeLV[id];
+            }
+            else if (50000<id&&id<=50012)
+            {
+                return UpgradeLV[id - 50001];
+            }
+            else
+            {
+                Debug.LogError("Out of Index; Index should between 0~11 or 50001~50012");
+                return 0;
+            }
+        }
+        set
+        {
+            if (value >= 0)
+            {
+                
+                if (-1 < id && id < 12)
+                {
+                    UpgradeLV[id]=value;
+                    PlayerPrefs.SetInt("Upgrade[" + id + "]LV", value);
+                }
+                else if (50000 < id && id <= 50012)
+                {
+                    UpgradeLV[id - 50001]=value;
+                    PlayerPrefs.SetInt("Upgrade[" + (id-50001) + "]LV", value);
+                }
+                else
+                {
+                    Debug.LogError("Out of Index; Index should between 0~11 or 50001~50012");
+                }
+                
+            }
+            else
+            {
+                Debug.Log("Level Can not be minus.");
+            }
+        }
+    }
+    /// <summary>
+    /// 업그래이드 인덱스를 통해 현재 레벨을 반환합니다.
+    /// </summary>
+    /// <param name="index">업그레이드 인덱스(50001~50012)</param>
+    /// <returns></returns>
+    public int GetLVByUpgradeIndex(int index)
+    {
+        return this[index - FIRST_UPGRADE_INDEX];
+    }
+
+   public UpgradeClass()
+    {
+        /*for (int i = 0; i < 12; i++)
+        {
+            this.UpgradeMethods[i] = new UpgradeMethod(() => LevelUp(i));
+        }*/
+    }
+
+    public UpgradeClass(int invenLV, int enegyPerClickLV, int waitTime1LV, int item1LVint, int saleGoldLV, int waitTime2LV, int item2LV, int atlasItemLV, int combineItemLV, int waitTime3LV, int item3LV, int twiceAll)
+    {
+        this.UpgradeLV = new int[12] { invenLV, enegyPerClickLV, waitTime1LV, item1LVint, saleGoldLV, waitTime2LV, item2LV, atlasItemLV, combineItemLV, waitTime3LV, item3LV, twiceAll };
+    }
+
+    public void LevelUp(int id)
+    {
+        this.UpgradeLV[id] ++;
+        PlayerPrefs.SetInt("Upgrade[" + id + "]LV", this.UpgradeLV[id]);
+    }
+}
+
 public class DataController : MonoBehaviour
 {
     // 현재 보유 골드량
@@ -78,16 +170,10 @@ public class DataController : MonoBehaviour
     private bool loadingFinish;
 
     // 현재 보유 아이템 개수, 퀘스트 진행도(인덱스)
-    private int m_itemcount, m_questProcess, m_energy;
+    private int m_itemcount, m_questProcess, m_energy, m_latestUpgradeIndex;
 
     // 아이템 타이머 시간
     private float[] m_leftTimer;
-
-    // 현재 인벤토리 레벨, 클릭 게이지 레벨
-    private int invenLv, energyPerClickLv;
-
-    // 최대 업그레이드 가능한 - 인벤토리 레벨, 클릭 게이지 레벨
-    private int invenMaxLv, energyPerClickMaxLv;
 
     // HaveDic 정보 저장 경로
     public string HaveDicPath { get; private set; }
@@ -114,13 +200,36 @@ public class DataController : MonoBehaviour
     //신규 항목알림을 위한 더티 플래그. 서적과 아이템 리스트는 새로운 아이템들의 인덱스를 담음. 길이 0이면 신규 없음.
     [HideInInspector]
     //public bool newQuest; 나중에 사용 안 하면 지울 것.
-    //public bool newUpgrade;
+   
     public List<int> newBookList;
     public List<int> newItemList;
     public string NewBookListPath { get; private set; }
     public string NewItemListPath { get; private set; }
 
+    [HideInInspector]
+    private int newUpgradeInt;
+    public bool NewUpgrade
+    {
+        get
+        {
+            return newUpgradeInt > 0;
+        }
+        set
+        {
+            if (value)
+            {
+                newUpgradeInt = 1;
+            }
+            else
+            {
+                newUpgradeInt = 0;
+            }
+            PlayerPrefs.SetInt("NewUpgrade", newUpgradeInt);
+        }
+    }
+    public static UpgradeClass upgradeLV;
 
+    #region Singleton
     private static DataController instance;
 
     public static DataController Instance
@@ -140,7 +249,8 @@ public class DataController : MonoBehaviour
 
             return instance;
         }
-    }
+    } 
+    #endregion
 
     // 게임 초기화될 때 
     void Awake()
@@ -157,18 +267,26 @@ public class DataController : MonoBehaviour
         m_questProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
         m_leftTimer = new float[3] { PlayerPrefs.GetFloat("LeftTimer1", 300.0f), PlayerPrefs.GetFloat("LeftTimer2", 300.0f), PlayerPrefs.GetFloat("LeftTimer3", 300.0f) };
         m_energy = PlayerPrefs.GetInt("Energy", 0);
+        m_latestUpgradeIndex = PlayerPrefs.GetInt("LatestUpgrade", 50000);
 
-        invenLv = PlayerPrefs.GetInt("InvenLevel", 0);
-        energyPerClickLv = PlayerPrefs.GetInt("EnergyPerClickLevel", 0);
+        //업그레이드 레벨 변수들을 하나로 합침
+        upgradeLV = new UpgradeClass();
 
-        invenMaxLv = PlayerPrefs.GetInt("InvenMaxLevel", 0);
-        energyPerClickMaxLv = PlayerPrefs.GetInt("EnergyPerClickMaxLevel", 0);
+        for(int i=0; i<12; i++)
+        {
+            upgradeLV[i]= PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
+        }
+
+
+
+        newUpgradeInt = PlayerPrefs.GetInt("NewUpgrade",0);
 
         HaveDicPath = "/haveDic.txt";
         ItemOpenListPath = "/itemOpenList.txt";
         NewBookListPath = "/newBookList.txt";
         NewItemListPath = "/newItemList.txt";
-
+        
+        
         HaveDic = LoadGameData(HaveDicPath) as Dictionary<int, Dictionary<int, SerializableVector3>>;
 
         if (HaveDic == null)
@@ -196,6 +314,9 @@ public class DataController : MonoBehaviour
         {
             newItemList = new List<int>();
         }
+        
+
+        
     }
 
     void Start()
@@ -347,24 +468,24 @@ public class DataController : MonoBehaviour
     // item 개수 더하는 함수
     public void AddItemCount()
     {
-        m_itemcount += 1;
+        ItemCount += 1;
 
     }
 
     public void AddItemCount(int amount)
     {
-        m_itemcount += amount;
+        ItemCount += amount;
 
     }
 
     public void SubItemCount()
     {
-        m_itemcount -= 1;
+        ItemCount -= 1;
     }
 
     public void SubItemCount(int amount)
     {
-        m_itemcount -= amount;
+        ItemCount -= amount;
     }
 
     // item 최대 개수 가져오기 
@@ -372,31 +493,23 @@ public class DataController : MonoBehaviour
     {
         get
         {
-            if (invenLv == 0)
+            if (upgradeLV[0] == 0)
             {
                 return 10;
             }
             else
             {
-                return 10 + dataDic.FindUpgrade(50001).value[invenLv - 1];
+                return 10 + dataDic.FindUpgrade(50001).value[upgradeLV[0] - 1];
             }
         }
     }
 
-    // 인벤토리 레벨 가져오기
-    public int InvenLv
-    {
-        get
-        {
-            return invenLv;
-        }
-    }
-
+  
     // 인벤토리 레벨 업그레이드
     public void UpgradeInvenLv()
     {
-        invenLv += 1;
-        PlayerPrefs.SetInt("InvenLevel", invenLv);
+        upgradeLV[0] += 1;
+        PlayerPrefs.SetInt("InvenLevel", upgradeLV[0]);
     }
 
     // 에너지량 가져오기
@@ -421,30 +534,26 @@ public class DataController : MonoBehaviour
     {
         get
         {
-            return 2 + 2 * energyPerClickLv;
+            if (upgradeLV[1] == 0)
+            {
+                return 2;
+            }
+            else
+            {
+                return 2 + dataDic.FindUpgrade(50002).value[upgradeLV[1] - 1];
+            }
         }
     }
-    /// <summary>
-    /// 클릭 당 게이지 레벨 가져오기
-    /// </summary>
-    /// <returns></returns>
-    public int EnergyPerClickLv
-    {
-        get
-        {
-            return energyPerClickLv;
-        }
-    }
-
     /// <summary>
     /// 클릭 당 게이지 레벨 업그레이드
     /// </summary>
     public void UpgradeEnergyPerClickLv()
     {
-        energyPerClickLv += 1;
-        PlayerPrefs.SetInt("EnergyPerClickLevel", energyPerClickLv);
+        upgradeLV[1] += 1;
+
     }
 
+    #region Item
     public void InsertNewItem(int key, int itemId)
     {
         InsertNewItem(key, itemId, new Vector3(0, 0, 0));
@@ -489,7 +598,17 @@ public class DataController : MonoBehaviour
         }
         else
         {
-            HaveDic[key].Add(itemId, itemPos);
+            int id=itemId;
+            if (HaveDic[key].ContainsKey(id))//id 에러 방지용 땜빵 코드. itemTimer 부분 참조.
+            {
+                while (HaveDic[key].ContainsKey(id))
+                {
+                    id++;
+                }
+
+                
+            }
+            HaveDic[key].Add(id, itemPos);
         }
 
         SaveGameData(HaveDic, HaveDicPath);
@@ -545,7 +664,10 @@ public class DataController : MonoBehaviour
         }
 
         return 0;
-    }
+    } 
+    #endregion
+
+    #region Quest
 
     public int QuestProcess
     {
@@ -563,7 +685,14 @@ public class DataController : MonoBehaviour
         m_questProcess += 1;
         PlayerPrefs.SetInt("QuestProcess", m_questProcess);
     }
+    #endregion
 
+    #region Item Timer
+    /// <summary>
+    /// 인덱서. id를 통해 타이머 남은 시간 반환.
+    /// </summary>
+    /// <param name="index">ItemTimer의 id</param>
+    /// <returns>t남은 시간</returns>
     public float this[int index]
     {
         get
@@ -574,78 +703,45 @@ public class DataController : MonoBehaviour
         set
         {
             m_leftTimer[index] = value;
-            PlayerPrefs.SetFloat("LeftTimer1", m_leftTimer[index]);
+            PlayerPrefs.SetFloat("LeftTimer"+(index+1), m_leftTimer[index]);
         }
-    }
+    } 
+    #endregion
 
     /// <summary>
-    /// 최대 업그레이드 가능한 인벤토리 레벨
+    /// 열려있는 업그레이드 중 가장 큰 인덱스를 반환합니다. (50001~50012)
     /// </summary>
-    public int MaxInvenLv
+    public int LatestUpgradeIndex
     {
         get
         {
-            return invenMaxLv;
+            return m_latestUpgradeIndex;
         }
-
         set
         {
-            invenMaxLv = value;
-            PlayerPrefs.SetInt("InvenMaxLevel", invenMaxLv);
-        }
-    }
-
-    /// <summary>
-    /// 최대 업그레이드 가능한 클릭당 에너지 레벨 가져오기
-    /// </summary>
-    /// <returns></returns>
-
-    /// <summary>
-    /// 최대 업그레이드 가능한 클릭당 에너지 레벨 설정
-    /// </summary>
-    /// <param name="num">최대 레벨</param>
-    public int MaxPerClickLv
-    {
-        get
-        {
-            return energyPerClickMaxLv;
-        }
-
-        set
-        {
-            energyPerClickMaxLv = value;
-            PlayerPrefs.SetInt("EnergyPerClickMaxLevel", energyPerClickMaxLv);
-        }
-    }
-
-    // 업그레이드 인덱스로 현재 업그레이드 레벨 찾기
-    public int CheckUpgradeLevel(int index)
-    {
-        if (index == 50001)
-        {
-            return invenLv;
-        }
-        else if (index == 50002)
-        {
-            return energyPerClickLv;
-        }
-        else
-        {
-            return 0;
+            if (value >= 50000)
+            {
+                if (value-m_latestUpgradeIndex>1)
+                {
+                    Debug.LogWarning("순차적인 업그레이드가 아닙니다.");
+                }
+                m_latestUpgradeIndex = value;
+                PlayerPrefs.SetInt("LatestUpgrade", value);
+            }
+            else
+            {
+                Debug.Log("Upgrade index can not be lower than 50000");
+            }
         }
     }
 
     // 업그레이드 인덱스로 최대 업그레이드 레벨 올리기
-    public void SetMaxUpgradeLevel(int index)
+    public void UnlockUpgrade(int index)
     {
-        if (index == 50001)
-        {
-            MaxInvenLv = 20;
-        }
-        else if (index == 50002)
-        {
-            MaxPerClickLv = 20;
-        }
+
+        upgradeLV.MaxLV[index-50001] = dataDic.FindUpgrade(index).value.Length;//값길이=최대 길이
+        
+        NewUpgrade = true;
     }
 
 
@@ -656,39 +752,34 @@ public class DataController : MonoBehaviour
         PlayerPrefs.DeleteAll();
 
 
-          
-
-            HaveDic.Clear();
-            itemOpenList.Clear();
-            newBookList.Clear();
-            newItemList.Clear();
-
-           
 
 
-            SaveGameData(HaveDic, HaveDicPath);
-            SaveGameData(itemOpenList, ItemOpenListPath);
-            SaveGameData(newBookList, NewBookListPath);
-            SaveGameData(newItemList, NewItemListPath);
+        HaveDic.Clear();
+        itemOpenList.Clear();
+        newBookList.Clear();
+        newItemList.Clear();
 
-            m_gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
-            m_itemcount = PlayerPrefs.GetInt("ItemCount", 0);
-            m_questProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
-            m_leftTimer = new float[3] { PlayerPrefs.GetFloat("LeftTimer1", 300.0f), PlayerPrefs.GetFloat("LeftTimer2", 300.0f), PlayerPrefs.GetFloat("LeftTimer3", 300.0f) };
-            m_energy = PlayerPrefs.GetInt("Energy", 0);
 
-            invenLv = PlayerPrefs.GetInt("InvenLevel", 0);
-            energyPerClickLv = PlayerPrefs.GetInt("EnergyPerClickLevel", 0);
 
-            invenMaxLv = PlayerPrefs.GetInt("InvenMaxLevel", 0);
-            energyPerClickMaxLv = PlayerPrefs.GetInt("EnergyPerClickMaxLevel", 0);
 
-        for (int i = 0; i < 3; i++)
+        SaveGameData(HaveDic, HaveDicPath);
+        SaveGameData(itemOpenList, ItemOpenListPath);
+        SaveGameData(newBookList, NewBookListPath);
+        SaveGameData(newItemList, NewItemListPath);
+
+        m_gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
+        m_itemcount = PlayerPrefs.GetInt("ItemCount", 0);
+        m_questProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
+        m_leftTimer = new float[3] { PlayerPrefs.GetFloat("LeftTimer1", 0f), PlayerPrefs.GetFloat("LeftTimer2", 0f), PlayerPrefs.GetFloat("LeftTimer3", 0f) };//리셋 즉시 시험할 수 있게
+        m_energy = PlayerPrefs.GetInt("Energy", 0);
+        m_latestUpgradeIndex = PlayerPrefs.GetInt("LatestUpgrade", 50000);
+
+        upgradeLV = new UpgradeClass();
+
+        for (int i = 0; i < 12; i++)
         {
-            this[i] = 0;
+            upgradeLV[i] = PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
         }
-
-
     }
-
+    
 }

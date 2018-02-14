@@ -5,30 +5,31 @@ using UnityEngine.UI;
 
 public class SwitchSunMoon : MonoBehaviour {
 
-    public UnityEngine.UI.Button SunMoonbtn;
-    public int state;
+    public Button SunMoonbtn;
+    private bool state;
     public Sprite sun;
     public Sprite moon;
 
     private static SwitchSunMoon instance;
 
-    public static SwitchSunMoon GetInstance()
+    public static SwitchSunMoon Instance
     {
-        if (instance == null)
+        get
         {
-            instance = FindObjectOfType<SwitchSunMoon>();
-
             if (instance == null)
             {
-                GameObject container = new GameObject("SwitchSunMoon");
+                instance = FindObjectOfType<SwitchSunMoon>();
 
-                instance = container.AddComponent<SwitchSunMoon>();
+                if (instance == null)
+                {
+                    GameObject container = new GameObject("SwitchSunMoon");
+
+                    instance = container.AddComponent<SwitchSunMoon>();
+                }
             }
+            return instance;
         }
-        return instance;
     }
-
-
 
     void Start()
     {
@@ -36,27 +37,35 @@ public class SwitchSunMoon : MonoBehaviour {
             SunMoonbtn = gameObject.GetComponent<UnityEngine.UI.Button>();
     }
 
-    void Update()
-    {
-        if (state == 1)
-            gameObject.GetComponent<Image>().sprite = sun;
-        else
-            gameObject.GetComponent<Image>().sprite = moon;
-
-    }
 
     // 현재 스위치 상태 가져오기
-    public int GetState()
+    /// <summary>
+    /// true이면 별, false이면 다른 재료
+    /// </summary>
+    public bool State
     {
-        return state;
+        get
+        {
+            return state;
+        }
+
+        private set
+        {
+            if(value)
+            {
+                gameObject.GetComponent<Image>().sprite = sun;
+            }
+            else
+            {
+                gameObject.GetComponent<Image>().sprite = moon;
+            }
+            state = value;
+        }
     }
 
     // 버튼 스위치
     public void CheckButton()
     {
-        if (state == 1) // 1이 sun 2가 moon
-            state = 0;
-        else
-            state = 1;
+        State = !state; // true가 sun false가 moon
     }
 }

@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour {
 
     public GameObject newBookAlert;
     public GameObject newItemAlert;
+    public GameObject newUpgradeAlert;
 
     DataController dataController;
 
@@ -30,5 +31,6 @@ public class UIManager : MonoBehaviour {
         itemLimitDisplayerR.text = itemLimitDisplayerL.text;
         newBookAlert.SetActive(dataController.newBookList.Count > 0);//deactive object when if count<=0 
         newItemAlert.SetActive(dataController.newItemList.Count > 0);
+        newUpgradeAlert.SetActive(dataController.NewUpgrade);
     }
 }
