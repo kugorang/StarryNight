@@ -18,7 +18,12 @@ public class UpgradeManager : MonoBehaviour
     private const int MAX_LEVEL = 20;
     private const int LAST_UPGRADE_MAX_LEVEL = 1;
 
+
     public int[] successRate;
+
+
+    private DataController dataController;
+    public DialogueManager dialogueManager;
 
     private void Awake()
     {
@@ -47,20 +52,16 @@ public class UpgradeManager : MonoBehaviour
             UpgradeButtons[i] = ParentPanels[i].Find("Upgrade Button").gameObject.GetComponent<Button>();
             UpgradeCostDisplayers[i]= UpgradeButtons[i].transform.Find("Upgrade Cost Displayer").gameObject.GetComponent<Text>();
         }
-
-        
-
-
+        dataController = DataController.Instance;
     }
 
     void Update()
     {
-   
         for(int i=0; i < 12; i++)
         {
             int upgradeIndex = 50001 + i;
             //업그레이드 text 및 버튼 설정
-            if ( upgradeIndex> DataController.Instance.LatestUpgradeIndex)
+            if ( upgradeIndex> dataController.LatestUpgradeIndex)
             {
                 UpgradeButtons[i].enabled = false;
                 if ( IsMaxUpgraded(upgradeIndex))
@@ -71,7 +72,6 @@ public class UpgradeManager : MonoBehaviour
                 {
                     UnlockPanels[i].SetActive(true);
                 }
-
             }
             else
             {
@@ -91,9 +91,9 @@ public class UpgradeManager : MonoBehaviour
                 UpgradeButtons[i].enabled = true;
                 UnlockPanels[i].SetActive(false);
             }
-
             // value[current값] -> 꼭!
             if (IsMaxUpgraded(upgradeIndex))
+
             {
                 UpgradeDisplayers[i].text = "MAX";
                 UpgradeCostDisplayers[i].text = "MAX";
@@ -177,6 +177,10 @@ public class UpgradeManager : MonoBehaviour
             DataController.Instance.Gold -= (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]];
             DataController.upgradeLV.LevelUp(id);
             PopUpAlert.Alert("업그레이드 성공!", this, true);
+            if (id==0&&dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300515)
+            {
+                dialogueManager.ContinueDialogue();
+            }
         }
         else
         {
@@ -187,21 +191,16 @@ public class UpgradeManager : MonoBehaviour
     // 인벤토리 업그레이드
     public void InvenUpgrade()
     {
-        // 골드 빼고
-        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentUpgradeLV[0]];
+
+        dataController.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentUpgradeLV[0]];
 
         // 공간 늘려주고
-        DataController.Instance.UpgradeInvenLv();
-    }
+        dataController.UpgradeInvenLv();
 
-    // 클릭당 게이지 업그레이드
-    public void EnergyPerClickUpgrade()
-    {
-        // 골드 빼고
-        DataController.Instance.Gold-=(ulong)dataDic.FindUpgrade(50002).cost[currentUpgradeLV[1]];
-
-        // 클릭 당 게이지 증가시켜주고
-        DataController.Instance.UpgradeEnergyPerClickLv();
+        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300515)
+        {
+            dialogueManager.ContinueDialogue();
+        }
     }
 
     public void RemoveAlert()// 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.

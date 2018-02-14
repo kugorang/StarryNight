@@ -24,16 +24,29 @@ public struct UpgradeInfo
     public int[] cost;
 }
 
+public struct TextInfo
+{
+    public readonly string name, dialogue, face, sound;
+
+    public TextInfo(string _name, string _dialogue, string _face, string _sound)
+    {
+        name = _name;
+        dialogue = _dialogue;
+        face = _face;
+        sound = _sound;
+    }
+}
+
 public class DataDictionary : MonoBehaviour
 {
-
     enum FILEINFO
     {
         COMBINETABLE,
         ITEMTABLE,
         SETITEMTABLE,
         QUESTTABLE,
-        UPGRADETABLE
+        UPGRADETABLE,
+        DIALOGUETABLE
     }
 
     public struct Tuple<T1, T2>
@@ -83,6 +96,10 @@ public class DataDictionary : MonoBehaviour
     /// </summary>
     public Dictionary<int, UpgradeInfo> FindUpDic { get; private set; }
 
+    // 대화 Dictionary
+    // Key : 인덱스, Value : 대화 정보
+    public Dictionary<int, TextInfo> DialogueDic { get; private set; }
+
     public int StarNum { get; private set; }
     public int MaterialNum { get; private set; }
     public int CombineNum { get; private set; }
@@ -120,6 +137,7 @@ public class DataDictionary : MonoBehaviour
         SetComineList = new List<SetItemInfo>();
         FindQuestDic = new Dictionary<int, QuestInfo>();
         FindUpDic = new Dictionary<int, UpgradeInfo>();
+        DialogueDic = new Dictionary<int, TextInfo>();
 
         // 읽어들이기
         ReadDataFile("dataTable/combineTable", FILEINFO.COMBINETABLE);
@@ -127,6 +145,7 @@ public class DataDictionary : MonoBehaviour
         ReadDataFile("dataTable/setItemTable", FILEINFO.SETITEMTABLE);
         ReadDataFile("dataTable/questTable", FILEINFO.QUESTTABLE);
         ReadDataFile("dataTable/upgradeTable", FILEINFO.UPGRADETABLE);
+        ReadDataFile("dataTable/dialogue", FILEINFO.DIALOGUETABLE);
     }
 
     private void ReadDataFile(string fileName, FILEINFO fileType)
@@ -140,7 +159,7 @@ public class DataDictionary : MonoBehaviour
 
         for (int i = 0; i < lineListLen; i++)
         {
-            string[] wordList = lineList[i].Split(',');
+            string[] wordList = lineList[i].Split(',', '\t');
             int index;
             switch (fileType)
             {
@@ -238,6 +257,13 @@ public class DataDictionary : MonoBehaviour
                     }
 
                     FindUpDic[index] = upInfo;
+                    break;
+                case FILEINFO.DIALOGUETABLE:
+                    index = Convert.ToInt32(wordList[0]);
+
+                    string name = wordList[1], dialogue = wordList[2], face = wordList[3], sound = wordList[4];
+
+                    DialogueDic[index] = new TextInfo(name, dialogue, face, sound);
                     break;
                 default:
                     break;

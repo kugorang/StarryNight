@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class QuestInfo//목표:quest.cs로 BlinkStar, QuestUIButton로 퀘스트 부분만 떼서 통합정리
 {
-
     // 퀘스트 기준 표 index
     public int Index { get; set; }
 
@@ -61,6 +60,7 @@ public class BlinkStar : MonoBehaviour, IClickables
 
     private QuestInfo ownQuest;
     private DataController dataController;
+    public DialogueManager dialogueManager;
 
     // 현재 퀘스트
     private QuestInfo currentQuest;
@@ -88,11 +88,9 @@ public class BlinkStar : MonoBehaviour, IClickables
 
         blinkAlive = true;
 
-        
         QuestInfo findQuestInfo = dataDic.FindQuestDic[questIndex];
         ownQuest = new QuestInfo(questIndex, findQuestInfo.Act, findQuestInfo.Title, findQuestInfo.Content, findQuestInfo.TermsItem, findQuestInfo.TermsCount, findQuestInfo.Reward, findQuestInfo.RewardCount);
         
-
         // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
 
         if (questIndex > dataController.QuestProcess) // 진행 전 퀘스트
@@ -113,18 +111,24 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
     }
 
-
     // 퀘스트 정보 확인 및 퀘스트 완료 보상 지급
     public void OnClick()
     {
         AudioManager.GetInstance().QuestStarSound();
         Debug.Log(dataController.QuestProcess + ", beforefind");
         currentQuest = dataDic.FindQuest(dataController.QuestProcess);
+        
+        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300135)
+        {
+            dialogueManager.ContinueDialogue();
+        }
 
         // 진행중인 퀘스트 조건 아이템의 인덱스
         int checkItemIndex = currentQuest.TermsItem;
+
         // 진행중인 퀘스트 조건을 만족하는 아이템 개수 
         int checkItemCount = currentQuest.TermsCount;
+        
         // 현재 가지고 있는 조건 아이템 갯수
         int currentItemNum = 0;
 
@@ -233,10 +237,10 @@ public class BlinkStar : MonoBehaviour, IClickables
         // 다음 퀘스트 별 반짝 거리기
         if (dataController.QuestProcess < 90105) // 양자리 일 때
         {
-            if(SceneManager.GetActiveScene().name == "Aries")
-            { 
-            BlinkStar nextStar = GameObject.Find("Aries_" + dataController.QuestProcess).GetComponent<BlinkStar>();
-            nextStar.BlingBling();
+            if (SceneManager.GetActiveScene().name == "Aries")
+            {
+                BlinkStar nextStar = GameObject.Find("Aries_" + dataController.QuestProcess).GetComponent<BlinkStar>();
+                nextStar.BlingBling();
             }
         }
         else if (dataController.QuestProcess > 90104 && dataController.QuestProcess < 90124) // 황소자리일 때 수 주의.나중에 변수나 상수로 쓸 것
@@ -395,7 +399,7 @@ public class BlinkStar : MonoBehaviour, IClickables
             }
             else
             {
-               if (questIndex < dataController.QuestProcess)
+                if (questIndex < dataController.QuestProcess)
                 {
                     //GameObject.Find("Progress Displayer").GetComponent<Text>().text = itemDic.FindItemDic[termItemIndex].Name + btn.GetComponent<QuestInfo>().TermsCount + "/" + btn.GetComponent<QuestInfo>().TermsCount;
 

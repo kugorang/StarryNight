@@ -9,6 +9,7 @@ TagManager:
   - ItemInfoWindow
   - ItemListManager
   - BlinkStars
+  - DialogueManager
   layers:
   - Default
   - TransparentFX

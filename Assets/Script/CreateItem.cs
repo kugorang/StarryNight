@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,12 +12,14 @@ public class CreateItem : MonoBehaviour
     public GameObject item;             // 아이템
     public Image img_earthback;         // 게이지 이미지
     public Button btn;
+    public GameObject alarmWindow;      // 알림창
 
     private DataDictionary dataDic;
 
     public Button combineButton;
 
     private DataController dataController;
+    public DialogueManager dialogueManager;
 
     // Item ID 공유 변수
     public static int IdCount;
@@ -71,14 +74,13 @@ public class CreateItem : MonoBehaviour
         {
             foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in dataController.HaveDic)
             {
-                if(entry.Key > 4000)//서적이면 만들지 않는다.
+                if (entry.Key > 4000)//서적이면 만들지 않는다.
                 {
                     continue;
                 }
                 // do something with entry.Value or entry.Key                
                 foreach (KeyValuePair<int, SerializableVector3> secondEntry in entry.Value)
                 {
-                    
                     GenerateItem(entry.Key, false, secondEntry.Key, secondEntry.Value);
                 }
 
@@ -136,6 +138,11 @@ public class CreateItem : MonoBehaviour
     // 게이지 클릭
     public void OnClick()
     {
+        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300129)
+        {
+            dialogueManager.ContinueDialogue();
+        }
+
         AudioManager.GetInstance().ClickSound();
         AddEnergy();
         NewObject();
@@ -148,39 +155,49 @@ public class CreateItem : MonoBehaviour
         {
             if (dataController.ItemCount >= dataController.ItemLimit) // 아이템 갯수 제한
             {
-                Debug.Log("아이템 상자가 꽉 찼어요~");
+                StartCoroutine("ShowAlertWindow");
 
                 return;
             }
 
             if (SwitchSunMoon.Instance.State) // sun일 때 나뭇가지 등 생성해야함
+
             {
-                if (Random.Range(0, 100) >= 95)
+                if (UnityEngine.Random.Range(0, 100) >= 95)
                 {
-                    GenerateItem(Random.Range(2007, 2013), true);
+                    GenerateItem(UnityEngine.Random.Range(2007, 2013), true);
                 }
                 else
                 {
-                    GenerateItem(Random.Range(2001, 2007), true);
+                    GenerateItem(UnityEngine.Random.Range(2001, 2007), true);
                 }
             }
             else
             {
-                if (Random.Range(0, 100) >= 95)
+                if (UnityEngine.Random.Range(0, 100) >= 95)
                 {
-                    GenerateItem(Random.Range(1004, 1007), true);
+                    GenerateItem(UnityEngine.Random.Range(1004, 1007), true);
                 }
                 else
                 {
-                    GenerateItem(Random.Range(1001, 1004), true);
+                    GenerateItem(UnityEngine.Random.Range(1001, 1004), true);
                 }
             }
 
-            dataController.AddItemCount();
+            dataController.ItemCount += 1;
             ResetEnergy();
-
             AudioManager.GetInstance().ItemSound();
+
+            if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300213 && dataController.ItemCount >= 3)
+            {
+                dialogueManager.ContinueDialogue();
+            }
         }
+    }
+
+    private void StartCoroutine(Func<IEnumerator> showAlertWindow)
+    {
+        throw new NotImplementedException();
     }
 
     // C#에서는 디폴트 파라미터를 허용하지 않기 때문에 이렇게 함수 오버로딩을 통해 구현하였습니다.
@@ -214,6 +231,14 @@ public class CreateItem : MonoBehaviour
             itemInstance.Id = itemID;
             dataController.SaveGameData(dataController.HaveDic, dataController.HaveDicPath);
         }
+    }
+
+    IEnumerator ShowAlertWindow()
+    {
+        alarmWindow.SetActive(true);
+        alarmWindow.GetComponentInChildren<Text>().text = "아이템 상자가 꽉 찼습니다.";
+        yield return new WaitForSeconds(3.0f);
+        alarmWindow.SetActive(false);
     }
 
     //void OnClick(SetItemInfo setItemInfo)

@@ -4,14 +4,12 @@ using UnityEngine.UI;
 public class BookListManager : MonoBehaviour
 {
     int setIdxStart, setIdxMax;
-
     DataDictionary dataDic;
-
     public GameObject panelPrefab, itemInfoPanel;
-
     public Sprite NewItemAlert;
-
     Transform setContentPanel;
+    private DataController dataController;
+    public DialogueManager dialogueManager;
 
     private static BookListManager instance;
 
@@ -33,6 +31,8 @@ public class BookListManager : MonoBehaviour
 
     private void Awake()
     {
+        dataController = DataController.Instance;
+        dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         dataDic = DataController.Instance.GetComponent<DataDictionary>();
         setContentPanel = GameObject.Find("SetContentPanel").transform;
     }
@@ -66,8 +66,6 @@ public class BookListManager : MonoBehaviour
 
         if (DataController.Instance.itemOpenList.Contains(idx))
         {
-            
-
             ColorBlock btnColors = itemBtn.colors;
 
             btnColors.normalColor = Color.white;
@@ -78,7 +76,7 @@ public class BookListManager : MonoBehaviour
 
             itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
         }
-        if (DataController.Instance.newBookList.Contains(idx))
+        if (dataController.newBookList.Contains(idx))
         {
             //새 아이템 표시 추가할 것
             itemLock.sprite = NewItemAlert;
@@ -108,10 +106,14 @@ public class BookListManager : MonoBehaviour
     }
 
     public void RemoveAlert(int idx, Image lockImg)
-    {
-        DataController dataController = DataController.Instance;
+    {  
         dataController.newBookList.Remove(idx);
         dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
         lockImg.gameObject.SetActive(false);
+
+        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300612 || dataController.NowIndex == 300623))
+        {
+            dialogueManager.ContinueDialogue();
+        }
     }
 }
