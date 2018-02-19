@@ -161,7 +161,7 @@ PlayerSettings:
     Android: io.retr0.starrynight
   buildNumber: {}
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 16
+  AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 2
   aotOptions: 
@@ -244,7 +244,7 @@ PlayerSettings:
   AndroidTargetDevice: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/samsung/Documents/GitHub/StarryNight/starrynight.keystore
+  AndroidKeystoreName: ./starrynight.keystore
   AndroidKeyaliasName: starrynight
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
