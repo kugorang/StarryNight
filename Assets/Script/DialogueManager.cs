@@ -7,7 +7,7 @@ public class DialogueManager : MonoBehaviour
 {
     public TextDisplayer textDisplayer;
     public Image bgImg;
-    public GameObject alarmPanel;
+    //public GameObject alarmPanel;
     private DataController dataController;
     private DataDictionary dataDictionary;
     private Dictionary<int, TextInfo> dialogueDic;
@@ -84,8 +84,7 @@ public class DialogueManager : MonoBehaviour
                 break;
             case "알림창":
                 textDisplayer.gameObject.SetActive(false);
-                alarmPanel.GetComponentInChildren<Text>().text = textInfo.dialogue;
-                alarmPanel.SetActive(true);
+                PopUpAlert.ShowDialogue(textInfo.dialogue);
                 return;
             default:
                 //textDisplayer.gameObject.SetActive(false);
@@ -97,7 +96,7 @@ public class DialogueManager : MonoBehaviour
 
     public void ContinueDialogue()
     {
-        alarmPanel.SetActive(false);
+        PopUpAlert.HideDialogue();
         textDisplayer.gameObject.SetActive(true);
 
         dataController.NowIndex++;
@@ -111,8 +110,7 @@ public class DialogueManager : MonoBehaviour
         if (textInfo.name == "알림창")
         {
             textDisplayer.gameObject.SetActive(false);
-            alarmPanel.GetComponentInChildren<Text>().text = textInfo.dialogue;
-            alarmPanel.SetActive(true);
+            PopUpAlert.ShowDialogue(textInfo.dialogue);
         }
         else
         {

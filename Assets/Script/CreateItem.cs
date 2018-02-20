@@ -12,7 +12,7 @@ public class CreateItem : MonoBehaviour
     public GameObject item;             // 아이템
     public Image img_earthback;         // 게이지 이미지
     public Button btn;
-    public GameObject alarmWindow;      // 알림창
+    //public GameObject alarmWindow;      // 알림창
 
     private DataDictionary dataDic;
 
@@ -155,8 +155,8 @@ public class CreateItem : MonoBehaviour
         {
             if (dataController.ItemCount >= dataController.ItemLimit) // 아이템 갯수 제한
             {
-                StartCoroutine("ShowAlertWindow");
-
+                //StartCoroutine("ShowAlertWindow");
+                PopUpAlert.Alert("아이템 상자가 꽉 찼어요.",this);
                 return;
             }
 
@@ -233,13 +233,13 @@ public class CreateItem : MonoBehaviour
         }
     }
 
-    IEnumerator ShowAlertWindow()
+    /*IEnumerator ShowAlertWindow()
     {
         alarmWindow.SetActive(true);
         alarmWindow.GetComponentInChildren<Text>().text = "아이템 상자가 꽉 찼습니다.";
         yield return new WaitForSeconds(3.0f);
         alarmWindow.SetActive(false);
-    }
+    }*/
 
     //void OnClick(SetItemInfo setItemInfo)
     //{

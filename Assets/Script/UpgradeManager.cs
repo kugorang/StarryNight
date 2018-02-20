@@ -31,18 +31,18 @@ public class UpgradeManager : MonoBehaviour
 
         ParentPanels = new Transform[12]
         {
-            GameObject.Find("Inventory Panel").transform,
-            GameObject.Find("EnergyPerClick Panel").transform,
-            GameObject.Find("ItemTime1 Panel").transform,
-            GameObject.Find("Panel (3)").transform,
-            GameObject.Find("Panel (4)").transform,
-            GameObject.Find("Panel (5)").transform,
-            GameObject.Find("Panel (6)").transform,
-            GameObject.Find("Panel (7)").transform,
-            GameObject.Find("Panel (8)").transform,
-            GameObject.Find("Panel (9)").transform,
-            GameObject.Find("Panel (10)").transform,
-            GameObject.Find("Panel (11)").transform
+            GameObject.Find("Upgrade Panel (0)").transform,
+            GameObject.Find("Upgrade Panel (1)").transform,
+            GameObject.Find("Upgrade Panel (2)").transform,
+            GameObject.Find("Upgrade Panel (3)").transform,
+            GameObject.Find("Upgrade Panel (4)").transform,
+            GameObject.Find("Upgrade Panel (5)").transform,
+            GameObject.Find("Upgrade Panel (6)").transform,
+            GameObject.Find("Upgrade Panel (7)").transform,
+            GameObject.Find("Upgrade Panel (8)").transform,
+            GameObject.Find("Upgrade Panel (9)").transform,
+            GameObject.Find("Upgrade Panel (10)").transform,
+            GameObject.Find("Upgrade Panel (11)").transform
         };
 
         for(int i=0; i<12; i++)
@@ -111,31 +111,31 @@ public class UpgradeManager : MonoBehaviour
                         str="클릭당 게이지 +" + DataController.Instance.EnergyPerClick + " -> +" + (2 + nextUpgradeValue);
                         break;
                     case 2:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 타이머1 시간 감소 -" + DataController.Instance + "초 -> -" + nextUpgradeValue + "초";
                         break;
                     case 3:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 타이머1에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue + "%";
                         break;
                     case 4:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "판매시 골드 추가 지급 +" + DataController.Instance + "골드 -> +" + nextUpgradeValue + "골드";
                         break;
                     case 5:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 타이머2 시간 감소 -" + DataController.Instance + "초 -> -" + nextUpgradeValue + "초";
                         break;
                     case 6:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 타이머2에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue + "%";
                         break;
                     case 7:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "지구본에서 한 단계 상위 아이템 나올 확률 증가" + DataController.Instance + "% -> +" + nextUpgradeValue + "%";
                         break;
                     case 8:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 조합 시 한 단계 상위 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue + "%";
                         break;
                     case 9:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 타이머3 시간 감소 -" + DataController.Instance + "초 -> -" + nextUpgradeValue + "초";
                         break;
                     case 10:
-                        str = "" + DataController.Instance + " -> +" + nextUpgradeValue;
+                        str = "아이템 타이머3에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue + "%";
                         break;
                     default://최종업그레이드
                         str = "골드 2배, 인벤토리 2배, 높은 등급 아이템 나올 확률 2배, 아이템 2개 나올 확률 2배";
@@ -188,7 +188,7 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    // 인벤토리 업그레이드
+  /*  // 인벤토리 업그레이드
     public void InvenUpgrade()
     {
 
@@ -201,7 +201,9 @@ public class UpgradeManager : MonoBehaviour
         {
             dialogueManager.ContinueDialogue();
         }
-    }
+    }*/
+
+void ProgessAnimation() { }//임시
 
     public void RemoveAlert()// 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
     {
