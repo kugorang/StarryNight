@@ -146,6 +146,7 @@ public class UpgradeClass
         {
             this.UpgradeMethods[i] = new UpgradeMethod(() => LevelUp(i));
         }*/
+        this.UpgradeLV = new int[12];
     }
 
     public UpgradeClass(int invenLV, int enegyPerClickLV, int waitTime1LV, int item1LVint, int saleGoldLV, int waitTime2LV, int item2LV, int atlasItemLV, int combineItemLV, int waitTime3LV, int item3LV, int twiceAll)

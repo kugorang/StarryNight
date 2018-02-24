@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,6 +52,10 @@ public class UpgradeManager : MonoBehaviour
             UpgradeCostDisplayers[i]= UpgradeButtons[i].transform.Find("Upgrade Cost Displayer").gameObject.GetComponent<Text>();
         }
         dataController = DataController.Instance;
+        if (successRate.Length < 12)
+        {
+            successRate = new int[12];
+        }
     }
 
     void Update()
@@ -147,18 +150,14 @@ public class UpgradeManager : MonoBehaviour
             }
 
         }
-      
-       
-             
-           
-        
-
     }
 
 
     public void Upgrade(int upgradeIndex)//아래 두 함수 하나로, 실패 구현
     {
         int id = upgradeIndex - 50001;
+        Debug.Log("Upgrade index: " + upgradeIndex);
+        float prob= (successRate[currentUpgradeLV[id]] / 100f);
         if (IsMaxUpgraded(upgradeIndex))
         {
             Debug.Log("Level Max");
@@ -166,17 +165,18 @@ public class UpgradeManager : MonoBehaviour
         }
         if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]])
         {
-            PopUpAlert.Alert("골드가 부족해요.", this, true);
+            PopUpWindow.Alert("골드가 부족해요.", this, true);
             return;
         }
-        Random.InitState((int)Time.time);
-       
-        if (Random.value<(successRate[currentUpgradeLV[id]]/100f))//업그레이드 레벨은 0~20이고 20에선 업글 불가
+        UnityEngine.Random.InitState((int)Time.time);
+        PopUpWindow.SetSliderValue(prob);
+        DataController.Instance.Gold -= (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]];
+        if (UnityEngine.Random.value<prob)//업그레이드 레벨은 0~20이고 20에선 업글 불가
         {
-            
-            DataController.Instance.Gold -= (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]];
+            Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!", this, true);
+            onComplete += () => PopUpWindow.HideSlider();
+            PopUpWindow.AnimateSlider(1, 2, this, onComplete);
             DataController.upgradeLV.LevelUp(id);
-            PopUpAlert.Alert("업그레이드 성공!", this, true);
             if (id==0&&dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300515)
             {
                 dialogueManager.ContinueDialogue();
@@ -184,7 +184,9 @@ public class UpgradeManager : MonoBehaviour
         }
         else
         {
-            PopUpAlert.Alert("업그레이드 실패...",this, true);
+            Action onComplete =()=> PopUpWindow.Alert("업그레이드 실패...", this, true);
+            onComplete+= ()=>PopUpWindow.HideSlider();
+            PopUpWindow.AnimateSlider(0, 2, this, onComplete);
         }
     }
 
@@ -202,8 +204,6 @@ public class UpgradeManager : MonoBehaviour
             dialogueManager.ContinueDialogue();
         }
     }*/
-
-void ProgessAnimation() { }//임시
 
     public void RemoveAlert()// 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
     {

@@ -106,7 +106,7 @@ public class ItemTimer : MonoBehaviour
 
             LeftTimer.InsertNewItem(id,1); //도감에 등록만 되면 됨
             AudioManager.GetInstance().ItemSound();
-            PopUpAlert.Alert("[서적] "+DataDictionary.Instance.FindItemDic[id].Name+" 획득",this);
+            PopUpWindow.Alert("[서적] "+DataDictionary.Instance.FindItemDic[id].Name+" 획득",this);
 
             LeftTimer[index] = cooltime;
             btn.enabled = false;

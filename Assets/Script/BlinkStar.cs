@@ -256,7 +256,6 @@ public class BlinkStar : MonoBehaviour, IClickables
     // 퀘스트 진행 상태에 따른 별 이미지 가져오기
     public void OnOtherClick()
     {
-        //Debug.Log("Hi");
         if (questIndex > dataController.QuestProcess)
         {
             btn.enabled = false;
@@ -277,7 +276,6 @@ public class BlinkStar : MonoBehaviour, IClickables
     //씬 로드 시 현재 진행 상태로(임시 테스트 함수, 리팩토링 필수)
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        //Debug.Log(scene.name);
         if (QuestUIButton.ShowingQuestIndex < 90101 && dataController.QuestProcess == questIndex && gameObject != null)
         {
             OnClick();

@@ -156,7 +156,7 @@ public class CreateItem : MonoBehaviour
             if (dataController.ItemCount >= dataController.ItemLimit) // 아이템 갯수 제한
             {
                 //StartCoroutine("ShowAlertWindow");
-                PopUpAlert.Alert("아이템 상자가 꽉 찼어요.",this);
+                PopUpWindow.Alert("아이템 상자가 꽉 찼어요.",this);
                 return;
             }
 

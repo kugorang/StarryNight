@@ -58,7 +58,6 @@ public class CameraController : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !FocusOnItem)
         {
             startPosX = Input.mousePosition.x;
-            //Debug.Log(startPosX);
         }
         else if (Input.GetMouseButtonUp(0) && !FocusOnItem)
         {

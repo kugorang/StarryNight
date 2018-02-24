@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour {
     void Update ()
     {
         // 보유 골드량 표시
-        goldDisplayerL.text = dataController.Gold + " 원";
+        goldDisplayerL.text = dataController.Gold + " 골드";
         goldDisplayerR.text = goldDisplayerL.text;
         // 현재 아이템 보유량 및 최대 아이템 보유 가능량 표시
         itemLimitDisplayerL.text = dataController.ItemCount + " / " + dataController.ItemLimit;

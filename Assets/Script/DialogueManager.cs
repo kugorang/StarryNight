@@ -84,7 +84,7 @@ public class DialogueManager : MonoBehaviour
                 break;
             case "알림창":
                 textDisplayer.gameObject.SetActive(false);
-                PopUpAlert.ShowDialogue(textInfo.dialogue);
+                PopUpWindow.ShowDialogue(textInfo.dialogue);
                 return;
             default:
                 //textDisplayer.gameObject.SetActive(false);
@@ -96,7 +96,7 @@ public class DialogueManager : MonoBehaviour
 
     public void ContinueDialogue()
     {
-        PopUpAlert.HideDialogue();
+        PopUpWindow.HideDialogue();
         textDisplayer.gameObject.SetActive(true);
 
         dataController.NowIndex++;
@@ -110,7 +110,7 @@ public class DialogueManager : MonoBehaviour
         if (textInfo.name == "알림창")
         {
             textDisplayer.gameObject.SetActive(false);
-            PopUpAlert.ShowDialogue(textInfo.dialogue);
+            PopUpWindow.ShowDialogue(textInfo.dialogue);
         }
         else
         {
