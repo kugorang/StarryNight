@@ -12,6 +12,11 @@ public class PopUpWindow : MonoBehaviour {
     public Text alertText;
     public Slider upgradeSlider;
 
+    public float shakingTime;
+    public float waitingTime;
+
+    private static float ShakingTime;
+    private static float WaitingTime;
     private static GameObject AlertPanel;
     private static Text AlertText;
     private static Slider UpgradeSlider;
@@ -24,6 +29,8 @@ public class PopUpWindow : MonoBehaviour {
         SceneManager.sceneLoaded +=(scene, mode)=>Initialize();
         alertQueue = new Queue();
         isLocked = false;
+        ShakingTime = shakingTime > 0 ?shakingTime:0.5f;
+        WaitingTime = waitingTime > 0 ? waitingTime : 0.3f;
     }
 
     private void Initialize()
@@ -174,7 +181,7 @@ public class PopUpWindow : MonoBehaviour {
     }
 
     /// <summary>
-    /// 슬라이더를 현재값에서 목표값으로 일정시간동안 움직입니다.
+    /// 슬라이더를 현재값에서 목표값으로 ShakingTime초의 요동치는 연출 이후 second동안 움직입니다.
     /// </summary>
     /// <param name="goalValue">목표값(0~1사이)</param>
     /// <param name="second">애니메이션 진행시간(초)</param>
@@ -184,17 +191,14 @@ public class PopUpWindow : MonoBehaviour {
 
         if (UpgradeSlider != null)
         {
-            if (!UpgradeSlider.gameObject.activeSelf)
-            {
-                UpgradeSlider.gameObject.SetActive(true);
-            }
+            SetSliderValue(0.5f);
             obj.StartCoroutine(SliderAnimationCoroutine(goalValue, second));
 
         }
     }
 
     /// <summary>
-    /// 슬라이더를 현재값에서 목표값으로 일정시간동안 움직입니다. 작업이 끝나면 onComplete를 호출합니다.
+    /// 슬라이더를 현재값에서 목표값으로 ShakingTime초의 요동치는 연출 이후 second동안 움직입니다. 작업이 끝나면 onComplete를 호출합니다.
     /// </summary>
     /// <param name="goalValue">목표값(0~1사이)</param>
     /// <param name="second">애니메이션 진행시간(초)</param>
@@ -205,11 +209,45 @@ public class PopUpWindow : MonoBehaviour {
 
         if (UpgradeSlider != null)
         {
+            SetSliderValue(0.5f);
+            obj.StartCoroutine(SliderAnimationCoroutine(goalValue, second, onComplete));            
+        }
+    }
+
+    /// <summary>
+    /// 슬라이더를 현재값에서 목표값으로 요동치지 않고 second동안 움직입니다. 작업이 끝나면 onComplete를 호출합니다.
+    /// </summary>
+    /// <param name="goalValue">목표값(0~1사이)</param>
+    /// <param name="second">애니메이션 진행시간(초)</param>
+    /// <param name="obj">이 함수를 호출한 인스턴스(this)</param>
+    public static void AnimateSlider(float goalValue, float second, MonoBehaviour obj, bool normal)
+    {
+        if (UpgradeSlider != null)
+        {
             if (!UpgradeSlider.gameObject.activeSelf)
             {
                 UpgradeSlider.gameObject.SetActive(true);
             }
-            obj.StartCoroutine(SliderAnimationCoroutine(goalValue, second, onComplete));            
+            obj.StartCoroutine(NormalSliderAnimationCoroutine(goalValue, second));
+        }
+    }
+
+    /// <summary>
+    /// 슬라이더를 현재값에서 목표값으로 요동치지 않고 없이 second동안 움직입니다. 작업이 끝나면 onComplete를 호출합니다.
+    /// </summary>
+    /// <param name="goalValue">목표값(0~1사이)</param>
+    /// <param name="second">애니메이션 진행시간(초)</param>
+    /// <param name="obj">이 함수를 호출한 인스턴스(this)</param>
+    /// <param name="onComplete">호출할 함수 f(void)</param>
+    public static void AnimateSlider(float goalValue,float second, MonoBehaviour obj, Action onComplete, bool normal)
+    {
+        if (UpgradeSlider != null)
+        {
+            if (!UpgradeSlider.gameObject.activeSelf)
+            {
+                UpgradeSlider.gameObject.SetActive(true);
+            }
+            obj.StartCoroutine(NormalSliderAnimationCoroutine(goalValue, second, onComplete));
         }
     }
 
@@ -248,20 +286,65 @@ public class PopUpWindow : MonoBehaviour {
 
     static IEnumerator SliderAnimationCoroutine(float goalValue, float second)
     {
-        float diff = goalValue-UpgradeSlider.value;//목표값-현재값
-        float deltaValue = diff/(10*second);//1회 변화량 
-        yield return new WaitForSeconds(0.5f);
+        float amplitude = 0.25f;
+        float diff = goalValue - amplitude;//목표값-현재값
+        float deltaValue = diff / (10 * second);//1회 변화량
+        yield return new WaitForSeconds(0.2f);
+
+        for (float i = 0; i <= ShakingTime; i += 0.1f)
+        {
+            float rate = 2 * Mathf.PI * i / ShakingTime;
+            UpgradeSlider.value = 0.5f + amplitude * (Mathf.Sin(rate));
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(WaitingTime);
         for (float i = 0; i <= second; i += 0.1f)
         {
             UpgradeSlider.value += deltaValue;
-            yield return new WaitForSeconds(0.1f);         
+            yield return new WaitForSeconds(0.1f);
         }
-        
+
     }
 
     static IEnumerator SliderAnimationCoroutine(float goalValue, float second, Action onComplete)
     {
+        float amplitude = 0.25f;
+        float diff = goalValue - amplitude;//목표값-현재값
+        float deltaValue = diff / (10 * second);//1회 변화량
+        yield return new WaitForSeconds(0.2f);
+
+        for (float i = 0; i <= ShakingTime; i += 0.1f)
+        {
+            float rate = 2 * Mathf.PI * i / ShakingTime;
+            UpgradeSlider.value = 0.5f+amplitude*(Mathf.Sin(rate));
+            yield return new WaitForSeconds(0.1f);
+        }
+        yield return new WaitForSeconds(WaitingTime);
+        for (float i = 0; i <= second; i += 0.1f)
+        {
+            UpgradeSlider.value += deltaValue;
+            yield return new WaitForSeconds(0.1f);
+        }
         
+        onComplete();
+    }
+
+    static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second)
+    {
+        float diff = goalValue - UpgradeSlider.value;//목표값-현재값
+        float deltaValue = diff / (10 * second);//1회 변화량 
+        yield return new WaitForSeconds(0.5f);
+        for (float i = 0; i <= second; i += 0.1f)
+        {
+            UpgradeSlider.value += deltaValue;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+    }
+
+    static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second, Action onComplete)
+    {
+
         float diff = goalValue - UpgradeSlider.value;//목표값-현재값
         float deltaValue = diff / (10 * second);//1회 변화량
         yield return new WaitForSeconds(0.5f);
@@ -270,8 +353,16 @@ public class PopUpWindow : MonoBehaviour {
             UpgradeSlider.value += deltaValue;
             yield return new WaitForSeconds(0.1f);
         }
-        
+
         onComplete();
+    }
+
+    private void OnEnable()//Awake 이후 재 검증
+    {
+        if (AlertPanel == null)
+        {
+            Initialize();
+        }
     }
 
     private void OnDisable()

@@ -103,7 +103,7 @@ public class BookListManager : MonoBehaviour
         infoWindow.ItemName.text = itemInfo.Name;
         infoWindow.ItemSort.text = itemInfo.Group;
         infoWindow.ItemGrade.text = itemInfo.Grade;
-        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();
+        infoWindow.ItemCost.text = "획득 보상 : " + itemInfo.SellPrice.ToString()+ " 골드";
         infoWindow.ItemText.text = itemInfo.Description;
     }
 
@@ -112,7 +112,9 @@ public class BookListManager : MonoBehaviour
         dataController.newBookList.Remove(idx);
         dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
         lockImg.gameObject.SetActive(false);
-
+        ItemInfo item = dataDic.FindItemDic[idx];
+        PopUpWindow.Alert(item.Name + " 획득 보상: "+item.SellPrice+" 골드", this, true);
+        dataController.Gold += (ulong)item.SellPrice;
         if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300612 || dataController.NowIndex == 300623))
         {
             dialogueManager.ContinueDialogue();

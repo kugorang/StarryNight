@@ -19,6 +19,7 @@ public class UpgradeManager : MonoBehaviour
 
 
     public int[] successRate;
+ 
 
 
     private DataController dataController;
@@ -162,13 +163,14 @@ public class UpgradeManager : MonoBehaviour
     public void Upgrade(int upgradeIndex)//아래 두 함수 하나로, 실패 구현
     {
         int id = upgradeIndex - 50001;
-        //Debug.Log("Upgrade index: " + upgradeIndex);
-        float prob= (successRate[currentUpgradeLV[id]] / 100f);
         if (IsMaxUpgraded(upgradeIndex))
         {
             Debug.Log("Level Max");
             return;
         }
+        //Debug.Log("Upgrade index: " + upgradeIndex);
+        float prob= (successRate[currentUpgradeLV[id]] / 100f);
+        
         if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]])
         {
             PopUpWindow.Alert("골드가 부족해요.", this, true);
@@ -181,7 +183,7 @@ public class UpgradeManager : MonoBehaviour
         {
             Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!", this, true);
             onComplete += () => PopUpWindow.HideSlider();
-            PopUpWindow.AnimateSlider(1, 2, this, onComplete);
+            PopUpWindow.AnimateSlider(1, 0.6f, this, onComplete);
             DataController.upgradeLV.LevelUp(id);
             if (id==0&&!dataController.IsTutorialEnd  && dataController.NowIndex == 300515)
             {
@@ -192,7 +194,7 @@ public class UpgradeManager : MonoBehaviour
         {
             Action onComplete =()=> PopUpWindow.Alert("업그레이드 실패...", this, true);
             onComplete+= ()=>PopUpWindow.HideSlider();
-            PopUpWindow.AnimateSlider(0, 2, this, onComplete);
+            PopUpWindow.AnimateSlider(0, 0.6f, this, onComplete);
         }
     }
 
