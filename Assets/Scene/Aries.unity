@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -216,7 +216,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textDisplayer: {fileID: 871357862}
   bgImg: {fileID: 1574724997}
-  alarmPanel: {fileID: 950718196}
 --- !u!4 &148431225
 Transform:
   m_ObjectHideFlags: 0
@@ -1435,13 +1434,14 @@ GameObject:
   - component: {fileID: 950718199}
   - component: {fileID: 950718198}
   - component: {fileID: 950718197}
+  - component: {fileID: 950718200}
   m_Layer: 5
   m_Name: Alarm Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &950718197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1454,7 +1454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1494,6 +1494,19 @@ RectTransform:
   m_AnchoredPosition: {x: -540, y: 450}
   m_SizeDelta: {x: 900, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &950718200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 950718196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe4ec510b8767e4394b7d54943c4bb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alertText: {fileID: 37412884}
+  upgradeSlider: {fileID: 0}
 --- !u!1 &998927522
 GameObject:
   m_ObjectHideFlags: 0

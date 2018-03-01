@@ -28,9 +28,16 @@ public class PopUpWindow : MonoBehaviour {
 
     private void Initialize()
     {
+        GameObject gameObj=GameObject.Find("Alarm Window");
+        if ( gameObj== null)
+        {
+            Debug.LogError("gameObject is destroyed");
+            return;
+        }
+
         if (AlertPanel == null)
         {
-            AlertPanel = gameObject;
+            AlertPanel = gameObj;
         }
         if (alertText == null)
         {
@@ -50,7 +57,7 @@ public class PopUpWindow : MonoBehaviour {
         }*/
         if (upgradeSlider == null)
         {
-            UpgradeSlider = gameObject.GetComponentInChildren<Slider>();
+            UpgradeSlider = gameObj.GetComponentInChildren<Slider>();
             
         }
         else
@@ -160,6 +167,10 @@ public class PopUpWindow : MonoBehaviour {
            
             UpgradeSlider.value = value;
         }
+        else
+        {
+            Debug.Log("Slider does not exist.");
+        }
     }
 
     /// <summary>
@@ -261,10 +272,11 @@ public class PopUpWindow : MonoBehaviour {
         onComplete();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         AlertPanel = null;
         AlertText = null;
+        Debug.Log("Alert Disabled");
     }
 
 
