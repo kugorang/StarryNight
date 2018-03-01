@@ -126,7 +126,7 @@ public class UpgradeClass
             }
             else
             {
-                Debug.Log("Level Can not be minus.");
+                Debug.LogWarning("Level Can not be minus.");
             }
         }
     }
@@ -184,15 +184,15 @@ public class DataController : MonoBehaviour
     // 튜토리얼 완료 여부
     public int isTutorialEnd;
 
-    public int IsTutorialEnd
+    public bool IsTutorialEnd
     {
         get
         {
-            return isTutorialEnd;
+            return isTutorialEnd>0;
         }
         private set
         {
-            isTutorialEnd = value;
+            isTutorialEnd = value?1:0;
             PlayerPrefs.SetInt("TutorialEnd", isTutorialEnd);
         }
     }
@@ -222,7 +222,7 @@ public class DataController : MonoBehaviour
                     nowIndex = 300601;
                     break;
                 case 300627:
-                    IsTutorialEnd = 1;
+                    IsTutorialEnd = true;
                     nowIndex = 300701;
                     return 0;
             }
@@ -337,7 +337,7 @@ public class DataController : MonoBehaviour
 
         newUpgradeInt = PlayerPrefs.GetInt("NewUpgrade",0);
 
-        IsTutorialEnd = PlayerPrefs.GetInt("TutorialEnd", 0);
+        isTutorialEnd = PlayerPrefs.GetInt("TutorialEnd", 0);
 
         // 튜토리얼 인덱스를 파트로 구분하여, 파트 중간에 종료 시 파트 처음으로 돌아가게 처리함.
         NowIndex = PlayerPrefs.GetInt("NowIndex", 300101) % 100000 / 100 * 100 + 300001;
@@ -502,7 +502,7 @@ public class DataController : MonoBehaviour
             m_gold = value;
             PlayerPrefs.SetString("Gold", m_gold.ToString());
             
-            if (IsTutorialEnd == 0 && NowIndex == 300427 && m_gold >= 200)
+            if (!IsTutorialEnd && NowIndex == 300427 && m_gold >= 200)
             {
                 GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
             }
@@ -655,7 +655,7 @@ public class DataController : MonoBehaviour
             HaveDic[key].Add(id, itemPos);
         }
 
-        if (IsTutorialEnd == 0 && NowIndex == 300310)
+        if (!IsTutorialEnd && NowIndex == 300310)
         {
             int sum = 0;
 
@@ -794,7 +794,7 @@ public class DataController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Upgrade index can not be lower than 50000");
+                Debug.LogWarning("Upgrade index can not be lower than 50000");
             }
         }
     }

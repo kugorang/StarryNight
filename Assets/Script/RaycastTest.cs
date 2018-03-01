@@ -21,10 +21,9 @@ public class RaycastTest : MonoBehaviour
     private void OnMouseDown()
     {
         CameraController.FocusOnItem = true;
-        //Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
         start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
         
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300305 && item.Info.Index >= 1001 && item.Info.Index <= 1003)
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300305 && item.Info.Index >= 1001 && item.Info.Index <= 1003)
         {
             dialogueManager.ContinueDialogue();
         }
@@ -51,7 +50,6 @@ public class RaycastTest : MonoBehaviour
         // 충돌 감지가 안 되었다면 아래 로직을 실행한다.
         GetComponent<BoxCollider2D>().isTrigger = false;
         CameraController.FocusOnItem = false;
-        //Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
 
         // 아이템이 인벤토리 밖으로 벗어날 경우 아이템 드래그 전 위치로 다시 이동
         if (Input.mousePosition.x > 7 * Screen.width / 8 || Input.mousePosition.x < Screen.width / 8 || Input.mousePosition.y > 7 * Screen.height / 8 || Input.mousePosition.y < Screen.height / 3)
@@ -86,7 +84,7 @@ public class RaycastTest : MonoBehaviour
 
             if (resultList != null)
             {
-                if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300306)
+                if (!dataController.IsTutorialEnd && dataController.NowIndex == 300306)
                 {
                     dialogueManager.ContinueDialogue();
                 }

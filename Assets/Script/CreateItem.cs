@@ -19,7 +19,7 @@ public class CreateItem : MonoBehaviour
     public Button combineButton;
 
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     // Item ID 공유 변수
     public static int IdCount;
@@ -48,6 +48,7 @@ public class CreateItem : MonoBehaviour
     private void Awake()
     {
         dataController = DataController.Instance;
+        
         dataDic = DataDictionary.Instance;
         //energyPerClick = DataController.Instance.EnergyPerClick;
         energyPerClick = 100;   // 개발 시 시간 절약을 위해 100으로 설정.
@@ -56,8 +57,10 @@ public class CreateItem : MonoBehaviour
         IdCount = PlayerPrefs.GetInt("IdCount", 0);
     }
 
+
     void Start()
     {
+        dialogueManager = DialogueManager.Instance;
         if (img_earthback == null)
         {
             img_earthback = GameObject.Find("EarthBack").GetComponent<Image>();
@@ -138,7 +141,7 @@ public class CreateItem : MonoBehaviour
     // 게이지 클릭
     public void OnClick()
     {
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300129)
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300129)
         {
             dialogueManager.ContinueDialogue();
         }
@@ -188,7 +191,7 @@ public class CreateItem : MonoBehaviour
             ResetEnergy();
             AudioManager.GetInstance().ItemSound();
 
-            if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300213 && dataController.ItemCount >= 3)
+            if (!dataController.IsTutorialEnd && dataController.NowIndex == 300213 && dataController.ItemCount >= 3)
             {
                 dialogueManager.ContinueDialogue();
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -12,35 +13,31 @@ public class DialogueManager : MonoBehaviour
     private DataDictionary dataDictionary;
     private Dictionary<int, TextInfo> dialogueDic;
 
-    //private static DialogueManager instance;
+    private static DialogueManager instance;
 
-    //public static DialogueManager Instance
-    //{
-    //    get
-    //    {
-    //        if (instance == null)
-    //        {
-    //            instance = FindObjectOfType<DialogueManager>();
-
-    //            if (instance == null)
-    //            {
-    //                GameObject container = new GameObject("DialogueManager");
-    //                instance = container.AddComponent<DialogueManager>();
-    //            }
-    //        }
-
-    //        return instance;
-    //    }
-    //}
+    public static DialogueManager Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
 
     private void Awake()
     {
-        //DontDestroyOnLoad(this);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+        SceneManager.sceneLoaded += (scene, mode) => OnSceneChange(mode);
+
         dataController = DataController.Instance;
         dataDictionary = DataDictionary.Instance;
         dialogueDic = dataDictionary.DialogueDic;
 
-        if(dataController.IsTutorialEnd == 0)
+        if (!dataController.IsTutorialEnd)
         {
             ShowDialogue();
         }
@@ -50,7 +47,29 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void OnClick()
+    public void OnSceneChange(LoadSceneMode mode)
+    {
+        if (mode == LoadSceneMode.Single)
+        {
+            if (GameObject.Find("Dialogue Panel") == null)
+            {
+                Debug.Log("Dialogue Panel is null object. Ignore this if this scene is not used in tutorial.");
+                return;
+            }
+            Transform dialoguePanel = GameObject.Find("Dialogue Panel").transform;
+            
+            textDisplayer = dialoguePanel.Find("Text Displayer").GetComponent<TextDisplayer>();
+            bgImg = textDisplayer.transform.Find("Holder").GetComponent<Image>();
+            textDisplayer.gameObject.GetComponent<Button>().onClick.AddListener(this.OnClick);
+            if (dataController.IsTutorialEnd)
+            {
+                textDisplayer.gameObject.SetActive(false);
+                
+            }
+        }
+    }
+
+public void OnClick()
     {
         if (textDisplayer.IsTyping)
         {

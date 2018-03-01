@@ -3,18 +3,24 @@
 public class Sale : MonoBehaviour
 {
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     private void Awake()
     {
         dataController = DataController.Instance;
+        
+    }
+
+    private void Start()
+    {
+        dialogueManager = DialogueManager.Instance;
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.tag == "Material")
         {
-            if(dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300423)
+            if(!dataController.IsTutorialEnd && dataController.NowIndex == 300423)
             {
                 dialogueManager.ContinueDialogue();
             }

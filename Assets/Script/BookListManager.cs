@@ -9,7 +9,7 @@ public class BookListManager : MonoBehaviour
     public Sprite NewItemAlert;
     Transform setContentPanel;
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     private static BookListManager instance;
 
@@ -32,6 +32,7 @@ public class BookListManager : MonoBehaviour
     private void Awake()
     {
         dataController = DataController.Instance;
+        
         dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         dataDic = DataController.Instance.GetComponent<DataDictionary>();
         setContentPanel = GameObject.Find("SetContentPanel").transform;
@@ -39,6 +40,7 @@ public class BookListManager : MonoBehaviour
 
     private void Start()
     {
+        dialogueManager = DialogueManager.Instance;
         int structNum = dataDic.SetComineList.Count;
 
         for (int index = 0; index < structNum; index++)
@@ -111,7 +113,7 @@ public class BookListManager : MonoBehaviour
         dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
         lockImg.gameObject.SetActive(false);
 
-        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300612 || dataController.NowIndex == 300623))
+        if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300612 || dataController.NowIndex == 300623))
         {
             dialogueManager.ContinueDialogue();
         }

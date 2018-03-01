@@ -45,6 +45,7 @@ public class TextDisplayer : MonoBehaviour
         }
         else
         {
+            gameObject.SetActive(true);
             StartCoroutine("TypeText", m_currentTypingDialgoue);
         }
     }

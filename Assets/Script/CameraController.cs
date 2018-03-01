@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
     public float minimumX;              // 210 이상, 지구본과 겹치치 않게.
     private float startPosX;
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     private bool CheckLeftScene
     {
@@ -39,6 +39,12 @@ public class CameraController : MonoBehaviour
         FocusOnItem = false;
         minimumDiff = Screen.width / 8;
         dataController = DataController.Instance;
+       
+    }
+
+    private void Start()
+    {
+        dialogueManager = DialogueManager.Instance;
     }
 
     private void OnEnable()
@@ -68,7 +74,7 @@ public class CameraController : MonoBehaviour
                 // 오른쪽에서 왼쪽
                 if (posXGap > 0 && !CheckLeftScene)
                 {
-                    if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300617)
+                    if (!dataController.IsTutorialEnd && dataController.NowIndex == 300617)
                     {
                         dialogueManager.ContinueDialogue();
                     }
@@ -82,7 +88,7 @@ public class CameraController : MonoBehaviour
                     iTween.MoveTo(gameObject, iTween.Hash("x", 540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
                     CheckLeftScene = false;
 
-                    if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300131)
+                    if (!dataController.IsTutorialEnd && dataController.NowIndex == 300131)
                     {
                         dialogueManager.ContinueDialogue();
                     }
@@ -93,7 +99,7 @@ public class CameraController : MonoBehaviour
 
     public void OnClickLeftBtn()
     {
-        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300210 || dataController.NowIndex == 300617))
+        if (!dataController.IsTutorialEnd&& (dataController.NowIndex == 300210 || dataController.NowIndex == 300617))
         {
             dialogueManager.ContinueDialogue();
         }
@@ -104,7 +110,7 @@ public class CameraController : MonoBehaviour
 
     public void OnClickRightBtn()
     {
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300215)
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300215)
         {
             dialogueManager.ContinueDialogue();
         }

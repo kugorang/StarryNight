@@ -17,7 +17,7 @@ public class ButtonManager : MonoBehaviour
 
         if (process <= 90104)
         {
-            if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
+            if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
             {
                 dataController.NowIndex++;
             }
@@ -45,7 +45,7 @@ public class ButtonManager : MonoBehaviour
     // 서적 (세트 아이템)
     public void OnBookListBtnClick()
     {
-        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300609 || dataController.NowIndex == 300622))
+        if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300609 || dataController.NowIndex == 300622))
         {
             dataController.NowIndex++;
         }
@@ -55,7 +55,7 @@ public class ButtonManager : MonoBehaviour
 
     public void OnMainBackBtnClick()
     {
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300204)
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300204)
         {
             dataController.NowIndex++;
         }

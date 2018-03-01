@@ -242,7 +242,6 @@ MonoBehaviour:
   index: 2
   disableOnStart: 1
   combineButton: {fileID: 0}
-  dialogueManager: {fileID: 1968090916}
 --- !u!114 &3774375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284,7 +1283,6 @@ MonoBehaviour:
   img_earthback: {fileID: 394413277}
   btn: {fileID: 141366570}
   combineButton: {fileID: 114627299}
-  dialogueManager: {fileID: 1968090916}
 --- !u!1 &141814170
 GameObject:
   m_ObjectHideFlags: 0
@@ -5810,7 +5808,6 @@ MonoBehaviour:
   index: 0
   disableOnStart: 1
   combineButton: {fileID: 0}
-  dialogueManager: {fileID: 1968090916}
 --- !u!114 &618962936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9195,7 +9192,6 @@ MonoBehaviour:
   index: 1
   disableOnStart: 1
   combineButton: {fileID: 0}
-  dialogueManager: {fileID: 1968090916}
 --- !u!114 &1086528555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9767,7 +9763,6 @@ MonoBehaviour:
   SunMoonbtn: {fileID: 1184656861}
   sun: {fileID: 21300000, guid: b3a50174b0c2da94d9df49bbaaaad4fd, type: 3}
   moon: {fileID: 21300000, guid: 65e9a740051638c43baf9243714ffcc4, type: 3}
-  dialogueManager: {fileID: 1968090916}
 --- !u!1 &1210835974
 GameObject:
   m_ObjectHideFlags: 0
@@ -9941,7 +9936,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d281736bc6a9504fafde57c97abed89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueManager: {fileID: 1968090916}
 --- !u!114 &1224388703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12249,18 +12243,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1968090916}
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1479132181
@@ -12823,7 +12806,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minimumX: 210
-  dialogueManager: {fileID: 1968090916}
   mainCamera: {fileID: 1621300560}
 --- !u!1 &1631531812
 GameObject:
@@ -13706,7 +13688,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   successRate: 640000005f0000005a00000055000000500000004b00000046000000410000003c00000037000000320000002d000000
-  dialogueManager: {fileID: 1968090916}
 --- !u!1 &1779373725
 GameObject:
   m_ObjectHideFlags: 0

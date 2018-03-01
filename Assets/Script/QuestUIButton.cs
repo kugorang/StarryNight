@@ -78,7 +78,7 @@ public class QuestUIButton : MonoBehaviour {
 
     public void OnEnable()
     {
-        Debug.Log(ShowingQuestIndex + ", OnEnable, " + SceneManager.GetActiveScene().name);
+
         GameObject star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
         if (star != null)
         {

@@ -20,17 +20,19 @@ public class ItemTimer : MonoBehaviour
     public Button combineButton;
 
     private DataController LeftTimer;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
     //private Vector3[] vectors = new Vector3[3] { new Vector3(-670, 772, -3), new Vector3(-550, 700, -3), new Vector3(-480, 772, -3) };
 
     private void Awake()
     {
         //dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
+
         LeftTimer = DataController.Instance;
     }
 
     void Start()
     {
+        dialogueManager = DialogueManager.Instance;
         if (img == null)
             img = gameObject.GetComponent<Image>();
 
@@ -81,21 +83,14 @@ public class ItemTimer : MonoBehaviour
 
     public void ResetCooltime()
     {
-        if(LeftTimer.IsTutorialEnd == 0 && LeftTimer.NowIndex == 300619)
+        if(!LeftTimer.IsTutorialEnd && LeftTimer.NowIndex == 300619)
         {
             dialogueManager.ContinueDialogue();
         }
 
         if (btn) // 버튼 활성화 시
         {
-
-            /*            if (LeftTimer.ItemCount >= LeftTimer.ItemLimit) // 아이템 갯수 제한
-
-            {
-                Debug.Log("아이템 상자가 꽉 찼어요");
-                return;
-            }*/
-
+            
             // 세트 아이템 랜덤 생성
             int id = Random.Range(4001, 4059);
 

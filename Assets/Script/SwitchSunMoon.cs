@@ -9,7 +9,7 @@ public class SwitchSunMoon : MonoBehaviour {
     public Sprite moon;
 
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     private static SwitchSunMoon instance;
 
@@ -40,6 +40,7 @@ public class SwitchSunMoon : MonoBehaviour {
         }
 
         dataController = DataController.Instance;
+        dialogueManager = DialogueManager.Instance;
     }
 
     
@@ -71,7 +72,7 @@ public bool State
     public void CheckButton()
     {
         
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300212)
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300212)
         {
             dialogueManager.ContinueDialogue();
         }

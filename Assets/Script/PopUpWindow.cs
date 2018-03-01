@@ -31,7 +31,7 @@ public class PopUpWindow : MonoBehaviour {
         GameObject gameObj=GameObject.Find("Alarm Window");
         if ( gameObj== null)
         {
-            Debug.LogError("gameObject is destroyed");
+            Debug.LogWarning("Alarm object is destroyed and not able to use alert.");
             return;
         }
 
@@ -87,16 +87,16 @@ public class PopUpWindow : MonoBehaviour {
     {
         if (isLocked)
         {
-            Debug.Log("Queue is Locked.");
+            Debug.LogWarning("Queue is Locked.");
             return;
         }
         if (AlertPanel == null)
         {
-            Debug.Log("Alert Pannel is Null Object.");
+            Debug.LogWarning("Alert Pannel is Null Object.");
             return;
         }
         alertQueue.Enqueue(text);
-        Debug.Log(alertQueue.Count + " count of queue!! " + alertQueue.Peek());
+
         if (alertQueue.Count <= 1)
         {
             GameObject alertPanel = AlertPanel;
@@ -141,7 +141,7 @@ public class PopUpWindow : MonoBehaviour {
     {
         if (AlertPanel == null)
         {
-            Debug.Log("Alert Pannel is Null Object.");
+            Debug.LogWarning("Alert Pannel is Null Object.");
             return;
         }
 
@@ -228,7 +228,6 @@ public class PopUpWindow : MonoBehaviour {
     {
         while (alertQueue.Count > 0)
         {
-            Debug.Log(alertQueue.Count + " count of queue " + alertQueue.Peek());
             txt.text = (string)alertQueue.Peek();
             img.color = new Color(1, 1, 1, 1);
             txt.color = new Color(1, 1, 1, 1);
@@ -239,7 +238,10 @@ public class PopUpWindow : MonoBehaviour {
                 img.color = new Color(1, 1, 1, 1 - i);
                 txt.color = new Color(1, 1, 1, 1 - i);
             }
-            alertQueue.Dequeue();
+            if (alertQueue.Count > 0)
+            {
+                alertQueue.Dequeue();
+            }
         }
 
     }
@@ -276,7 +278,6 @@ public class PopUpWindow : MonoBehaviour {
     {
         AlertPanel = null;
         AlertText = null;
-        Debug.Log("Alert Disabled");
     }
 
 

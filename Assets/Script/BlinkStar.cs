@@ -60,7 +60,7 @@ public class BlinkStar : MonoBehaviour, IClickables
 
     private QuestInfo ownQuest;
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     // 현재 퀘스트
     private QuestInfo currentQuest;
@@ -70,11 +70,10 @@ public class BlinkStar : MonoBehaviour, IClickables
 
     private void Awake()
     {
-        //OnSceneLoaded 활성화 용
-        SceneManager.sceneLoaded += OnSceneLoaded;
 
         dataDic = DataDictionary.Instance;
         dataController = DataController.Instance;
+
 
         btn = gameObject.GetComponent<Button>();
         btnImg = gameObject.GetComponent<Image>();
@@ -111,14 +110,22 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
     }
 
+    private void Start()
+    {
+        dialogueManager = DialogueManager.Instance;
+        if (QuestUIButton.ShowingQuestIndex < 90101 && dataController.QuestProcess == questIndex && gameObject != null)
+        {
+            OnClick();
+        }
+    }
+
     // 퀘스트 정보 확인 및 퀘스트 완료 보상 지급
     public void OnClick()
     {
         AudioManager.GetInstance().QuestStarSound();
-        Debug.Log(dataController.QuestProcess + ", beforefind");
         currentQuest = dataDic.FindQuest(dataController.QuestProcess);
         
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300135)
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300135)
         {
             dialogueManager.ContinueDialogue();
         }
@@ -273,21 +280,8 @@ public class BlinkStar : MonoBehaviour, IClickables
         }
     }
 
-    //씬 로드 시 현재 진행 상태로(임시 테스트 함수, 리팩토링 필수)
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (QuestUIButton.ShowingQuestIndex < 90101 && dataController.QuestProcess == questIndex && gameObject != null)
-        {
-            OnClick();
-        }
-    }
+   
 
-    //오브젝트 파괴시 씬로드 함수 비활성화
-    void OnDisable()
-    {
-        Debug.Log("OnDisable");
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
 
     public void ShowQuestInfo()
     {

@@ -22,7 +22,7 @@ public class UpgradeManager : MonoBehaviour
 
 
     private DataController dataController;
-    public DialogueManager dialogueManager;
+    private DialogueManager dialogueManager;
 
     private void Awake()
     {
@@ -52,10 +52,16 @@ public class UpgradeManager : MonoBehaviour
             UpgradeCostDisplayers[i]= UpgradeButtons[i].transform.Find("Upgrade Cost Displayer").gameObject.GetComponent<Text>();
         }
         dataController = DataController.Instance;
+        
         if (successRate.Length < 12)
         {
             successRate = new int[12];
         }
+    }
+
+    private void Start()
+    {
+        dialogueManager = DialogueManager.Instance;
     }
 
     void Update()
@@ -156,7 +162,7 @@ public class UpgradeManager : MonoBehaviour
     public void Upgrade(int upgradeIndex)//아래 두 함수 하나로, 실패 구현
     {
         int id = upgradeIndex - 50001;
-        Debug.Log("Upgrade index: " + upgradeIndex);
+        //Debug.Log("Upgrade index: " + upgradeIndex);
         float prob= (successRate[currentUpgradeLV[id]] / 100f);
         if (IsMaxUpgraded(upgradeIndex))
         {
@@ -177,7 +183,7 @@ public class UpgradeManager : MonoBehaviour
             onComplete += () => PopUpWindow.HideSlider();
             PopUpWindow.AnimateSlider(1, 2, this, onComplete);
             DataController.upgradeLV.LevelUp(id);
-            if (id==0&&dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300515)
+            if (id==0&&!dataController.IsTutorialEnd  && dataController.NowIndex == 300515)
             {
                 dialogueManager.ContinueDialogue();
             }
