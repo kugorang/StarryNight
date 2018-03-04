@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class CreateItem : MonoBehaviour
 {
@@ -141,9 +141,9 @@ public class CreateItem : MonoBehaviour
     // 게이지 클릭
     public void OnClick()
     {
-        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300129)
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            dialogueManager.ContinueDialogue();
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<CreateItem>(this));
         }
 
         AudioManager.GetInstance().ClickSound();
@@ -166,7 +166,7 @@ public class CreateItem : MonoBehaviour
             if (SwitchSunMoon.Instance.State) // sun일 때 나뭇가지 등 생성해야함
 
             {
-                if (UnityEngine.Random.Range(0, 100) >= 95)
+                if (UnityEngine.Random.Range(0, 100) >= dataController.AtlasItemProb)
                 {
                     GenerateItem(UnityEngine.Random.Range(2007, 2013), true);
                 }
@@ -177,7 +177,7 @@ public class CreateItem : MonoBehaviour
             }
             else
             {
-                if (UnityEngine.Random.Range(0, 100) >= 95)
+                if (UnityEngine.Random.Range(0, 100) >= dataController.AtlasItemProb)
                 {
                     GenerateItem(UnityEngine.Random.Range(1004, 1007), true);
                 }
@@ -191,10 +191,10 @@ public class CreateItem : MonoBehaviour
             ResetEnergy();
             AudioManager.GetInstance().ItemSound();
 
-            if (!dataController.IsTutorialEnd && dataController.NowIndex == 300213 && dataController.ItemCount >= 3)
-            {
-                dialogueManager.ContinueDialogue();
-            }
+           
+
+
+            
         }
     }
 
@@ -211,6 +211,10 @@ public class CreateItem : MonoBehaviour
 
     public void GenerateItem(int productID, bool isNew, int itemID, Vector3 itemPos)
     {
+        if (itemPos.x<0)
+        {
+            Debug.LogWarning("Generated in wrong place.");
+        }
         GameObject newItem = Instantiate(item, itemPos, Quaternion.identity);
 
         ItemInfo findItemInfo = dataDic.FindItemDic[productID];
@@ -234,6 +238,8 @@ public class CreateItem : MonoBehaviour
             itemInstance.Id = itemID;
             dataController.SaveGameData(dataController.HaveDic, dataController.HaveDicPath);
         }
+
+        
     }
 
     /*IEnumerator ShowAlertWindow()

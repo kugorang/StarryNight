@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RaycastTest : MonoBehaviour
 {
@@ -23,10 +24,12 @@ public class RaycastTest : MonoBehaviour
         CameraController.FocusOnItem = true;
         start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
         
-        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300305 && item.Info.Index >= 1001 && item.Info.Index <= 1003)
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            dialogueManager.ContinueDialogue();
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<ItemInfo>(item.Info,item.Info.Index));//무슨 아이템인지 알 수 있게 RaycastTest가 아니라 ItemInfo보냄 
         }
+
+
     }
 
     private void OnMouseDrag()
@@ -84,10 +87,8 @@ public class RaycastTest : MonoBehaviour
 
             if (resultList != null)
             {
-                if (!dataController.IsTutorialEnd && dataController.NowIndex == 300306)
-                {
-                    dialogueManager.ContinueDialogue();
-                }
+                
+        
 
                 collItemInfo.CheckDestroy = true;
 
@@ -98,6 +99,12 @@ public class RaycastTest : MonoBehaviour
                 int resultNum = resultList.Count;
 
                 ItemInfo findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
+
+                foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출, myItemInfo 바뀌기 전 정보 보냄.
+                {
+                    ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnCombine(myItemInfo, collItemInfo,findItemInfo));
+                }
+
 
                 myItemInfo.Index = findItemInfo.Index;
                 myItemInfo.Name = findItemInfo.Name;

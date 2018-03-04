@@ -68,7 +68,7 @@ public class GameStart : MonoBehaviour {
     {
         StopCoroutine("FadeBtn");
         SceneManager.LoadScene("Main");
-        //SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
+        SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
     }
 
 }

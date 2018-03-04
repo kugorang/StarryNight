@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Sale : MonoBehaviour
 {
@@ -20,10 +21,7 @@ public class Sale : MonoBehaviour
     {
         if (col.tag == "Material")
         {
-            if(!dataController.IsTutorialEnd && dataController.NowIndex == 300423)
-            {
-                dialogueManager.ContinueDialogue();
-            }
+            
 
             AudioManager.GetInstance().SaleSound();
             Item item = col.GetComponent<Item>();
@@ -34,6 +32,11 @@ public class Sale : MonoBehaviour
             dataController.DeleteItem(itemInfo.Index, item.Id);
 
             Destroy(col.gameObject);
+
+            foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+            {
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSell(itemInfo));
+            }
 
             //CameraController.focusOnItem = false;
         }

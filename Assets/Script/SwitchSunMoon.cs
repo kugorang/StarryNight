@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class SwitchSunMoon : MonoBehaviour {
 
@@ -71,11 +72,11 @@ public bool State
     // 버튼 스위치
     public void CheckButton()
     {
-        
-        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300212)
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            dialogueManager.ContinueDialogue();
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<SwitchSunMoon>(this));
         }
+
         State = !state; // true가 sun false가 moon
     }
 }

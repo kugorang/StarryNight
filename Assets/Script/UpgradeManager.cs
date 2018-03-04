@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -173,7 +174,7 @@ public class UpgradeManager : MonoBehaviour
         
         if (DataController.Instance.Gold < (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]])
         {
-            PopUpWindow.Alert("골드가 부족해요.", this, true);
+            PopUpWindow.Alert("골드가 부족해요.", this);
             return;
         }
         UnityEngine.Random.InitState((int)Time.time);
@@ -181,37 +182,24 @@ public class UpgradeManager : MonoBehaviour
         DataController.Instance.Gold -= (ulong)dataDic.FindUpgrade(upgradeIndex).cost[currentUpgradeLV[id]];
         if (UnityEngine.Random.value<prob)//업그레이드 레벨은 0~20이고 20에선 업글 불가
         {
-            Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!", this, true);
+            Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!", this);
             onComplete += () => PopUpWindow.HideSlider();
             PopUpWindow.AnimateSlider(1, 0.6f, this, onComplete);
             DataController.upgradeLV.LevelUp(id);
-            if (id==0&&!dataController.IsTutorialEnd  && dataController.NowIndex == 300515)
+            foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
             {
-                dialogueManager.ContinueDialogue();
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<UpgradeManager>(this, id));
             }
+
+            
         }
         else
         {
-            Action onComplete =()=> PopUpWindow.Alert("업그레이드 실패...", this, true);
+            Action onComplete =()=> PopUpWindow.Alert("업그레이드 실패...", this);
             onComplete+= ()=>PopUpWindow.HideSlider();
             PopUpWindow.AnimateSlider(0, 0.6f, this, onComplete);
         }
     }
-
-  /*  // 인벤토리 업그레이드
-    public void InvenUpgrade()
-    {
-
-        dataController.Gold-=(ulong)dataDic.FindUpgrade(50001).cost[currentUpgradeLV[0]];
-
-        // 공간 늘려주고
-        dataController.UpgradeInvenLv();
-
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300515)
-        {
-            dialogueManager.ContinueDialogue();
-        }
-    }*/
 
     public void RemoveAlert()// 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
     {

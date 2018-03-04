@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class PopUpWindow : MonoBehaviour {
+public class PopUpWindow : MonoBehaviour
+{
 
     private static bool isLocked;
     private static Queue alertQueue;
@@ -75,26 +76,18 @@ public class PopUpWindow : MonoBehaviour {
 
 
     /// <summary>
-    /// 왼쪽 화면에 PopUp알림을 띄웁니다.
+    /// 화면에 PopUp알림을 띄웁니다.
     /// </summary>
     /// <param name="text">띄울 알림 문자열</param>
     /// <param name="obj">이 함수를 호출한 인스턴스 (this)</param>
     public static void Alert(string text, MonoBehaviour obj)
     {
-        Alert(text, obj, false);
-    }
-
-    /// <summary>
-    /// 선택한 화면에 PopUp알림을 띄웁니다.
-    /// </summary>
-    /// <param name="text">띄울 알림 문자열</param>
-    /// <param name="obj">이 함수를 호출한 인스턴스 (this)</param>
-    /// <param name="isRight">오른쪽->true</param>
-    public static void Alert(string text, MonoBehaviour obj, bool isRight)
-    {
         if (isLocked)
         {
+            string temp=AlertText.text;
+            AlertText.text = text;
             Debug.LogWarning("Queue is Locked.");
+            obj.StartCoroutine(ChangeDialogueText(temp, 0.8f));
             return;
         }
         if (AlertPanel == null)
@@ -109,20 +102,11 @@ public class PopUpWindow : MonoBehaviour {
             GameObject alertPanel = AlertPanel;
             Text alertText = AlertText;
             Vector3 pos = alertPanel.transform.position;
-            if (isRight && pos.x < 0)
-            {
-                /*   alertPanel = AlertPanelR;
-                   alertText = AlertTextR;*/
-
-                alertPanel.transform.position = new Vector3(540, pos.y, pos.z);
-            }
-            else if (!isRight && pos.x > 0)
-            {
-                alertPanel.transform.position = new Vector3(-540, pos.y, pos.z);
-            }
+            alertPanel.transform.position = new Vector3(540, pos.y, pos.z);
             obj.StartCoroutine(FadeOut(alertPanel.GetComponent<Image>(), alertText));
         }
     }
+
     /// <summary>
     /// 알림창을 숨깁니다. 큐 잠금을 풉니다.
     /// </summary>
@@ -158,6 +142,19 @@ public class PopUpWindow : MonoBehaviour {
         AlertText.text = dialogue;
         AlertPanel.GetComponent<Image>().color = new Color(1, 1, 1, 1);
         AlertText.color = new Color(1, 1, 1, 1);
+    }
+    /// <summary>
+    /// 지연시간 안에 문자열만 바꿉니다.
+    /// </summary>
+    /// <param name="txt">새 문자열</param>
+    /// <param name="latencySecond">지연시간</param>
+    /// <returns></returns>
+    public static IEnumerator ChangeDialogueText(string txt, float latencySecond)
+    {
+
+        yield return new WaitForSeconds(latencySecond);
+       
+        AlertText.text = txt;
     }
     /// <summary>
     /// value만큼의 비율을 갖도록 슬라이더를 띄웁니다.

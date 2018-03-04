@@ -124,11 +124,12 @@ public class BlinkStar : MonoBehaviour, IClickables
     {
         AudioManager.GetInstance().QuestStarSound();
         currentQuest = dataDic.FindQuest(dataController.QuestProcess);
-        
-        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300135)
+
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            dialogueManager.ContinueDialogue();
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<BlinkStar>(this));
         }
+
 
         // 진행중인 퀘스트 조건 아이템의 인덱스
         int checkItemIndex = currentQuest.TermsItem;

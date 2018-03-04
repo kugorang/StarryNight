@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Since unity doesn't flag the Vector3 as serializable, we need to create our own version. This one will automatically convert between Vector3 and SerializableVector3
@@ -180,6 +181,11 @@ public class DataController : MonoBehaviour
 
     // itemOpenList 정보 저장 경로
     public string ItemOpenListPath { get; private set; }
+
+    /// <summary>
+    /// (임시)이벤트 관찰자 목록
+    /// </summary>
+    public List<GameObject> Observers;
 
     // 튜토리얼 완료 여부
     public int isTutorialEnd;
@@ -499,13 +505,15 @@ public class DataController : MonoBehaviour
         }
         set
         {
+            ulong delta = value - m_gold;
             m_gold = value;
             PlayerPrefs.SetString("Gold", m_gold.ToString());
-            
-            if (!IsTutorialEnd && NowIndex == 300427 && m_gold >= 200)
+
+            foreach (GameObject target in Observers)//관찰자들에게 이벤트 메세지 송출
             {
-                GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnChangeValue(ValueType.Gold, value, delta));
             }
+
         }
     }
 
@@ -597,6 +605,17 @@ public class DataController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 지구본에서 일반 아이템이 나올 확률(0~95)
+    /// </summary>
+    public int AtlasItemProb
+    {
+        get
+        {
+            return 95 - upgradeLV[7];
+        }
+    }
+
     #region Item
     public void InsertNewItem(int key, int itemId)
     {
@@ -655,24 +674,9 @@ public class DataController : MonoBehaviour
             HaveDic[key].Add(id, itemPos);
         }
 
-        if (!IsTutorialEnd && NowIndex == 300310)
+        foreach (GameObject target in Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            int sum = 0;
-
-            foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in HaveDic)
-            {
-                switch(entry.Key)
-                {
-                    case 1004: case 1005: case 1006:
-                        sum += entry.Value.Count;
-                        break;
-                }
-            }
-
-            if (sum >= 2)
-            {
-                GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
-            }
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObtain(dataDic.FindItemDic[key]));
         }
 
         SaveGameData(HaveDic, HaveDicPath);

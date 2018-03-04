@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System;
 
 public class CameraController : MonoBehaviour
@@ -74,23 +75,29 @@ public class CameraController : MonoBehaviour
                 // 오른쪽에서 왼쪽
                 if (posXGap > 0 && !CheckLeftScene)
                 {
-                    if (!dataController.IsTutorialEnd && dataController.NowIndex == 300617)
-                    {
-                        dialogueManager.ContinueDialogue();
-                    }
+                    
 
                     iTween.MoveTo(gameObject, iTween.Hash("x", -540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+                    //DetectCamera.OnCameraMove(true);
                     CheckLeftScene = true;
+                   
+                    foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+                    {
+                        ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(true, 1));
+                    }
+
                 }
                 // 왼쪽에서 오른쪽
                 else if (posXGap < 0 && CheckLeftScene && startPosX > minimumX)
                 {
                     iTween.MoveTo(gameObject, iTween.Hash("x", 540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+                    //DetectCamera.OnCameraMove(false);
                     CheckLeftScene = false;
 
-                    if (!dataController.IsTutorialEnd && dataController.NowIndex == 300131)
+                    
+                    foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
                     {
-                        dialogueManager.ContinueDialogue();
+                        ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(false, 1));
                     }
                 }
             }
@@ -99,24 +106,26 @@ public class CameraController : MonoBehaviour
 
     public void OnClickLeftBtn()
     {
-        if (!dataController.IsTutorialEnd&& (dataController.NowIndex == 300210 || dataController.NowIndex == 300617))
-        {
-            dialogueManager.ContinueDialogue();
-        }
+        
 
         iTween.MoveTo(mainCamera, iTween.Hash("x", -540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
         CheckLeftScene = true;
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+        {
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<CameraController>(this, 1));
+        }
     }
 
     public void OnClickRightBtn()
     {
-        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300215)
-        {
-            dialogueManager.ContinueDialogue();
-        }
+        
 
         iTween.MoveTo(mainCamera, iTween.Hash("x", 540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
         CheckLeftScene = false;
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+        {
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<CameraController>(this, 0));
+        }
     }
 
     public void OnApplicationQuit()

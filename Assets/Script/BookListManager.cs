@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class BookListManager : MonoBehaviour
 {
@@ -113,11 +114,13 @@ public class BookListManager : MonoBehaviour
         dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
         lockImg.gameObject.SetActive(false);
         ItemInfo item = dataDic.FindItemDic[idx];
-        PopUpWindow.Alert(item.Name + " 획득 보상: "+item.SellPrice+" 골드", this, true);
+        PopUpWindow.Alert(item.Name + " 획득 보상: "+item.SellPrice+" 골드", this);
         dataController.Gold += (ulong)item.SellPrice;
-        if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300612 || dataController.NowIndex == 300623))
+        
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            dialogueManager.ContinueDialogue();
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<BookListManager>(this));
         }
+
     }
 }

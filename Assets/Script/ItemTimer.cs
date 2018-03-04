@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class ItemTimer : MonoBehaviour
 {
@@ -83,10 +84,13 @@ public class ItemTimer : MonoBehaviour
 
     public void ResetCooltime()
     {
-        if(!LeftTimer.IsTutorialEnd && LeftTimer.NowIndex == 300619)
+        
+
+        foreach (GameObject target in LeftTimer.Observers)//관찰자들에게 이벤트 메세지 송출
         {
-            dialogueManager.ContinueDialogue();
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<ItemTimer>(this));
         }
+
 
         if (btn) // 버튼 활성화 시
         {
