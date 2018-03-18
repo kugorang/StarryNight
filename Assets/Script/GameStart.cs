@@ -52,7 +52,7 @@ public class GameStart : MonoBehaviour {
         yield break;
     }
 
-    IEnumerator FadeBtn()
+    IEnumerator FadeBtn()//버튼에 페이드 효과 주기
     {
         for (float i = -0.7f; i <= 0.7; i += 0.05f)
         {
@@ -60,7 +60,7 @@ public class GameStart : MonoBehaviour {
             Color color = new Vector4(1, 1, 1, 1-Mathf.Abs(i));
             startImg.color = color;
         }
-        StartCoroutine("FadeBtn");
+        StartCoroutine("FadeBtn");//StopCoroutine전까지 무한반복
     }
 
     // start 클릭 시 메인화면 이동

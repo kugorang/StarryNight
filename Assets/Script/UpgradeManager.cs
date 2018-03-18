@@ -85,20 +85,7 @@ public class UpgradeManager : MonoBehaviour
                 }
             }
             else
-            {
-                /*
-                // 업그레이드 비용이 충분한지 확인
-                if (!IsMaxUpgraded(upgradeIndex) && )
-                {
-                    UpgradeButtons[i].enabled = false;
-                    
-                }
-                else
-                {
-                   
-                    
-                }
-                */
+            {               
                 UpgradeButtons[i].enabled = true;
                 UnlockPanels[i].SetActive(false);
             }

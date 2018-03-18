@@ -96,7 +96,7 @@ public class ItemListManager : MonoBehaviour
             itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
             if (dataController.newItemList.Contains(idx))
             {
-                //새 아이템 표시 추가할 것
+                //새 아이템이면 느낌표 표시 추가
                 itemLock.sprite = NewItemAlert;
                 itemLock.raycastTarget = false;
                 itemBtn.onClick.AddListener(()=> RemoveAlert(idx,itemLock));
@@ -126,6 +126,7 @@ public class ItemListManager : MonoBehaviour
 
     public void RemoveAlert(int idx, Image lockImg)
     {
+        //더티 플래그와 느낌표 표시 갱신
         dataController.newItemList.Remove(idx);
         dataController.SaveGameData(dataController.newItemList, dataController.NewItemListPath);
         lockImg.gameObject.SetActive(false);

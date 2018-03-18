@@ -49,7 +49,7 @@ public class QuestUIButton : MonoBehaviour {
         minimumDiff= Screen.width / 8;
     }
 
-    private void Update()//주석풀어서확인, 슬라이드 구현 ppt 12번 참조
+    private void Update()//슬라이드 기능 구현
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -129,10 +129,7 @@ public class QuestUIButton : MonoBehaviour {
                 return;
             }
         }
-        /* else if(ShowingQuestIndex > 90123)
-         {
-             SceneManager.LoadScene("Quest");
-         }*/
+        
         star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
         if (star != null)
         {

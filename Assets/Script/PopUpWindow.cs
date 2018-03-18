@@ -55,14 +55,7 @@ public class PopUpWindow : MonoBehaviour
         {
             AlertText = alertText;
         }
-        /*if(AlertPanelR == null)
-        {
-            AlertPanelR = GameObject.Find("OnEventAlertR");
-        }
-        if (AlertTextR == null)
-        {
-            AlertTextR = AlertPanelR.GetComponentInChildren<Text>();
-        }*/
+       
         if (upgradeSlider == null)
         {
             UpgradeSlider = gameObj.GetComponentInChildren<Slider>();

@@ -87,22 +87,7 @@ public class CreateItem : MonoBehaviour
                     GenerateItem(entry.Key, false, secondEntry.Key, secondEntry.Value);
                 }
 
-                //int loopNum = entry.Value.Count;
-
-                //for (int index = 0; index < loopNum; index++)
-                //{
-                //    GenerateItem(entry.Key, false, entry.Value[index]);
-
-                //    //SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(entry.Key);
-
-                //    //if (setItemInfo.result != 0 && !tmpSetItemInfo.Contains(setItemInfo))
-                //    //{
-                //    //    tmpSetItemInfo.Add(setItemInfo);
-
-                //    //    combineButton.gameObject.SetActive(true);
-                //    //    combineButton.onClick.AddListener(() => OnClick(setItemInfo));
-                //    //}
-                //}
+               
             }
         }
 
@@ -141,7 +126,7 @@ public class CreateItem : MonoBehaviour
     // 게이지 클릭
     public void OnClick()
     {
-        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 Click 이벤트 메세지 송출
         {
             ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<CreateItem>(this));
         }
@@ -157,8 +142,7 @@ public class CreateItem : MonoBehaviour
         if (dataController.Energy >= energyMaxValue)
         {
             if (dataController.ItemCount >= dataController.ItemLimit) // 아이템 갯수 제한
-            {
-                //StartCoroutine("ShowAlertWindow");
+            {           
                 PopUpWindow.Alert("아이템 상자가 꽉 찼어요.",this);
                 return;
             }
@@ -211,7 +195,7 @@ public class CreateItem : MonoBehaviour
 
     public void GenerateItem(int productID, bool isNew, int itemID, Vector3 itemPos)
     {
-        if (itemPos.x<0)
+        if (itemPos.x<0)//알수없는 이유로 왼쪽 화면에 생성되어 판매할 수 없을 경우
         {
             Debug.LogWarning("Generated in wrong place.");
         }
@@ -242,27 +226,20 @@ public class CreateItem : MonoBehaviour
         
     }
 
-    /*IEnumerator ShowAlertWindow()
-    {
-        alarmWindow.SetActive(true);
-        alarmWindow.GetComponentInChildren<Text>().text = "아이템 상자가 꽉 찼습니다.";
-        yield return new WaitForSeconds(3.0f);
-        alarmWindow.SetActive(false);
-    }*/
+   
+   /* void OnClick(SetItemInfo setItemInfo)//아이템 교환 때 쓸 코드
+   {
+       dataController.DeleteItem(setItemInfo.index1);
+       dataController.DeleteItem(setItemInfo.index2);
+       dataController.DeleteItem(setItemInfo.index3);
+       dataController.DeleteItem(setItemInfo.index4);
 
-    //void OnClick(SetItemInfo setItemInfo)
-    //{
-    //    dataController.DeleteItem(setItemInfo.index1);
-    //    dataController.DeleteItem(setItemInfo.index2);
-    //    dataController.DeleteItem(setItemInfo.index3);
-    //    dataController.DeleteItem(setItemInfo.index4);
+       dataController.SubItemCount();
+       dataController.SubItemCount();
+       dataController.SubItemCount();
 
-    //    dataController.SubItemCount();
-    //    dataController.SubItemCount();
-    //    dataController.SubItemCount();
+       dataController.InsertNewItem(setItemInfo.result, 1);
 
-    //    dataController.InsertNewItem(setItemInfo.result, 1);
-
-    //    SceneManager.LoadScene("Main");
-    //}
+       SceneManager.LoadScene("Main");
+   }*/
 }

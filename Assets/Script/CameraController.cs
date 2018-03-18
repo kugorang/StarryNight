@@ -5,12 +5,12 @@ using System;
 public class CameraController : MonoBehaviour
 {
     [Tooltip("지구본과 겹치지 않게 적절한 X를 주세요.")]
-    public float minimumX;              // 210 이상, 지구본과 겹치치 않게.
+    public float minimumX;              // 210 이상, 시작위치가 지구본과 겹치지 않게.
     private float startPosX;
     private DataController dataController;
     private DialogueManager dialogueManager;
 
-    private bool CheckLeftScene
+    private bool CheckLeftScene //int로 저장되는 카메라 위치를 bool로 감싸주는 프로퍼티
     {
         get
         {
@@ -55,7 +55,7 @@ public class CameraController : MonoBehaviour
         {
             sign = -1;              // 왼쪽으로
         }
-        transform.position = new Vector3(540.0f * sign, transform.position.y, transform.position.z);
+        transform.position = new Vector3(540.0f * sign, transform.position.y, transform.position.z);//씬 떠났을 때 있었던 위치로 되돌림.
     }
 
     public GameObject mainCamera;
@@ -81,7 +81,7 @@ public class CameraController : MonoBehaviour
                     //DetectCamera.OnCameraMove(true);
                     CheckLeftScene = true;
                    
-                    foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+                    foreach (GameObject target in dataController.Observers)//관찰자들에게 Slide 이벤트 메세지 송출
                     {
                         ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(true, 1));
                     }
@@ -95,7 +95,7 @@ public class CameraController : MonoBehaviour
                     CheckLeftScene = false;
 
                     
-                    foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+                    foreach (GameObject target in dataController.Observers)//관찰자들에게 Slide 이벤트 메세지 송출
                     {
                         ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(false, 1));
                     }
@@ -110,7 +110,7 @@ public class CameraController : MonoBehaviour
 
         iTween.MoveTo(mainCamera, iTween.Hash("x", -540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
         CheckLeftScene = true;
-        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 Click 이벤트 메세지 송출
         {
             ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<CameraController>(this, 1));
         }
@@ -122,7 +122,7 @@ public class CameraController : MonoBehaviour
 
         iTween.MoveTo(mainCamera, iTween.Hash("x", 540.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
         CheckLeftScene = false;
-        foreach (GameObject target in dataController.Observers)//관찰자들에게 이벤트 메세지 송출
+        foreach (GameObject target in dataController.Observers)//관찰자들에게 Click 이벤트 메세지 송출
         {
             ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<CameraController>(this, 0));
         }
@@ -130,6 +130,6 @@ public class CameraController : MonoBehaviour
 
     public void OnApplicationQuit()
     {
-        CheckLeftScene = true;
+        CheckLeftScene = true;//앱 종료시 왼쪽 화면인 상태로 종료
     }
 }

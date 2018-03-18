@@ -81,7 +81,7 @@ public class BookListManager : MonoBehaviour
         }
         if (dataController.newBookList.Contains(idx))
         {
-            //새 아이템 표시 추가할 것
+            //새 아이템이면 느낌표 표시
             itemLock.sprite = NewItemAlert;
             itemLock.raycastTarget = false;
             itemBtn.onClick.AddListener(() => RemoveAlert(idx,itemLock));
@@ -110,9 +110,11 @@ public class BookListManager : MonoBehaviour
 
     public void RemoveAlert(int idx, Image lockImg)
     {  
+        //획득했으므로 더티 플래그와 느낌표 아이콘 갱신
         dataController.newBookList.Remove(idx);
         dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
         lockImg.gameObject.SetActive(false);
+        //아이템 정보를 얻어 획득 보상 처리(최초 1회)
         ItemInfo item = dataDic.FindItemDic[idx];
         PopUpWindow.Alert(item.Name + " 획득 보상: "+item.SellPrice+" 골드", this);
         dataController.Gold += (ulong)item.SellPrice;

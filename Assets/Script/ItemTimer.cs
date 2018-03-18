@@ -16,17 +16,17 @@ public class ItemTimer : MonoBehaviour
     public bool disableOnStart = false;
 
     private int sec, sec_1, sec_10, min;
-    //private DataDictionary dataDic;
+
 
     public Button combineButton;
 
     private DataController LeftTimer;
     private DialogueManager dialogueManager;
-    //private Vector3[] vectors = new Vector3[3] { new Vector3(-670, 772, -3), new Vector3(-550, 700, -3), new Vector3(-480, 772, -3) };
+   
 
     private void Awake()
     {
-        //dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
+        
 
         LeftTimer = DataController.Instance;
     }
@@ -86,7 +86,7 @@ public class ItemTimer : MonoBehaviour
     {
         
 
-        foreach (GameObject target in LeftTimer.Observers)//관찰자들에게 이벤트 메세지 송출
+        foreach (GameObject target in LeftTimer.Observers)//관찰자들에게 Click 이벤트 메세지 송출
         {
             ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick<ItemTimer>(this));
         }
@@ -109,44 +109,8 @@ public class ItemTimer : MonoBehaviour
 
             LeftTimer[index] = cooltime;
             btn.enabled = false;
-
-            //DataController.Instance.AddItemCount(); 서적은 아이템 인벤토리에 해당 안 함
         }
     }
 
-   /* private void CreateSetItem(int productID)
-    {
-        GameObject setItem = Instantiate(prefab, vectors[index], Quaternion.identity);
 
-
-        CreateItem.Instance.GenerateItem(productID, true);
-        setItem.GetComponent<Item>().SetItemInfo(productID, dataDic.FindItemDic[productID]);
-
-        // 아래 주석 코드는 조합 버튼이 사라졌으므로 현재는 필요 없음.
-        // 또 다시 쓸 수 있으므로 주석으로 비활성화함.
-        //SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(productID);
-
-        //if (setItemInfo.result != 0)
-        //{
-        //    combineButton.gameObject.SetActive(true);
-        //    combineButton.onClick.AddListener(() => OnClick(setItemInfo));
-        //}
-
-        setItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindItemDic[productID].ImagePath);
-    }
-    */
-    //void OnClick(SetItemInfo setItemInfo)
-    //{
-    //    DataController dataController = DataController.GetInstance();
-
-    //    dataController.DeleteItem(setItemInfo.index1);
-    //    dataController.DeleteItem(setItemInfo.index2);
-    //    dataController.DeleteItem(setItemInfo.index3);
-    //    dataController.DeleteItem(setItemInfo.index4);
-
-    //    dataController.InsertNewItem(setItemInfo.result, 1);
-
-    //    SceneManager.LoadScene("Main");
-    //}
 }
