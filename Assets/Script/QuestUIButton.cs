@@ -36,45 +36,45 @@ public class QuestUIButton : MonoBehaviour {
     }
 
     private List<int> FirstQuestsOf;
-   // private Dictionary<int, string> CurrentSceneName;
-    
+    private Dictionary<int, string> CurrentSceneName;
+
     public void Start()
     {
-        if (ShowingQuestIndex<FIRST_QUEST)//값이 할당되지 않은 경우
+        if (ShowingQuestIndex < FIRST_QUEST)//값이 할당되지 않은 경우
         {
             ShowingQuestIndex = DataController.Instance.QuestProcess;
         }
         FirstQuestsOf = DataDictionary.Instance.FirstQuestsOfScene;
 
-        minimumDiff= Screen.width / 8;
+        minimumDiff = Screen.width / 8;
     }
 
-    private void Update()//주석풀어서확인, 슬라이드 구현 ppt 12번 참조
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            startPosX = Input.mousePosition.x;
-            //Debug.Log(startPosX);
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            float posXGap = Input.mousePosition.x - startPosX;
+    //private void Update()//주석풀어서확인, 슬라이드 구현 ppt 12번 참조
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        startPosX = Input.mousePosition.x;
+    //        //Debug.Log(startPosX);
+    //    }
+    //    else if (Input.GetMouseButtonUp(0))
+    //    {
+    //        float posXGap = Input.mousePosition.x - startPosX;
 
-            if (Math.Abs(posXGap) > minimumDiff)
-            {
-                // ->
-                if (posXGap > 0)
-                {
-                    OnLeftQuestBtnClick();
-                }
-                // <-
-                else if (posXGap < 0)
-                {
-                    OnRightQuestBtnClick();
-                }
-            }
-        }
-    }
+    //        if (Math.Abs(posXGap) > minimumDiff)
+    //        {
+    //            // ->
+    //            if (posXGap > 0)
+    //            {
+    //                OnLeftQuestBtnClick();
+    //            }
+    //            // <-
+    //            else if (posXGap < 0)
+    //            {
+    //                OnRightQuestBtnClick();
+    //            }
+    //        }
+    //    }
+    //}
 
     public void OnEnable()
     {
@@ -89,7 +89,9 @@ public class QuestUIButton : MonoBehaviour {
     public void OnLeftQuestBtnClick()
     {
         ShowingQuestIndex -= 1;
+
         Debug.Log(ShowingQuestIndex + ", Left");
+
         if (ShowingQuestIndex < FirstQuestsOf[1] && SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aries"))
         {
             AudioManager.GetInstance().ActSound();

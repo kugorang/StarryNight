@@ -14,15 +14,13 @@ public class Item : MonoBehaviour
 
     public void SetItemInfo(int productID, ItemInfo findItemInfo)
     {
-
         Info = new ItemInfo(productID, findItemInfo.Name, findItemInfo.Group, findItemInfo.Grade, findItemInfo.SellPrice, findItemInfo.Description, findItemInfo.ImagePath);
-
     }
 
     public void StartAnimation()
     {
         // 아이템 생성 시 인벤토리 위치로 랜덤하게 이동
-        float randX = Random.Range(175, 953), randY = Random.Range(616, -227);
+        float randX = Random.Range(715, 1493), randY = Random.Range(616, -227);
 
         iTween.MoveTo(gameObject, iTween.Hash("x", randX, "y", randY, "time", 1.0f, "easeType", iTween.EaseType.easeInExpo));
 

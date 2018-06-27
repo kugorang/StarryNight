@@ -12,24 +12,26 @@ public class ButtonManager : MonoBehaviour
 
     public void OnQuestBtnClick()
     {
+        SceneManager.LoadScene("QuestList");
+
         //현재 퀘스트로 바로 이동
-        int process = dataController.QuestProcess;
+        //int process = dataController.QuestProcess;
 
-        if (process <= 90104)
-        {
-            if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
-            {
-                dataController.NowIndex++;
-            }
+        //if (process <= 90104)
+        //{
+        //    if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
+        //    {
+        //        dataController.NowIndex++;
+        //    }
 
-            AudioManager.GetInstance().ActSound();
-            SceneManager.LoadScene("Aries");
-        }
-        else if (90104 < process && process <= 90123)
-        {
-            AudioManager.GetInstance().ActSound();
-            SceneManager.LoadScene("Taurus");
-        }
+        //    AudioManager.GetInstance().ActSound();
+        //    SceneManager.LoadScene("Aries");
+        //}
+        //else if (90104 < process && process <= 90123)
+        //{
+        //    AudioManager.GetInstance().ActSound();
+        //    SceneManager.LoadScene("Taurus");
+        //}
         /*  else
           {
               SceneManager.LoadScene("Quest");

@@ -74,9 +74,9 @@ public class UpgradeClass
     //업그레이드 관련 변수. 참조 쉽게 하려고 Array로.
     public delegate void UpgradeMethod();
     public UpgradeMethod[] UpgradeMethods;
-    public int[] MaxLV=new int[12];
+    public int[] MaxLV = new int[12];
 
-    public const int FIRST_UPGRADE_INDEX= 50001;
+    public const int FIRST_UPGRADE_INDEX = 50001;
 
     private int[] UpgradeLV = new int[12];
 
@@ -93,7 +93,7 @@ public class UpgradeClass
             {
                 return UpgradeLV[id];
             }
-            else if (50000<id&&id<=50012)
+            else if (50000 < id && id <= 50012)
             {
                 return UpgradeLV[id - 50001];
             }
@@ -107,22 +107,22 @@ public class UpgradeClass
         {
             if (value >= 0)
             {
-                
+
                 if (-1 < id && id < 12)
                 {
-                    UpgradeLV[id]=value;
+                    UpgradeLV[id] = value;
                     PlayerPrefs.SetInt("Upgrade[" + id + "]LV", value);
                 }
                 else if (50000 < id && id <= 50012)
                 {
-                    UpgradeLV[id - 50001]=value;
-                    PlayerPrefs.SetInt("Upgrade[" + (id-50001) + "]LV", value);
+                    UpgradeLV[id - 50001] = value;
+                    PlayerPrefs.SetInt("Upgrade[" + (id - 50001) + "]LV", value);
                 }
                 else
                 {
                     Debug.LogError("Out of Index; Index should between 0~11 or 50001~50012");
                 }
-                
+
             }
             else
             {
@@ -140,7 +140,7 @@ public class UpgradeClass
         return this[index - FIRST_UPGRADE_INDEX];
     }
 
-   public UpgradeClass()
+    public UpgradeClass()
     {
         /*for (int i = 0; i < 12; i++)
         {
@@ -156,7 +156,7 @@ public class UpgradeClass
 
     public void LevelUp(int id)
     {
-        this.UpgradeLV[id] ++;
+        this.UpgradeLV[id]++;
         PlayerPrefs.SetInt("Upgrade[" + id + "]LV", this.UpgradeLV[id]);
     }
 }
@@ -255,7 +255,7 @@ public class DataController : MonoBehaviour
     //신규 항목알림을 위한 더티 플래그. 서적과 아이템 리스트는 새로운 아이템들의 인덱스를 담음. 길이 0이면 신규 없음.
     [HideInInspector]
     //public bool newQuest; 나중에 사용 안 하면 지울 것.
-   
+
     public List<int> newBookList;
     public List<int> newItemList;
     public string NewBookListPath { get; private set; }
@@ -305,7 +305,7 @@ public class DataController : MonoBehaviour
 
             return instance;
         }
-    } 
+    }
     #endregion
 
     // 게임 초기화될 때 
@@ -328,14 +328,14 @@ public class DataController : MonoBehaviour
         //업그레이드 레벨 변수들을 하나로 합침
         upgradeLV = new UpgradeClass();
 
-        for(int i=0; i<12; i++)
+        for (int i = 0; i < 12; i++)
         {
-            upgradeLV[i]= PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
+            upgradeLV[i] = PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
         }
 
 
 
-        newUpgradeInt = PlayerPrefs.GetInt("NewUpgrade",0);
+        newUpgradeInt = PlayerPrefs.GetInt("NewUpgrade", 0);
 
         IsTutorialEnd = PlayerPrefs.GetInt("TutorialEnd", 0);
 
@@ -346,8 +346,8 @@ public class DataController : MonoBehaviour
         ItemOpenListPath = "/itemOpenList.txt";
         NewBookListPath = "/newBookList.txt";
         NewItemListPath = "/newItemList.txt";
-        
-        
+
+
         HaveDic = LoadGameData(HaveDicPath) as Dictionary<int, Dictionary<int, SerializableVector3>>;
 
         if (HaveDic == null)
@@ -375,9 +375,9 @@ public class DataController : MonoBehaviour
         {
             newItemList = new List<int>();
         }
-        
 
-        
+
+
     }
 
     void Start()
@@ -501,7 +501,7 @@ public class DataController : MonoBehaviour
         {
             m_gold = value;
             PlayerPrefs.SetString("Gold", m_gold.ToString());
-            
+
             if (IsTutorialEnd == 0 && NowIndex == 300427 && m_gold >= 200)
             {
                 GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
@@ -548,7 +548,7 @@ public class DataController : MonoBehaviour
         }
     }
 
-  
+
     // 인벤토리 레벨 업그레이드
     public void UpgradeInvenLv()
     {
@@ -642,7 +642,7 @@ public class DataController : MonoBehaviour
         }
         else
         {
-            int id=itemId;
+            int id = itemId;
             if (HaveDic[key].ContainsKey(id))//id 에러 방지용 땜빵 코드. itemTimer 부분 참조.
             {
                 while (HaveDic[key].ContainsKey(id))
@@ -650,7 +650,7 @@ public class DataController : MonoBehaviour
                     id++;
                 }
 
-                
+
             }
             HaveDic[key].Add(id, itemPos);
         }
@@ -661,9 +661,11 @@ public class DataController : MonoBehaviour
 
             foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in HaveDic)
             {
-                switch(entry.Key)
+                switch (entry.Key)
                 {
-                    case 1004: case 1005: case 1006:
+                    case 1004:
+                    case 1005:
+                    case 1006:
                         sum += entry.Value.Count;
                         break;
                 }
@@ -728,7 +730,7 @@ public class DataController : MonoBehaviour
         }
 
         return 0;
-    } 
+    }
     #endregion
 
     #region Quest
@@ -767,9 +769,9 @@ public class DataController : MonoBehaviour
         set
         {
             m_leftTimer[index] = value;
-            PlayerPrefs.SetFloat("LeftTimer"+(index+1), m_leftTimer[index]);
+            PlayerPrefs.SetFloat("LeftTimer" + (index + 1), m_leftTimer[index]);
         }
-    } 
+    }
     #endregion
 
     /// <summary>
@@ -785,7 +787,7 @@ public class DataController : MonoBehaviour
         {
             if (value >= 50000)
             {
-                if (value-m_latestUpgradeIndex>1)
+                if (value - m_latestUpgradeIndex > 1)
                 {
                     Debug.LogWarning("순차적인 업그레이드가 아닙니다.");
                 }
@@ -803,8 +805,8 @@ public class DataController : MonoBehaviour
     public void UnlockUpgrade(int index)
     {
 
-        upgradeLV.MaxLV[index-50001] = dataDic.FindUpgrade(index).value.Length;//값길이=최대 길이
-        
+        upgradeLV.MaxLV[index - 50001] = dataDic.FindUpgrade(index).value.Length;//값길이=최대 길이
+
         NewUpgrade = true;
     }
 

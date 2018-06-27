@@ -40,7 +40,7 @@ public class DialogueManager : MonoBehaviour
         dataDictionary = DataDictionary.Instance;
         dialogueDic = dataDictionary.DialogueDic;
 
-        if(dataController.IsTutorialEnd == 0)
+        if (dataController.IsTutorialEnd == 0)
         {
             ShowDialogue();
         }
@@ -59,7 +59,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         dataController.NowIndex++;
-        
+
         if (dataController.NowIndex == 0)
         {
             textDisplayer.HideDialogueHolder();
@@ -101,7 +101,7 @@ public class DialogueManager : MonoBehaviour
 
         dataController.NowIndex++;
         ShowDialogue();
-    }    
+    }
 
     private void ShowDialogue()
     {

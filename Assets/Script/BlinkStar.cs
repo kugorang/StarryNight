@@ -90,7 +90,7 @@ public class BlinkStar : MonoBehaviour, IClickables
 
         QuestInfo findQuestInfo = dataDic.FindQuestDic[questIndex];
         ownQuest = new QuestInfo(questIndex, findQuestInfo.Act, findQuestInfo.Title, findQuestInfo.Content, findQuestInfo.TermsItem, findQuestInfo.TermsCount, findQuestInfo.Reward, findQuestInfo.RewardCount);
-        
+
         // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
 
         if (questIndex > dataController.QuestProcess) // 진행 전 퀘스트
@@ -117,7 +117,7 @@ public class BlinkStar : MonoBehaviour, IClickables
         AudioManager.GetInstance().QuestStarSound();
         Debug.Log(dataController.QuestProcess + ", beforefind");
         currentQuest = dataDic.FindQuest(dataController.QuestProcess);
-        
+
         if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300135)
         {
             dialogueManager.ContinueDialogue();
@@ -128,7 +128,7 @@ public class BlinkStar : MonoBehaviour, IClickables
 
         // 진행중인 퀘스트 조건을 만족하는 아이템 개수 
         int checkItemCount = currentQuest.TermsCount;
-        
+
         // 현재 가지고 있는 조건 아이템 갯수
         int currentItemNum = 0;
 
@@ -197,7 +197,7 @@ public class BlinkStar : MonoBehaviour, IClickables
                             dataController.Gold -= (ulong)currentQuest.TermsCount;
                         }
 
-                        dataController.LatestUpgradeIndex=currentQuest.Reward;//업그레이드가 순차적으로 열릴 것을 가정한 코드.
+                        dataController.LatestUpgradeIndex = currentQuest.Reward;//업그레이드가 순차적으로 열릴 것을 가정한 코드.
                     }
                     else
                     {
@@ -392,7 +392,7 @@ public class BlinkStar : MonoBehaviour, IClickables
                 }
                 else
                 {
-                   GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.upgradeLV[termItemIndex] + "/" + ownQuest.TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = dataDic.FindUpgrade(termItemIndex).name + DataController.upgradeLV[termItemIndex] + "/" + ownQuest.TermsCount;
                 }
             }
             else

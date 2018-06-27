@@ -14,7 +14,7 @@ public class DetectCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        uiPos.x = mainCamera.transform.position.x + 540;
+        uiPos.x = mainCamera.transform.position.x;
         GetComponent<RectTransform>().localPosition = uiPos;
     }
 }

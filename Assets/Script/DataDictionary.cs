@@ -223,6 +223,9 @@ public class DataDictionary : MonoBehaviour
                     break;
                 case FILEINFO.QUESTTABLE:
                     index = Convert.ToInt32(wordList[0]);
+                    //int dialogueStart = Convert.ToInt32(wordList[1]);
+                    //int dialogueEnd = Convert.ToInt32(wordList[2]);
+
                     int termsItem = Convert.ToInt32(wordList[4]);
                     int termsCount = Convert.ToInt32(wordList[5]);
                     int reward = Convert.ToInt32(wordList[6]);
@@ -230,8 +233,8 @@ public class DataDictionary : MonoBehaviour
 
                     FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
 
-                   
-                    if(wordList[1]!=formerSceneName)//씬의 첫 퀘스트의 인덱스 구하기
+
+                    if (wordList[1] != formerSceneName)//씬의 첫 퀘스트의 인덱스 구하기
                     {
                         FirstQuestsOfScene.Add(index);
                         formerSceneName = wordList[1];

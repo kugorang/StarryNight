@@ -29,3 +29,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/Cartoon.unity
     guid: e2c607b254e6b6d46a4f031453fa8124
+  - enabled: 1
+    path: Assets/Scene/QuestList.unity
+    guid: d4c128585f4803c48927229e29a29bb6
