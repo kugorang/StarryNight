@@ -1,16 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class CartoonManager : MonoBehaviour
 {
+    private static CartoonManager instance;
+    public FadeOut fadeOut;
     private int nowImgNum, nowPage, page1ImgNum, page2ImgNum;
     public Image[] page1ImgArr, page2ImgArr;
-    public FadeOut fadeOut;
-
-    private static CartoonManager instance;
 
     public static CartoonManager GetInstance()
     {
@@ -20,7 +16,7 @@ public class CartoonManager : MonoBehaviour
 
             if (instance == null)
             {
-                GameObject container = new GameObject("CartoonManager");
+                var container = new GameObject("CartoonManager");
 
                 instance = container.AddComponent<CartoonManager>();
             }
@@ -47,28 +43,22 @@ public class CartoonManager : MonoBehaviour
                     nowImgNum = 0;
                     nowPage++;
 
-                    for (int i = 0; i < page1ImgNum; i++)
-                    {
-                        page1ImgArr[i].gameObject.SetActive(false);
-                    }
+                    for (var i = 0; i < page1ImgNum; i++) page1ImgArr[i].gameObject.SetActive(false);
                 }
                 else
                 {
                     page1ImgArr[nowImgNum++].gameObject.SetActive(true);
                 }
+
                 break;
             case 2:
                 if (nowImgNum == page2ImgNum)
-                {
                     fadeOut.gameObject.SetActive(true);
-                }
                 else
-                {
                     page2ImgArr[nowImgNum++].gameObject.SetActive(true);
-                }
                 break;
             default:
                 break;
-        }        
+        }
     }
 }

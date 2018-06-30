@@ -6,13 +6,13 @@ public class DetectCamera : MonoBehaviour
     private Vector3 uiPos;
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         uiPos = new Vector3(mainCamera.transform.position.x, 0, 0);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         uiPos.x = mainCamera.transform.position.x;
         GetComponent<RectTransform>().localPosition = uiPos;

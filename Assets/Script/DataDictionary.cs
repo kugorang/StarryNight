@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Script;
 using UnityEngine;
 
 public struct SetItemInfo
@@ -39,60 +40,42 @@ public struct TextInfo
 
 public class DataDictionary : MonoBehaviour
 {
-    enum FILEINFO
-    {
-        COMBINETABLE,
-        ITEMTABLE,
-        SETITEMTABLE,
-        QUESTTABLE,
-        UPGRADETABLE,
-        DIALOGUETABLE
-    }
+    private static DataDictionary instance;
 
-    public struct Tuple<T1, T2>
-    {
-        public readonly T1 m_item1;
-        public readonly T2 m_item2;
-
-        public Tuple(T1 item1, T2 item2)
-        {
-            m_item1 = item1;
-            m_item2 = item2;
-        }
-    }
+    public List<int> FirstQuestsOfScene = new List<int>();
 
     /// <summary>
-    /// NOTE: 재료를 찾을 때 사용하는 Dictionary
-    /// <para> -> key(int) : 재료 기준표 인덱스</para>
-    /// <para> -> value(ItemInfo) : 재료 정보</para>
+    ///     NOTE: 재료를 찾을 때 사용하는 Dictionary
+    ///     <para> -> key(int) : 재료 기준표 인덱스</para>
+    ///     <para> -> value(ItemInfo) : 재료 정보</para>
     /// </summary>
     public Dictionary<int, ItemInfo> FindItemDic { get; private set; }
 
     /// <summary>
-    /// NOTE : 재료 조합식 Dictionary
-    /// <para>-> key(int) : material1 인덱스</para>
-    /// <para>-> value(int) : material1에 해당하는 조합식 list</para>
+    ///     NOTE : 재료 조합식 Dictionary
+    ///     <para>-> key(int) : material1 인덱스</para>
+    ///     <para>-> value(int) : material1에 해당하는 조합식 list</para>
     /// </summary>
     public Dictionary<Tuple<int, int>, List<int>> CombineDic { get; private set; }
 
     /// <summary>
-    /// NOTE: 세트 아이템 조합식을 저장하는 Dictionary
-    /// <para>-> key(int) : </para>
+    ///     NOTE: 세트 아이템 조합식을 저장하는 Dictionary
+    ///     <para>-> key(int) : </para>
     /// </summary>
     [HideInInspector]
     public List<SetItemInfo> SetComineList { get; private set; }
 
     /// <summary>
-    /// NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
-    /// <para> -> key(int) : 퀘스트 기준표 인덱스</para>
-    /// <para> -> value(ItemInfo) : 퀘스트 정보</para>
+    ///     NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
+    ///     <para> -> key(int) : 퀘스트 기준표 인덱스</para>
+    ///     <para> -> value(ItemInfo) : 퀘스트 정보</para>
     /// </summary>
     public Dictionary<int, QuestInfo> FindQuestDic { get; private set; }
 
     /// <summary>
-    /// NOTE: 업그레이드를 찾을 때 사용하는 Dictionary
-    /// <para> -> key(int) : 업그레이드 기준표 인덱스</para>
-    /// <para> -> value(ItemInfo) : 업그레이드 정보</para>
+    ///     NOTE: 업그레이드를 찾을 때 사용하는 Dictionary
+    ///     <para> -> key(int) : 업그레이드 기준표 인덱스</para>
+    ///     <para> -> value(ItemInfo) : 업그레이드 정보</para>
     /// </summary>
     public Dictionary<int, UpgradeInfo> FindUpDic { get; private set; }
 
@@ -104,10 +87,6 @@ public class DataDictionary : MonoBehaviour
     public int MaterialNum { get; private set; }
     public int CombineNum { get; private set; }
 
-    public List<int> FirstQuestsOfScene = new List<int>();
-
-    private static DataDictionary instance;
-
     public static DataDictionary Instance
     {
         get
@@ -118,7 +97,7 @@ public class DataDictionary : MonoBehaviour
 
                 if (instance == null)
                 {
-                    GameObject container = new GameObject("DataDictionary");
+                    var container = new GameObject("DataDictionary");
                     instance = container.AddComponent<DataDictionary>();
                 }
             }
@@ -150,23 +129,23 @@ public class DataDictionary : MonoBehaviour
 
     private void ReadDataFile(string fileName, FILEINFO fileType)
     {
-        TextAsset txtFile = (TextAsset)Resources.Load(fileName) as TextAsset;
-        string[] lineList = txtFile.text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+        var txtFile = (TextAsset) Resources.Load(fileName);
+        var lineList = txtFile.text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
-        int lineListLen = lineList.Length;
+        var lineListLen = lineList.Length;
 
-        string formerSceneName = "";
+        var formerSceneName = "";
 
-        for (int i = 0; i < lineListLen; i++)
+        for (var i = 0; i < lineListLen; i++)
         {
-            string[] wordList = lineList[i].Split(',', '\t');
+            var wordList = lineList[i].Split(',', '\t');
             int index;
             switch (fileType)
             {
                 case FILEINFO.COMBINETABLE:
-                    int material1 = Convert.ToInt32(wordList[0]);
-                    int material2 = Convert.ToInt32(wordList[1]);
-                    int resultNum = Convert.ToInt32(wordList[2]);
+                    var material1 = Convert.ToInt32(wordList[0]);
+                    var material2 = Convert.ToInt32(wordList[1]);
+                    var resultNum = Convert.ToInt32(wordList[2]);
 
                     Tuple<int, int> tuple;
 
@@ -176,26 +155,20 @@ public class DataDictionary : MonoBehaviour
 
                         CombineDic[tuple] = new List<int>();
 
-                        for (int j = 0; j < resultNum; j++)
-                        {
-                            CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
-                        }
+                        for (var j = 0; j < resultNum; j++) CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
                     }
 
                     tuple = new Tuple<int, int>(material1, material2);
 
                     CombineDic[tuple] = new List<int>();
 
-                    for (int j = 0; j < resultNum; j++)
-                    {
-                        CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
-                    }
+                    for (var j = 0; j < resultNum; j++) CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
 
                     break;
                 case FILEINFO.ITEMTABLE:
                     index = Convert.ToInt32(wordList[0]);
-                    int sellPrice = Convert.ToInt32(wordList[5]);
-                    string group = wordList[2];
+                    var sellPrice = Convert.ToInt32(wordList[5]);
+                    var group = wordList[2];
 
                     switch (group)
                     {
@@ -212,11 +185,13 @@ public class DataDictionary : MonoBehaviour
                             break;
                     }
 
-                    FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4], "itemImg/item_" + index);
+                    FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4],
+                        "itemImg/item_" + index);
 
                     break;
                 case FILEINFO.SETITEMTABLE:
-                    SetItemInfo setItemInfo = new SetItemInfo(Convert.ToInt32(wordList[0]), Convert.ToInt32(wordList[1]), Convert.ToInt32(wordList[2]), Convert.ToInt32(wordList[3]), Convert.ToInt32(wordList[4]));
+                    var setItemInfo = new SetItemInfo(Convert.ToInt32(wordList[0]), Convert.ToInt32(wordList[1]),
+                        Convert.ToInt32(wordList[2]), Convert.ToInt32(wordList[3]), Convert.ToInt32(wordList[4]));
 
                     SetComineList.Add(setItemInfo);
 
@@ -226,15 +201,16 @@ public class DataDictionary : MonoBehaviour
                     //int dialogueStart = Convert.ToInt32(wordList[1]);
                     //int dialogueEnd = Convert.ToInt32(wordList[2]);
 
-                    int termsItem = Convert.ToInt32(wordList[4]);
-                    int termsCount = Convert.ToInt32(wordList[5]);
-                    int reward = Convert.ToInt32(wordList[6]);
-                    int rewardCount = Convert.ToInt32(wordList[7]);
+                    var termsItem = Convert.ToInt32(wordList[4]);
+                    var termsCount = Convert.ToInt32(wordList[5]);
+                    var reward = Convert.ToInt32(wordList[6]);
+                    var rewardCount = Convert.ToInt32(wordList[7]);
 
-                    FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem, termsCount, reward, rewardCount);
+                    FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem,
+                        termsCount, reward, rewardCount);
 
 
-                    if (wordList[1] != formerSceneName)//씬의 첫 퀘스트의 인덱스 구하기
+                    if (wordList[1] != formerSceneName) //씬의 첫 퀘스트의 인덱스 구하기
                     {
                         FirstQuestsOfScene.Add(index);
                         formerSceneName = wordList[1];
@@ -243,7 +219,7 @@ public class DataDictionary : MonoBehaviour
                     break;
                 case FILEINFO.UPGRADETABLE:
                     index = Convert.ToInt32(wordList[0]);
-                    int len = (wordList.Length - 2) / 2; //wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
+                    var len = (wordList.Length - 2) / 2; //wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
                     UpgradeInfo upInfo;
                     upInfo.index = index;
                     upInfo.name = wordList[1];
@@ -251,10 +227,10 @@ public class DataDictionary : MonoBehaviour
                     upInfo.value = new int[len];
                     upInfo.cost = new int[len];
 
-                    for (int j = 0; j < len; j++)
+                    for (var j = 0; j < len; j++)
                     {
-                        int value = Convert.ToInt32(wordList[2 * j + 2]);
-                        int cost = Convert.ToInt32(wordList[2 * j + 3]);
+                        var value = Convert.ToInt32(wordList[2 * j + 2]);
+                        var cost = Convert.ToInt32(wordList[2 * j + 3]);
                         upInfo.value[j] = value;
                         upInfo.cost[j] = cost;
                     }
@@ -275,7 +251,7 @@ public class DataDictionary : MonoBehaviour
     }
 
     /// <summary>
-    /// 기준표에서 아이템을 찾는 함수
+    ///     기준표에서 아이템을 찾는 함수
     /// </summary>
     /// <param name="key">findDic의 key값</param>
     /// <returns>리턴값</returns>
@@ -285,65 +261,60 @@ public class DataDictionary : MonoBehaviour
     }
 
     /// <summary>
-    /// 조합표에서 검색하는 함수
+    ///     조합표에서 검색하는 함수
     /// </summary>
     /// <param name="key1">재료1의 인덱스</param>
     /// <param name="key2">재료2의 인덱스</param>
     /// <returns>찾았다면 결과를, 아니라면 0을 반환</returns>
     public List<int> FindCombine(int key1, int key2)
     {
-        Tuple<int, int> tuple = new Tuple<int, int>(key1, key2);
+        var tuple = new Tuple<int, int>(key1, key2);
 
-        if (CombineDic.ContainsKey(tuple))
-        {
-            return CombineDic[tuple];
-        }
+        if (CombineDic.ContainsKey(tuple)) return CombineDic[tuple];
 
         return null;
     }
 
     public SetItemInfo CheckSetItemCombine(int key)
     {
-        DataController dataController = DataController.Instance;
-        Dictionary<int, Dictionary<int, SerializableVector3>> haveDic = dataController.HaveDic;
+        var dataController = DataController.Instance;
+        var haveDic = dataController.HaveDic;
 
-        foreach (SetItemInfo setItemInfo in SetComineList)
-        {
+        foreach (var setItemInfo in SetComineList)
             if (key == setItemInfo.index1)
             {
-                if (haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4].Count > 0)
-                {
-                    return setItemInfo;
-                }
+                if (haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index4) &&
+                    haveDic[setItemInfo.index4].Count > 0) return setItemInfo;
             }
             else if (key == setItemInfo.index2)
             {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4].Count > 0)
-                {
-                    return setItemInfo;
-                }
+                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index4) &&
+                    haveDic[setItemInfo.index4].Count > 0) return setItemInfo;
             }
             else if (key == setItemInfo.index3)
             {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 && haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 && haveDic.ContainsKey(setItemInfo.index4) && haveDic[setItemInfo.index4].Count > 0)
-                {
-                    return setItemInfo;
-                }
+                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index4) &&
+                    haveDic[setItemInfo.index4].Count > 0) return setItemInfo;
             }
             else if (key == setItemInfo.index4)
             {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 && haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 && haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0)
-                {
-                    return setItemInfo;
-                }
+                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 &&
+                    haveDic.ContainsKey(setItemInfo.index3) &&
+                    haveDic[setItemInfo.index3].Count > 0) return setItemInfo;
             }
-        }
 
         return new SetItemInfo(0, 0, 0, 0, 0);
     }
 
     /// <summary>
-    /// 기준표에서 퀘스트를 찾는 함수
+    ///     기준표에서 퀘스트를 찾는 함수
     /// </summary>
     /// <param name="key">findQuestDic의 key값</param>
     /// <returns>리턴값</returns>
@@ -355,5 +326,27 @@ public class DataDictionary : MonoBehaviour
     public UpgradeInfo FindUpgrade(int key)
     {
         return FindUpDic[key];
+    }
+
+    private enum FILEINFO
+    {
+        COMBINETABLE,
+        ITEMTABLE,
+        SETITEMTABLE,
+        QUESTTABLE,
+        UPGRADETABLE,
+        DIALOGUETABLE
+    }
+
+    public struct Tuple<T1, T2>
+    {
+        public readonly T1 m_item1;
+        public readonly T2 m_item2;
+
+        public Tuple(T1 item1, T2 item2)
+        {
+            m_item1 = item1;
+            m_item2 = item2;
+        }
     }
 }

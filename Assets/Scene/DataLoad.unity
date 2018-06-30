@@ -536,9 +536,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c503e62628115c2499411ca3dec158b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loading: {fileID: 1525947137}
   logo: {fileID: 1448052920}
   start: {fileID: 1686730741}
-  loading: {fileID: 1525947137}
   startImg: {fileID: 559132737}
 --- !u!114 &1670578628
 MonoBehaviour:
@@ -792,9 +792,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32cecd98b6570645a461d80509653b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemOpenList: 
-  newBookList: 
-  newItemList: 
+  TutorialEnd: 0
+  ItemOpenList: 
+  NewBookList: 
+  NewItemList: 
+  Observers: []
 --- !u!1 &1899601957
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,10 +996,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d885deeed5e90a34c86c9d21f9109e20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  click: {fileID: 8300000, guid: d9a4dc8d10c916e4fa24ad5329f15b63, type: 3}
-  sale: {fileID: 8300000, guid: 14969cb75cd3f494d95d60e86fe09a02, type: 3}
   act: {fileID: 8300000, guid: 0576608601ec00742bc62f5ae506c232, type: 3}
-  option: {fileID: 8300000, guid: 30623862a3f3ff34795c5b704f01c938, type: 3}
+  click: {fileID: 8300000, guid: d9a4dc8d10c916e4fa24ad5329f15b63, type: 3}
   item: {fileID: 8300000, guid: d9f9388764af2304d9633ca836ff3056, type: 3}
   mix: {fileID: 8300000, guid: 1bd1e72dae2f32f4296f095650fbfc98, type: 3}
+  option: {fileID: 8300000, guid: 30623862a3f3ff34795c5b704f01c938, type: 3}
   questStar: {fileID: 8300000, guid: 90cdbe9bbd5138f47bef4ad5256222e2, type: 3}
+  sale: {fileID: 8300000, guid: 14969cb75cd3f494d95d60e86fe09a02, type: 3}

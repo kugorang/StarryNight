@@ -1,18 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TextDisplayer : MonoBehaviour
 {
-    [Range(0.0f, 1.0f)]
-    public float timeBetUpdateLetters;
-    public Text nameDisplayer, sayDisplayer;
-
     public GameObject dialougeWindowHolder;
 
-    public bool IsTyping { get; private set; }
-
     private string m_currentTypingDialgoue;
+    public Text nameDisplayer, sayDisplayer;
+
+    [Range(0.0f, 1.0f)] public float timeBetUpdateLetters;
+
+    public bool IsTyping { get; private set; }
 
     public void ShowDialogueHolder()
     {
@@ -45,6 +44,7 @@ public class TextDisplayer : MonoBehaviour
         }
         else
         {
+            gameObject.SetActive(true);
             StartCoroutine("TypeText", m_currentTypingDialgoue);
         }
     }
@@ -55,13 +55,9 @@ public class TextDisplayer : MonoBehaviour
         m_currentTypingDialgoue = dialogue;
 
         if (timeBetUpdateLetters <= 0f)
-        {
             sayDisplayer.text = dialogue;
-        }
         else
-        {
             StartCoroutine("TypeText", m_currentTypingDialgoue);
-        }
     }
 
     // Update Text from buffer
@@ -73,7 +69,7 @@ public class TextDisplayer : MonoBehaviour
 
         sayDisplayer.text = string.Empty;
 
-        foreach (char letter in texts.ToCharArray())
+        foreach (var letter in texts)
         {
             sayDisplayer.text += letter;
             yield return new WaitForSeconds(timeBetUpdateLetters);
@@ -89,7 +85,7 @@ public class TextDisplayer : MonoBehaviour
 
         ShowDialogueHolder();
 
-        foreach (char letter in texts.ToCharArray())
+        foreach (var letter in texts)
         {
             sayDisplayer.text += letter;
             yield return new WaitForSeconds(timeBetUpdateLetters);

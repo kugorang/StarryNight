@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class AndroidBackButtonManager : MonoBehaviour
 {
-    bool isPaused = false;
-
     private static AndroidBackButtonManager instance;
+    private bool isPaused;
 
     public static AndroidBackButtonManager GetInstance()
     {
@@ -15,7 +14,7 @@ public class AndroidBackButtonManager : MonoBehaviour
 
             if (instance == null)
             {
-                GameObject container = new GameObject("AndroidBackButttonManager");
+                var container = new GameObject("AndroidBackButttonManager");
 
                 instance = container.AddComponent<AndroidBackButtonManager>();
             }
@@ -48,7 +47,7 @@ public class AndroidBackButtonManager : MonoBehaviour
         }
     }
 
-    IEnumerator CheckTime()
+    private IEnumerator CheckTime()
     {
         yield return new WaitForSeconds(3.0f);
 

@@ -1,29 +1,34 @@
 ﻿using UnityEngine;
 
-public class Item : MonoBehaviour
+namespace Script
 {
-
-    // Item 고유 번호
-    public int Id { get; set; }
-
-    // 아이템 위치
-    public SerializableVector3 Pos { get; set; }
-
-    public ItemInfo Info { get; private set; }
-
-
-    public void SetItemInfo(int productID, ItemInfo findItemInfo)
+    public class Item : MonoBehaviour
     {
-        Info = new ItemInfo(productID, findItemInfo.Name, findItemInfo.Group, findItemInfo.Grade, findItemInfo.SellPrice, findItemInfo.Description, findItemInfo.ImagePath);
-    }
+        // Item 고유 번호
+        public int Id { get; set; }
 
-    public void StartAnimation()
-    {
-        // 아이템 생성 시 인벤토리 위치로 랜덤하게 이동
-        float randX = Random.Range(715, 1493), randY = Random.Range(616, -227);
+        // 아이템 위치
+        public SerializableVector3 Pos { get; set; }
 
-        iTween.MoveTo(gameObject, iTween.Hash("x", randX, "y", randY, "time", 1.0f, "easeType", iTween.EaseType.easeInExpo));
+        public ItemInfo Info { get; private set; }
 
-        Pos = new Vector3(randX, randY, -3);
+
+        public void SetItemInfo(int productId, ItemInfo findItemInfo)
+        {
+            Info = new ItemInfo(productId, findItemInfo.Name, findItemInfo.Group, findItemInfo.Grade,
+                findItemInfo.SellPrice, findItemInfo.Description, findItemInfo.ImagePath);
+        }
+
+        // TODO: 현재 절대 좌표로 되어 있는 코드를 상대 좌표로 변경할 것
+        public void StartAnimation()
+        {
+            // 아이템 생성 시 인벤토리 위치로 랜덤하게 이동
+            float randX = Random.Range(175, 953), randY = Random.Range(616, -227);
+
+            iTween.MoveTo(gameObject,
+                iTween.Hash("x", randX, "y", randY, "time", 1.0f, "easeType", iTween.EaseType.easeInExpo));
+
+            Pos = new Vector3(randX, randY, -3);
+        }
     }
 }

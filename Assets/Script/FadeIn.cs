@@ -4,11 +4,11 @@ using UnityEngine.UI;
 public class FadeIn : MonoBehaviour
 {
     public Image fade;
-    float fades = 0.0f;
-    float time = 0;
+    private float fades;
+    private float time;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         time += Time.deltaTime;
 

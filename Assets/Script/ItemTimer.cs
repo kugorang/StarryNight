@@ -1,153 +1,96 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
-public class ItemTimer : MonoBehaviour
+namespace Script
 {
-    public GameObject prefab;
-    public Text timeDisplayer;  // 남은 시간 표시
-    public Image img;
-    public Button btn;
-    public int index;
-    float cooltime = 300.0f;    // 쿨타임 -> 타이머 쿨타임 업그레이드 추가 시 datacontroller에서 가져오는 걸로 수정 필요. itemtimer 2,3도 마찬가지
-    public bool disableOnStart = false;
-
-    private int sec, sec_1, sec_10, min;
-    //private DataDictionary dataDic;
-
-    public Button combineButton;
-
-    private DataController LeftTimer;
-    public DialogueManager dialogueManager;
-    //private Vector3[] vectors = new Vector3[3] { new Vector3(-670, 772, -3), new Vector3(-550, 700, -3), new Vector3(-480, 772, -3) };
-
-    private void Awake()
+    public class ItemTimer : MonoBehaviour
     {
-        //dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
-        LeftTimer = DataController.Instance;
-    }
+        public Button Btn;
 
-    void Start()
-    {
-        if (img == null)
-            img = gameObject.GetComponent<Image>();
+        // 쿨타임 -> 타이머 쿨타임 업그레이드 추가 시 datacontroller에서 가져오는 걸로 수정 필요.
+        // itemtimer 2,3도 마찬가지
+        private const float Cooltime = 300.0f;
 
-        if (btn == null)
-            btn = gameObject.GetComponent<Button>();
-    }
+        public Image Img;
+        public int Index;
 
-    // 시간당 게이지 채우기, 남은 시간 표시
-    void Update()
-    {
-        if (LeftTimer[index] > 0)
+        private DataController _leftTimer;
+
+        private int _sec, _sec1, _sec10, _min;
+        public Text TimeDisplayer; // 남은 시간 표시
+
+        private void Awake()
         {
-            btn.enabled = false;
-            sec = (int)LeftTimer[index] % 60;
-            sec_10 = sec / 10;
-            sec_1 = sec % 10;
-            min = (int)LeftTimer[index] / 60;
-            timeDisplayer.text = min + ":" + sec_10 + sec_1;
-
-           
-            float ratio = 1.0f - (LeftTimer[index] / cooltime);
-
-            if (img)
-                img.fillAmount = ratio;
+            _leftTimer = DataController.Instance;
         }
-        else
+
+        private void Start()
         {
-            timeDisplayer.text = "0:00";
-            img.fillAmount = 1.0f;
+            if (Img == null)
+                Img = gameObject.GetComponent<Image>();
 
-            LeftTimer[index] = 0;
+            if (Btn == null)
+                Btn = gameObject.GetComponent<Button>();
+        }
 
-            if (btn)
+        // 시간당 게이지 채우기, 남은 시간 표시
+        private void Update()
+        {
+            if (_leftTimer[Index] > 0)
             {
-                btn.enabled = true;
+                Btn.enabled = false;
+                _sec = (int) _leftTimer[Index] % 60;
+                _sec10 = _sec / 10;
+                _sec1 = _sec % 10;
+                _min = (int) _leftTimer[Index] / 60;
+                TimeDisplayer.text = _min + ":" + _sec10 + _sec1;
+
+                var ratio = 1.0f - _leftTimer[Index] / Cooltime;
+
+                if (Img)
+                    Img.fillAmount = ratio;
+            }
+            else
+            {
+                TimeDisplayer.text = "0:00";
+                Img.fillAmount = 1.0f;
+
+                _leftTimer[Index] = 0;
+
+                if (Btn) Btn.enabled = true;
             }
         }
-    }
 
-    // 쿨타임 시간 지났는지 확인
-    public bool CheckCooltime()
-    {
-        if (LeftTimer[index] > 0)
-            return false;
-        else
-            return true;
-    }
-
-    public void ResetCooltime()
-    {
-        if(LeftTimer.IsTutorialEnd == 0 && LeftTimer.NowIndex == 300619)
+        // 쿨타임 시간 지났는지 확인
+        /*public bool CheckCooltime()
         {
-            dialogueManager.ContinueDialogue();
-        }
+            return !(_leftTimer[Index] > 0);
+        }*/
 
-        if (btn) // 버튼 활성화 시
+        public void ResetCooltime()
         {
+            // 관찰자들에게 Click 이벤트 메세지 송출
+            foreach (var target in _leftTimer.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
 
-            /*            if (LeftTimer.ItemCount >= LeftTimer.ItemLimit) // 아이템 갯수 제한
-
-            {
-                Debug.Log("아이템 상자가 꽉 찼어요");
+            // 버튼 활성화 시
+            if (!Btn) 
                 return;
-            }*/
-
+            
             // 세트 아이템 랜덤 생성
-            int id = Random.Range(4001, 4059);
+            var id = Random.Range(4001, 4059);
 
-            while (id % 5 == 0)
-            {
+            while (id % 5 == 0) 
                 id = Random.Range(4001, 4059);
-            }
 
-            LeftTimer.InsertNewItem(id,1); //도감에 등록만 되면 됨
+            // 도감에 등록만 되면 됨
+            _leftTimer.InsertNewItem(id, 1); 
             AudioManager.GetInstance().ItemSound();
-            PopUpWindow.Alert("[서적] "+DataDictionary.Instance.FindItemDic[id].Name+" 획득",this);
+            PopUpWindow.Alert("[서적] " + DataDictionary.Instance.FindItemDic[id].Name + " 획득", this);
 
-            LeftTimer[index] = cooltime;
-            btn.enabled = false;
-
-            //DataController.Instance.AddItemCount(); 서적은 아이템 인벤토리에 해당 안 함
+            _leftTimer[Index] = Cooltime;
+            Btn.enabled = false;
         }
     }
-
-   /* private void CreateSetItem(int productID)
-    {
-        GameObject setItem = Instantiate(prefab, vectors[index], Quaternion.identity);
-
-
-        CreateItem.Instance.GenerateItem(productID, true);
-        setItem.GetComponent<Item>().SetItemInfo(productID, dataDic.FindItemDic[productID]);
-
-        // 아래 주석 코드는 조합 버튼이 사라졌으므로 현재는 필요 없음.
-        // 또 다시 쓸 수 있으므로 주석으로 비활성화함.
-        //SetItemInfo setItemInfo = DataDictionary.GetInstance().CheckSetItemCombine(productID);
-
-        //if (setItemInfo.result != 0)
-        //{
-        //    combineButton.gameObject.SetActive(true);
-        //    combineButton.onClick.AddListener(() => OnClick(setItemInfo));
-        //}
-
-        setItem.GetComponent<BoxCollider2D>().isTrigger = false;
-        setItem.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindItemDic[productID].ImagePath);
-    }
-    */
-    //void OnClick(SetItemInfo setItemInfo)
-    //{
-    //    DataController dataController = DataController.GetInstance();
-
-    //    dataController.DeleteItem(setItemInfo.index1);
-    //    dataController.DeleteItem(setItemInfo.index2);
-    //    dataController.DeleteItem(setItemInfo.index3);
-    //    dataController.DeleteItem(setItemInfo.index4);
-
-    //    dataController.InsertNewItem(setItemInfo.result, 1);
-
-    //    SceneManager.LoadScene("Main");
-    //}
 }

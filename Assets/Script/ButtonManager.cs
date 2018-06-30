@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Script;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
@@ -15,27 +16,24 @@ public class ButtonManager : MonoBehaviour
         SceneManager.LoadScene("QuestList");
 
         //현재 퀘스트로 바로 이동
-        //int process = dataController.QuestProcess;
+        var process = dataController.QuestProcess;
 
-        //if (process <= 90104)
-        //{
-        //    if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
-        //    {
-        //        dataController.NowIndex++;
-        //    }
-
-        //    AudioManager.GetInstance().ActSound();
-        //    SceneManager.LoadScene("Aries");
-        //}
+        if (process <= 90104)
+            if (!dataController.IsTutorialEnd &&
+                (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
+                dataController.NowIndex++;
         //else if (90104 < process && process <= 90123)
         //{
         //    AudioManager.GetInstance().ActSound();
         //    SceneManager.LoadScene("Taurus");
         //}
-        /*  else
-          {
-              SceneManager.LoadScene("Quest");
-          }*/
+        //else
+        //{
+        //    SceneManager.LoadScene("Quest");
+        //}
+
+        //AudioManager.GetInstance().ActSound();
+        //SceneManager.LoadScene("Aries");
     }
 
     // 망원경
@@ -47,20 +45,15 @@ public class ButtonManager : MonoBehaviour
     // 서적 (세트 아이템)
     public void OnBookListBtnClick()
     {
-        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300609 || dataController.NowIndex == 300622))
-        {
+        if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300609 || dataController.NowIndex == 300622))
             dataController.NowIndex++;
-        }
 
         SceneManager.LoadScene("BookList");
     }
 
     public void OnMainBackBtnClick()
     {
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300204)
-        {
-            dataController.NowIndex++;
-        }
+        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300204) dataController.NowIndex++;
 
         SceneManager.LoadScene("Main");
     }

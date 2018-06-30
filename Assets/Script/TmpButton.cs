@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using Script;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TmpButton : MonoBehaviour
 {
     public void OnClick()
     {
-        if (DataController.Instance.IsTutorialEnd == 0 && (DataController.Instance.NowIndex == 300421 || DataController.Instance.NowIndex == 300509))
-        {
-            GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
-        }
+        Debug.Log("TmpButton : " + DataController.Instance.NowIndex);
+        
+        // 관찰자들에게 이벤트 메세지 송출
+        foreach (var target in DataController.Instance.Observers) 
+            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
     }
 }

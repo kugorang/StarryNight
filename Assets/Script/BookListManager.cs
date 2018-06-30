@@ -1,119 +1,128 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BookListManager : MonoBehaviour
+namespace Script
 {
-    int setIdxStart, setIdxMax;
-    DataDictionary dataDic;
-    public GameObject panelPrefab, itemInfoPanel;
-    public Sprite NewItemAlert;
-    Transform setContentPanel;
-    private DataController dataController;
-    public DialogueManager dialogueManager;
-
-    private static BookListManager instance;
-
-    public static BookListManager GetInstance()
+    public class BookListManager : MonoBehaviour
     {
-        if (instance == null)
-        {
-            instance = FindObjectOfType<BookListManager>();
+        private static BookListManager _instance;
+        private DataController _dataController;
+        private DataDictionary _dataDic;
+        public Sprite NewItemAlert;
+        public GameObject PanelPrefab, ItemInfoPanel;
+        private Transform _setContentPanel;
+        private int _setIdxStart, _setIdxMax;
 
-            if (instance == null)
+        public static BookListManager GetInstance()
+        {
+            if (_instance != null) 
+                return _instance;
+            
+            _instance = FindObjectOfType<BookListManager>();
+
+            if (_instance != null) 
+                return _instance;
+            
+            var container = new GameObject("BookListManager");
+            _instance = container.AddComponent<BookListManager>();
+
+            return _instance;
+        }
+
+        private void Awake()
+        {
+            _dataController = DataController.Instance;
+
+            GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+            _dataDic = DataController.Instance.GetComponent<DataDictionary>();
+            _setContentPanel = GameObject.Find("SetContentPanel").transform;
+        }
+
+        private void Start()
+        {
+            var structNum = _dataDic.SetComineList.Count;
+
+            for (var index = 0; index < structNum; index++)
             {
-                GameObject container = new GameObject("BookListManager");
-                instance = container.AddComponent<BookListManager>();
+                var setItemInfo = _dataDic.SetComineList[index];
+
+                AddItemButton(setItemInfo.index1, _setContentPanel);
+                AddItemButton(setItemInfo.index2, _setContentPanel);
+                AddItemButton(setItemInfo.index3, _setContentPanel);
+                AddItemButton(setItemInfo.index4, _setContentPanel);
+                AddItemButton(setItemInfo.result, _setContentPanel);
             }
         }
 
-        return instance;
-    }
-
-    private void Awake()
-    {
-        dataController = DataController.Instance;
-        dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
-        dataDic = DataController.Instance.GetComponent<DataDictionary>();
-        setContentPanel = GameObject.Find("SetContentPanel").transform;
-    }
-
-    private void Start()
-    {
-        int structNum = dataDic.SetComineList.Count;
-
-        for (int index = 0; index < structNum; index++)
+        private void AddItemButton(int idx, Transform tf)
         {
-            SetItemInfo setItemInfo = dataDic.SetComineList[index];
+            var itemListPanel = Instantiate(PanelPrefab);
+            var itemBtn = itemListPanel.GetComponentInChildren<Button>();
+            var itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-            AddItemButton(setItemInfo.index1, setContentPanel);
-            AddItemButton(setItemInfo.index2, setContentPanel);
-            AddItemButton(setItemInfo.index3, setContentPanel);
-            AddItemButton(setItemInfo.index4, setContentPanel);
-            AddItemButton(setItemInfo.result, setContentPanel);
+            var findItemInfo = _dataDic.FindItemDic[idx];
+
+            itemListPanel.transform.SetParent(tf);
+            itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
+
+            if (DataController.Instance.ItemOpenList.Contains(idx))
+            {
+                var btnColors = itemBtn.colors;
+
+                btnColors.normalColor = Color.white;
+                btnColors.highlightedColor = Color.white;
+                btnColors.pressedColor = Color.white;
+
+                itemBtn.colors = btnColors;
+
+                itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
+            }
+
+            if (_dataController.NewBookList.Contains(idx))
+            {
+                //새 아이템이면 느낌표 표시
+                itemLock.sprite = NewItemAlert;
+                itemLock.raycastTarget = false;
+                itemBtn.onClick.AddListener(() => RemoveAlert(idx, itemLock));
+            }
+            else
+            {
+                itemLock.gameObject.SetActive(false);
+            }
         }
-    }
 
-    void AddItemButton(int idx, Transform tf)
-    {
-        GameObject itemListPanel = Instantiate(panelPrefab);
-        Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
-        Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
-
-        ItemInfo findItemInfo = dataDic.FindItemDic[idx];
-
-        itemListPanel.transform.SetParent(tf);
-        itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
-
-        if (DataController.Instance.itemOpenList.Contains(idx))
+        private void ShowWindow(ItemInfo itemInfo)
         {
-            ColorBlock btnColors = itemBtn.colors;
+            ItemInfoPanel.SetActive(true);
 
-            btnColors.normalColor = Color.white;
-            btnColors.highlightedColor = Color.white;
-            btnColors.pressedColor = Color.white;
+            var infoWindow = ItemInfoPanel.transform.Find("ItemInfoWindow").GetComponent<ItemInfoWindow>();
 
-            itemBtn.colors = btnColors;
+            infoWindow.gameObject.SetActive(true);
 
-            itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
+            infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
+            infoWindow.ItemName.text = itemInfo.Name;
+            infoWindow.ItemSort.text = itemInfo.Group;
+            infoWindow.ItemGrade.text = itemInfo.Grade;
+            infoWindow.ItemCost.text = "획득 보상 : " + itemInfo.SellPrice + " 골드";
+            infoWindow.ItemText.text = itemInfo.Description;
         }
-        if (dataController.newBookList.Contains(idx))
+
+        private void RemoveAlert(int idx, Component lockImg)
         {
-            //새 아이템 표시 추가할 것
-            itemLock.sprite = NewItemAlert;
-            itemLock.raycastTarget = false;
-            itemBtn.onClick.AddListener(() => RemoveAlert(idx,itemLock));
-        }
-        else
-        {
-            itemLock.gameObject.SetActive(false);
-        }
-    }
+            // 획득했으므로 더티 플래그와 느낌표 아이콘 갱신
+            _dataController.NewBookList.Remove(idx);
+            DataController.SaveGameData(_dataController.NewBookList, _dataController.NewBookListPath);
+            lockImg.gameObject.SetActive(false);
+            
+            // 아이템 정보를 얻어 획득 보상 처리(최초 1회)
+            var item = _dataDic.FindItemDic[idx];
+            PopUpWindow.Alert(item.Name + " 획득 보상: " + item.SellPrice + " 골드", this);
+            _dataController.Gold += (ulong) item.SellPrice;
 
-    public void ShowWindow(ItemInfo itemInfo)
-    {
-        itemInfoPanel.SetActive(true);
-
-        ItemInfoWindow infoWindow = itemInfoPanel.transform.Find("ItemInfoWindow").GetComponent<ItemInfoWindow>();
-
-        infoWindow.gameObject.SetActive(true);
-
-        infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
-        infoWindow.ItemName.text = itemInfo.Name;
-        infoWindow.ItemSort.text = itemInfo.Group;
-        infoWindow.ItemGrade.text = itemInfo.Grade;
-        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();
-        infoWindow.ItemText.text = itemInfo.Description;
-    }
-
-    public void RemoveAlert(int idx, Image lockImg)
-    {  
-        dataController.newBookList.Remove(idx);
-        dataController.SaveGameData(dataController.newBookList, dataController.NewBookListPath);
-        lockImg.gameObject.SetActive(false);
-
-        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300612 || dataController.NowIndex == 300623))
-        {
-            dialogueManager.ContinueDialogue();
+            // 관찰자들에게 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
         }
     }
 }

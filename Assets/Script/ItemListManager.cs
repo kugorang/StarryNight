@@ -1,22 +1,21 @@
-﻿using System;
+﻿using Script;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemListManager : MonoBehaviour
 {
-    int starIdxStart, materialIdxStart, combineIdxStart;
-    int starIdxMax, materialIdxMax, combineIdxMax;
+    private static ItemListManager instance;
 
-    DataDictionary dataDic;
+    private DataController dataController;
 
-    public GameObject panelPrefab, itemInfoPanel;
+    private DataDictionary dataDic;
     public Sprite NewItemAlert;
 
-    Transform starContentPanel, materialContentPanel, combineContentPanel;
+    public GameObject panelPrefab, itemInfoPanel;
 
-    DataController dataController;
-
-    private static ItemListManager instance;
+    private Transform starContentPanel, materialContentPanel, combineContentPanel;
+    private int starIdxMax, materialIdxMax, combineIdxMax;
+    private int starIdxStart, materialIdxStart, combineIdxStart;
 
     public static ItemListManager GetInstance()
     {
@@ -26,7 +25,7 @@ public class ItemListManager : MonoBehaviour
 
             if (instance == null)
             {
-                GameObject container = new GameObject("ItemListManager");
+                var container = new GameObject("ItemListManager");
                 instance = container.AddComponent<ItemListManager>();
             }
         }
@@ -36,7 +35,6 @@ public class ItemListManager : MonoBehaviour
 
     private void Awake()
     {
-
         dataController = DataController.Instance;
         dataDic = DataDictionary.Instance;
 
@@ -55,38 +53,27 @@ public class ItemListManager : MonoBehaviour
 
     private void Start()
     {
-        for (int idx = starIdxStart + 1; idx <= starIdxMax; idx++)
-        {
-            AddItemButton(idx, starContentPanel);
-        }
+        for (var idx = starIdxStart + 1; idx <= starIdxMax; idx++) AddItemButton(idx, starContentPanel);
 
-        for (int idx = materialIdxStart + 1; idx <= materialIdxMax; idx++)
-        {
-            AddItemButton(idx, materialContentPanel);
-        }
+        for (var idx = materialIdxStart + 1; idx <= materialIdxMax; idx++) AddItemButton(idx, materialContentPanel);
 
-        for (int idx = combineIdxStart + 1; idx <= combineIdxMax; idx++)
-        {
-            AddItemButton(idx, combineContentPanel);
-        }
+        for (var idx = combineIdxStart + 1; idx <= combineIdxMax; idx++) AddItemButton(idx, combineContentPanel);
     }
 
-    void AddItemButton(int idx, Transform tf)
+    private void AddItemButton(int idx, Transform tf)
     {
-        GameObject itemListPanel = Instantiate(panelPrefab);
-        Button itemBtn = itemListPanel.GetComponentInChildren<Button>();
-        Image itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
+        var itemListPanel = Instantiate(panelPrefab);
+        var itemBtn = itemListPanel.GetComponentInChildren<Button>();
+        var itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
-        ItemInfo findItemInfo = dataDic.FindItemDic[idx];
+        var findItemInfo = dataDic.FindItemDic[idx];
 
         itemListPanel.transform.SetParent(tf);
         itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
 
-        if (dataController.itemOpenList.Contains(idx))
+        if (dataController.ItemOpenList.Contains(idx))
         {
-            
-
-            ColorBlock btnColors = itemBtn.colors;
+            var btnColors = itemBtn.colors;
 
             btnColors.normalColor = Color.white;
             btnColors.highlightedColor = Color.white;
@@ -94,12 +81,12 @@ public class ItemListManager : MonoBehaviour
 
             itemBtn.colors = btnColors;
             itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
-            if (dataController.newItemList.Contains(idx))
+            if (dataController.NewItemList.Contains(idx))
             {
-                //새 아이템 표시 추가할 것
+                //새 아이템이면 느낌표 표시 추가
                 itemLock.sprite = NewItemAlert;
                 itemLock.raycastTarget = false;
-                itemBtn.onClick.AddListener(()=> RemoveAlert(idx,itemLock));
+                itemBtn.onClick.AddListener(() => RemoveAlert(idx, itemLock));
             }
             else
             {
@@ -112,7 +99,7 @@ public class ItemListManager : MonoBehaviour
     {
         itemInfoPanel.SetActive(true);
 
-        ItemInfoWindow infoWindow = itemInfoPanel.transform.Find("ItemInfoWindow").GetComponent<ItemInfoWindow>();
+        var infoWindow = itemInfoPanel.transform.Find("ItemInfoWindow").GetComponent<ItemInfoWindow>();
 
         infoWindow.gameObject.SetActive(true);
 
@@ -120,15 +107,15 @@ public class ItemListManager : MonoBehaviour
         infoWindow.ItemName.text = itemInfo.Name;
         infoWindow.ItemSort.text = itemInfo.Group;
         infoWindow.ItemGrade.text = itemInfo.Grade;
-        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice.ToString();
+        infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice;
         infoWindow.ItemText.text = itemInfo.Description;
     }
 
     public void RemoveAlert(int idx, Image lockImg)
     {
-        dataController.newItemList.Remove(idx);
-        dataController.SaveGameData(dataController.newItemList, dataController.NewItemListPath);
+        //더티 플래그와 느낌표 표시 갱신
+        dataController.NewItemList.Remove(idx);
+        DataController.SaveGameData(dataController.NewItemList, dataController.NewItemListPath);
         lockImg.gameObject.SetActive(false);
     }
-   
 }

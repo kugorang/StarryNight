@@ -1,122 +1,129 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public class CameraController : MonoBehaviour
+namespace Script
 {
-    [Tooltip("지구본과 겹치지 않게 적절한 X를 주세요.")]
-    public float minimumX;              // 210 이상, 지구본과 겹치치 않게.
-    private float startPosX;
-    private DataController dataController;
-    public DialogueManager dialogueManager;
-    private Scene nowScene;
-
-    public int maxSceneNum;
-    private int nowSceneNum;
-
-    private int LastScene
+    public class CameraController : MonoBehaviour
     {
-        get
-        {
-            if (nowScene.name == "Main")
-            {
-                return PlayerPrefs.GetInt("MainLastScene", 0);
-            }
+        private DataController _dataController;
+        private Scene _nowScene;
+        private int _nowSceneNum, _minimumDiff;
+        private float _startPosX;
+        
+        public GameObject MainCamera;
+        public int MaxSceneNum;
 
-            return PlayerPrefs.GetInt("QuestLastScene", 0);
-        }
-        set
+        // 210 이상, 시작 위치가 지구본과 겹치지 않게.
+        [Tooltip("지구본과 겹치지 않게 적절한 X를 주세요.")] 
+        public float MinimumX;
+
+        public static bool FocusOnItem { private get; set; }
+
+        private int LastScene 
         {
-            if (nowScene.name == "Main")
+            get
             {
-                PlayerPrefs.SetInt("MainLastScene", value);
+                return PlayerPrefs.GetInt(_nowScene.name == "Main" ? "MainLastScene" : "QuestLastScene", 0);
             }
-            else
+            set
             {
-                PlayerPrefs.SetInt("QuestLastScene", value);
+                PlayerPrefs.SetInt(_nowScene.name == "Main" ? "MainLastScene" : "QuestLastScene", value);
             }
         }
-    }
 
-    private int minimumDiff;
-    public static bool FocusOnItem { get; set; }
-
-    private void Awake()
-    {
-        FocusOnItem = false;
-        minimumDiff = Screen.width / 8;
-        dataController = DataController.Instance;
-        nowScene = SceneManager.GetActiveScene();
-        nowSceneNum = LastScene;
-
-        transform.position = new Vector3(transform.position.x + LastScene * 1080.0f, transform.position.y, transform.position.z);
-    }
-
-    public GameObject mainCamera;
-
-    private void Update() // 주석 풀어서 확인, 슬라이드 구현 ppt 12번 참조
-    {
-        if (Input.GetMouseButtonDown(0) && !FocusOnItem)
+        private void Awake()
         {
-            startPosX = Input.mousePosition.x;
-        }
-        else if (Input.GetMouseButtonUp(0) && !FocusOnItem)
-        {
-            float posXGap = Input.mousePosition.x - startPosX;
+            FocusOnItem = false;
+            _minimumDiff = Screen.width / 8;
+            _dataController = DataController.Instance;
+            _nowScene = SceneManager.GetActiveScene();
+            _nowSceneNum = LastScene;
+            
+            transform.position = new Vector3(transform.position.x + LastScene * 1080.0f, transform.position.y, transform.position.z);
 
-            if (Math.Abs(posXGap) > minimumDiff)
+            if (_nowScene.name == "QuestList")
             {
+                SceneManager.LoadScene("QuestListUI", LoadSceneMode.Additive);
+            }
+        }
+
+        /*private void OnEnable()
+        {
+            var sign = 1; // 오른쪽으로
+
+            if (LastScene != 0) // 왼쪽으로 가야하면
+                sign = -1; // 왼쪽으로
+
+            // 씬 떠났을 때 있었던 위치로 되돌림.
+            transform.position = new Vector3(540.0f * sign, transform.position.y, transform.position.z);
+        }*/
+
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0) && !FocusOnItem)
+            {
+                _startPosX = Input.mousePosition.x;
+            }
+            else if (Input.GetMouseButtonUp(0) && !FocusOnItem)
+            {
+                var posXGap = Input.mousePosition.x - _startPosX;
+
+                if (!(Math.Abs(posXGap) > _minimumDiff))
+                    return;
+
                 // 오른쪽에서 왼쪽 (<-)
-                if (posXGap > 0 && nowSceneNum > 0)
+                if (posXGap > 0 && _nowSceneNum > 0)
                 {
-                    if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300617)
-                    {
-                        dialogueManager.ContinueDialogue();
-                    }
-
-                    iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x - 1080.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-
-                    LastScene = --nowSceneNum;
+                    // 관찰자들에게 Slide 이벤트 메세지 송출
+                    foreach (var target in _dataController.Observers) 
+                        ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(true, 1));
+                    
+                    iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x - 1080.0f, 
+                        "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+                    LastScene = --_nowSceneNum;
                 }
                 // 왼쪽에서 오른쪽 (->)
-                else if (posXGap < 0 && startPosX > minimumX && nowSceneNum < maxSceneNum - 1)
+                else if (posXGap < 0 && _startPosX > MinimumX && _nowSceneNum < MaxSceneNum - 1)
                 {
-                    if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300131)
-                    {
-                        dialogueManager.ContinueDialogue();
-                    }
-                    
-                    iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x + 1080.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-                    LastScene = ++nowSceneNum;
+                    // 관찰자들에게 Slide 이벤트 메세지 송출
+                    foreach (var target in _dataController.Observers) 
+                        ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(false, 1));
+
+                    iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x + 1080.0f, 
+                        "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+                    LastScene += ++_nowSceneNum;
                 }
             }
         }
-    }
 
-    public void OnClickLeftBtn()
-    {
-        if (dataController.IsTutorialEnd == 0 && (dataController.NowIndex == 300210 || dataController.NowIndex == 300617))
+        public void OnClickLeftBtn()
         {
-            dialogueManager.ContinueDialogue();
+            // 관찰자들에게 Click 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this, 1));
+            
+            iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x - 1080.0f, 
+                "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+            LastScene = --_nowSceneNum;
         }
 
-        iTween.MoveTo(mainCamera, iTween.Hash("x", transform.position.x - 1080.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-        LastScene = --nowSceneNum;
-    }
-
-    public void OnClickRightBtn()
-    {
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300215)
+        public void OnClickRightBtn()
         {
-            dialogueManager.ContinueDialogue();
+            // 관찰자들에게 Click 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this, 0));
+            
+            iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x + 1080.0f, 
+                "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+            LastScene = ++_nowSceneNum;
         }
 
-        iTween.MoveTo(mainCamera, iTween.Hash("x", transform.position.x + 1080.0f, "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-        LastScene = ++nowSceneNum;
-    }
-
-    public void OnApplicationQuit()
-    {
-        LastScene = nowSceneNum;
+        public void OnApplicationQuit()
+        {
+            // 앱 종료시 현재 표시하고 있는 화면인 상태로 종료
+            LastScene = _nowSceneNum; 
+        }
     }
 }

@@ -5,41 +5,33 @@ using UnityEngine;
 
 public class KeyEditorWindow : EditorWindow
 {
-    enum PlayerPrefsValueType
-    {
-        Unknown,
-        String,
-        Float,
-        Int
-    }
+    // Add key vars
+    private string addKey_m;
+    private TrySetResponse addResponse_m;
+    private string addVal_m;
+    private PlayerPrefsValueType addValType_m = PlayerPrefsValueType.String;
 
     // Search vars
     private string searchKey_m;
     private string searchNewVal_m;
-    private PlayerPrefsValueType searchValType_m = PlayerPrefsValueType.String;
     private TrySetResponse searchResponse_m;
-
-    // Add key vars
-    private string addKey_m;
-    private string addVal_m;
-    private PlayerPrefsValueType addValType_m = PlayerPrefsValueType.String;
-    private TrySetResponse addResponse_m;
+    private PlayerPrefsValueType searchValType_m = PlayerPrefsValueType.String;
 
     [MenuItem("PlayerPrefs/Open editor")]
-    static void DeleteKey()
+    private static void DeleteKey()
     {
-        KeyEditorWindow editorWindow = (KeyEditorWindow)GetWindow(typeof(KeyEditorWindow), true, "Player prefs editor");
+        var editorWindow = (KeyEditorWindow) GetWindow(typeof(KeyEditorWindow), true, "Player prefs editor");
         editorWindow.Show();
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         DrawSearchKey();
         DrawAddKey();
     }
 
     /// <summary>
-    /// Draw search for PlayerPrefs key controls
+    ///     Draw search for PlayerPrefs key controls
     /// </summary>
     private void DrawSearchKey()
     {
@@ -49,9 +41,8 @@ public class KeyEditorWindow : EditorWindow
         //Edit existing key
         if (PlayerPrefs.HasKey(searchKey_m))
         {
+            var type = GetType(searchKey_m);
 
-            PlayerPrefsValueType type = GetType(searchKey_m);
-            
             // Delete
             if (GUILayout.Button("Delete"))
             {
@@ -65,7 +56,9 @@ public class KeyEditorWindow : EditorWindow
             if (type == PlayerPrefsValueType.Unknown)
             {
                 searchValType_m = (PlayerPrefsValueType) EditorGUILayout.EnumPopup("Type", searchValType_m);
-                EditorGUILayout.HelpBox("The value for the key is a default value so the type cannot be determined. It is your responsibility to set the value in correct type.", MessageType.Warning);
+                EditorGUILayout.HelpBox(
+                    "The value for the key is a default value so the type cannot be determined. It is your responsibility to set the value in correct type.",
+                    MessageType.Warning);
             }
             else
             {
@@ -73,16 +66,10 @@ public class KeyEditorWindow : EditorWindow
                 GUILayout.Label("Value type: " + searchValType_m, EditorStyles.boldLabel);
                 GUILayout.Label("Current value: " + GetValue(searchKey_m, searchValType_m), EditorStyles.boldLabel);
             }
-            if (GUILayout.Button("Set"))
-            {
-                searchResponse_m = TrySetValue(searchKey_m, searchNewVal_m, searchValType_m);
-            }
-            if (searchResponse_m != null)
-            {
-                EditorGUILayout.HelpBox(searchResponse_m.message, searchResponse_m.messageType);
-            }
 
-            
+            if (GUILayout.Button("Set")) searchResponse_m = TrySetValue(searchKey_m, searchNewVal_m, searchValType_m);
+            if (searchResponse_m != null)
+                EditorGUILayout.HelpBox(searchResponse_m.message, searchResponse_m.messageType);
         }
         else
         {
@@ -91,63 +78,54 @@ public class KeyEditorWindow : EditorWindow
     }
 
     /// <summary>
-    /// Draw add key controls
+    ///     Draw add key controls
     /// </summary>
     private void DrawAddKey()
     {
         GUILayout.Label("Add key", EditorStyles.boldLabel);
         addKey_m = EditorGUILayout.TextField("Key", addKey_m);
         addVal_m = EditorGUILayout.TextField("Value", addVal_m);
-        addValType_m = (PlayerPrefsValueType)EditorGUILayout.EnumPopup("Type", addValType_m);
-        if (GUILayout.Button("Add"))
-        {
-            addResponse_m = TrySetValue(addKey_m, addVal_m, addValType_m);
-        }
-        if (addResponse_m != null)
-        {
-            EditorGUILayout.HelpBox(addResponse_m.message, addResponse_m.messageType);
-        }
+        addValType_m = (PlayerPrefsValueType) EditorGUILayout.EnumPopup("Type", addValType_m);
+        if (GUILayout.Button("Add")) addResponse_m = TrySetValue(addKey_m, addVal_m, addValType_m);
+        if (addResponse_m != null) EditorGUILayout.HelpBox(addResponse_m.message, addResponse_m.messageType);
     }
 
     /// <summary>
-    /// Get type for a key that exists in PlayerPrefs. If the key's value is default value, the type cannot be determined.
+    ///     Get type for a key that exists in PlayerPrefs. If the key's value is default value, the type cannot be determined.
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
     private static PlayerPrefsValueType GetType(string key)
     {
         if (!PlayerPrefs.HasKey(key)) throw new ArgumentException("Key didn't exist in PlayerPrefs");
-        PlayerPrefsValueType type = PlayerPrefsValueType.Unknown;
+        var type = PlayerPrefsValueType.Unknown;
 
-        float floatVal = PlayerPrefs.GetFloat(key);
-        int intVal = PlayerPrefs.GetInt(key);
-        string stringVal = PlayerPrefs.GetString(key);
+        var floatVal = PlayerPrefs.GetFloat(key);
+        var intVal = PlayerPrefs.GetInt(key);
+        var stringVal = PlayerPrefs.GetString(key);
 
-        if (floatVal == (default(float)) && intVal == (default(int)) && !stringVal.Equals(string.Empty))
-        {
+        if (floatVal == default(float) && intVal == default(int) && !stringVal.Equals(string.Empty))
             type = PlayerPrefsValueType.String;
-        }
-        else if (floatVal == (default(float)) && intVal != (default(int)) && stringVal.Equals(string.Empty))
-        {
+        else if (floatVal == default(float) && intVal != default(int) && stringVal.Equals(string.Empty))
             type = PlayerPrefsValueType.Int;
-        }
-        else if (floatVal != (default(float)) && intVal == (default(int)) && stringVal.Equals(string.Empty))
-        {
+        else if (floatVal != default(float) && intVal == default(int) && stringVal.Equals(string.Empty))
             type = PlayerPrefsValueType.Float;
-        }
         return type;
     }
 
     /// <summary>
-    /// Tries to set the value to player prefs. If the value is successfully set, PlayerPrefs are saved.
+    ///     Tries to set the value to player prefs. If the value is successfully set, PlayerPrefs are saved.
     /// </summary>
     /// <param name="key">Key of value</param>
     /// <param name="value">Value for the key</param>
-    /// <param name="type">Type of the value. This determines whether PlayerPrefs.SetString(), PlayerPrefs.SetFloat(), or PlayerPrefs.SetInt() is used.</param>
+    /// <param name="type">
+    ///     Type of the value. This determines whether PlayerPrefs.SetString(), PlayerPrefs.SetFloat(), or
+    ///     PlayerPrefs.SetInt() is used.
+    /// </param>
     /// <returns>Response containing info telling if the set was successful or not.</returns>
     private static TrySetResponse TrySetValue(string key, string value, PlayerPrefsValueType type)
     {
-        TrySetResponse respone = new TrySetResponse()
+        var respone = new TrySetResponse
         {
             message = "Key: " + key + " with Value: " + value + " was successfully saved to PlayerPrefs as a " + type,
             success = true,
@@ -168,8 +146,11 @@ public class KeyEditorWindow : EditorWindow
                 }
                 else
                 {
-                    respone.SetValues("Couldn't parse input value:" + value + " to target type float. Input a valid float value.", false, MessageType.Error);
+                    respone.SetValues(
+                        "Couldn't parse input value:" + value + " to target type float. Input a valid float value.",
+                        false, MessageType.Error);
                 }
+
                 break;
             case PlayerPrefsValueType.Int:
                 int newValInt;
@@ -180,18 +161,22 @@ public class KeyEditorWindow : EditorWindow
                 }
                 else
                 {
-                    respone.SetValues("Couldn't parse input value:" + value + " to target type int. Input a valid int value.", false, MessageType.Error);
+                    respone.SetValues(
+                        "Couldn't parse input value:" + value + " to target type int. Input a valid int value.", false,
+                        MessageType.Error);
                 }
+
                 break;
             default:
                 respone.SetValues("Unknown PlayerPrefsValueType: " + type, false, MessageType.Error);
                 break;
         }
+
         return respone;
     }
 
     /// <summary>
-    /// Get existing PlayerPrefs key value as a string.
+    ///     Get existing PlayerPrefs key value as a string.
     /// </summary>
     /// <param name="key">Key of the value</param>
     /// <param name="type">Type of the value</param>
@@ -211,24 +196,32 @@ public class KeyEditorWindow : EditorWindow
                 throw new ArgumentOutOfRangeException("type");
         }
     }
-    
+
+    private enum PlayerPrefsValueType
+    {
+        Unknown,
+        String,
+        Float,
+        Int
+    }
+
     /// <summary>
-    /// Helper class to return values from TrySetValue function
+    ///     Helper class to return values from TrySetValue function
     /// </summary>
-    class TrySetResponse
+    private class TrySetResponse
     {
         /// <summary>
-        /// True if the value was successfully set, false otherwise.
+        ///     True if the value was successfully set, false otherwise.
         /// </summary>
         public bool success { get; set; }
 
         /// <summary>
-        /// Message of the value set. May contain error message or success message.
+        ///     Message of the value set. May contain error message or success message.
         /// </summary>
         public string message { get; set; }
 
         /// <summary>
-        /// Message type for showing the message in UI
+        ///     Message type for showing the message in UI
         /// </summary>
         public MessageType messageType { get; set; }
 

@@ -1,135 +1,134 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class RaycastTest : MonoBehaviour
+namespace Script
 {
-    Vector3 start;
-    DataController dataController;
-    Item item;
-    Dictionary<int, Dictionary<int, SerializableVector3>> haveDic;
-    private DialogueManager dialogueManager;
-
-    private void Awake()
+    public class RaycastTest : MonoBehaviour
     {
-        dataController = DataController.Instance;
-        dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
-        haveDic = dataController.HaveDic;
-        item = GetComponent<Item>();
-    }
+        private DataController _dataController;
+        private Dictionary<int, Dictionary<int, SerializableVector3>> _haveDic;
+        private Item _item;
+        private Vector3 _start;
 
-    private void OnMouseDown()
-    {
-        CameraController.FocusOnItem = true;
-        //Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
-        start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
-        
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300305 && item.Info.Index >= 1001 && item.Info.Index <= 1003)
+        private void Awake()
         {
-            dialogueManager.ContinueDialogue();
-        }
-    }
-
-    private void OnMouseDrag()
-    {
-        transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7));
-    }
-
-    private void OnMouseUp()
-    {
-        GetComponent<BoxCollider2D>().isTrigger = true;
-        StartCoroutine(CheckCollision());
-    }
-
-    IEnumerator CheckCollision()
-    {
-        // 0.1초 대기한다.
-        yield return new WaitForSeconds(0.1f);
-
-        // 이 사이 충돌이 감지 된다면 OnTriggerEnter2D로 간다.
-
-        // 충돌 감지가 안 되었다면 아래 로직을 실행한다.
-        GetComponent<BoxCollider2D>().isTrigger = false;
-        CameraController.FocusOnItem = false;
-        //Debug.Log("FocusOnItem : " + CameraController.FocusOnItem);
-
-        // 아이템이 인벤토리 밖으로 벗어날 경우 아이템 드래그 전 위치로 다시 이동
-        if (Input.mousePosition.x > 7 * Screen.width / 8 || Input.mousePosition.x < Screen.width / 8 || Input.mousePosition.y > 7 * Screen.height / 8 || Input.mousePosition.y < Screen.height / 3)
-        {
-            transform.position = Camera.main.ScreenToWorldPoint(start);
+            _dataController = DataController.Instance;
+            GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+            _haveDic = _dataController.HaveDic;
+            _item = GetComponent<Item>();
         }
 
-        haveDic[item.Info.Index][item.Id] = transform.position;
-        dataController.SaveGameData(haveDic, dataController.HaveDicPath);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Material" && collision.isTrigger)
+        private void OnMouseDown()
         {
-            Item collItem = collision.GetComponent<Item>();
-            ItemInfo collItemInfo = collItem.Info;
+            CameraController.FocusOnItem = true;
+            _start = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7);
 
-            if (collItemInfo.CheckDestroy)
+            // 관찰자들에게 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                // 무슨 아이템인지 알 수 있게 RaycastTest가 아니라 ItemInfo보냄 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(_item.Info, _item.Info.Index)); 
+        }
+
+        private void OnMouseDrag()
+        {
+            transform.position =
+                Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 7));
+        }
+
+        private void OnMouseUp()
+        {
+            GetComponent<BoxCollider2D>().isTrigger = true;
+            StartCoroutine(CheckCollision());
+        }
+
+        private IEnumerator CheckCollision()
+        {
+            // 0.1초 대기한다.
+            yield return new WaitForSeconds(0.1f);
+
+            // 이 사이 충돌이 감지 된다면 OnTriggerEnter2D로 간다.
+
+            // 충돌 감지가 안 되었다면 아래 로직을 실행한다.
+            GetComponent<BoxCollider2D>().isTrigger = false;
+            CameraController.FocusOnItem = false;
+
+            // 아이템이 인벤토리 밖으로 벗어날 경우 아이템 드래그 전 위치로 다시 이동
+            if (Input.mousePosition.x > 7 * Screen.width / 8 || Input.mousePosition.x < Screen.width / 8 ||
+                Input.mousePosition.y > 7 * Screen.height / 8 ||
+                Input.mousePosition.y < Screen.height / 3) transform.position = Camera.main.ScreenToWorldPoint(_start);
+
+            _haveDic[_item.Info.Index][_item.Id] = transform.position;
+            DataController.SaveGameData(_haveDic, _dataController.HaveDicPath);
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.tag == "Material" && collision.isTrigger)
             {
-                return;
-            }
+                var collItem = collision.GetComponent<Item>();
+                var collItemInfo = collItem.Info;
 
-            // 조합표에 있는 조합식인지 검색한다.
+                if (collItemInfo.CheckDestroy) return;
 
-            DataDictionary dataDic = DataDictionary.Instance;
-            ItemInfo myItemInfo = GetComponent<Item>().Info;
+                // 조합표에 있는 조합식인지 검색한다.
 
-            int key1 = myItemInfo.Index;
-            int key2 = collItemInfo.Index;
-            List<int> resultList = dataDic.FindCombine(key1, key2);
+                var dataDic = DataDictionary.Instance;
+                var myItemInfo = GetComponent<Item>().Info;
 
-            if (resultList != null)
-            {
-                if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300306)
+                var key1 = myItemInfo.Index;
+                var key2 = collItemInfo.Index;
+                var resultList = dataDic.FindCombine(key1, key2);
+
+                if (resultList != null)
                 {
-                    dialogueManager.ContinueDialogue();
+                    collItemInfo.CheckDestroy = true;
+
+                    // 조합표에 있다면 충돌 당한 물체를 결과 재료로 바꾸어준다.
+                    //Debug.Log("result != 0");
+
+                    // 조합 결과 개수를 얻어온다.
+                    var resultNum = resultList.Count;
+
+                    var findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
+
+                    foreach (var target in _dataController.Observers) //관찰자들에게 이벤트 메세지 송출, myItemInfo 바뀌기 전 정보 보냄.
+                        ExecuteEvents.Execute<IEventListener>(target, null,
+                            (x, y) => x.OnCombine(myItemInfo, collItemInfo, findItemInfo));
+
+
+                    myItemInfo.Index = findItemInfo.Index;
+                    myItemInfo.Name = findItemInfo.Name;
+                    myItemInfo.Group = findItemInfo.Group;
+                    myItemInfo.Grade = findItemInfo.Grade;
+                    myItemInfo.SellPrice = findItemInfo.SellPrice;
+                    myItemInfo.Description = findItemInfo.Description;
+                    myItemInfo.ImagePath = findItemInfo.ImagePath;
+
+                    GetComponent<SpriteRenderer>().sprite =
+                        Resources.Load<Sprite>(dataDic.FindItemDic[myItemInfo.Index].ImagePath);
+
+                    // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
+                    _dataController.DeleteItem(key2, collItem.Id);
+                    _dataController.DeleteItem(key1, GetComponent<Item>().Id);
+
+                    _dataController.InsertNewItem(myItemInfo.Index, GetComponent<Item>().Id, transform.position);
+
+                    _dataController.ItemCount -= 1;
+
+                    // 조합 후 충돌한 물체를 파괴한다.
+                    Destroy(collision.gameObject);
                 }
+                //else
+                //{
+                //    Debug.Log("result == 0");
+                //}
 
-                collItemInfo.CheckDestroy = true;
-
-                // 조합표에 있다면 충돌 당한 물체를 결과 재료로 바꾸어준다.
-                //Debug.Log("result != 0");
-
-                // 조합 결과 개수를 얻어온다.
-                int resultNum = resultList.Count;
-
-                ItemInfo findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
-
-                myItemInfo.Index = findItemInfo.Index;
-                myItemInfo.Name = findItemInfo.Name;
-                myItemInfo.Group = findItemInfo.Group;
-                myItemInfo.Grade = findItemInfo.Grade;
-                myItemInfo.SellPrice = findItemInfo.SellPrice;
-                myItemInfo.Description = findItemInfo.Description;
-                myItemInfo.ImagePath = findItemInfo.ImagePath;
-
-                GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(dataDic.FindItemDic[myItemInfo.Index].ImagePath);
-
-                // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
-                dataController.DeleteItem(key2, collItem.Id);
-                dataController.DeleteItem(key1, GetComponent<Item>().Id);
-
-                dataController.InsertNewItem(myItemInfo.Index, GetComponent<Item>().Id, transform.position);
-
-                dataController.ItemCount -= 1;
-
-                // 조합 후 충돌한 물체를 파괴한다.
-                Destroy(collision.gameObject);
+                // 조합표에 없다면 그냥 무시한다.
             }
-            //else
-            //{
-            //    Debug.Log("result == 0");
-            //}
 
-            // 조합표에 없다면 그냥 무시한다.
+            //StartCoroutine(CheckCollision());
         }
-
-        //StartCoroutine(CheckCollision());
     }
 }

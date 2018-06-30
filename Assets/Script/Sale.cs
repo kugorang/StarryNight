@@ -1,33 +1,34 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Sale : MonoBehaviour
+namespace Script
 {
-    private DataController dataController;
-    public DialogueManager dialogueManager;
-
-    private void Awake()
+    public class Sale : MonoBehaviour
     {
-        dataController = DataController.Instance;
-    }
+        private DataController _dataController;
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.tag == "Material")
+        private void Awake()
         {
-            if(dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300423)
-            {
-                dialogueManager.ContinueDialogue();
-            }
+            _dataController = DataController.Instance;
+        }
 
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            if (!col.CompareTag("Material")) 
+                return;
+            
             AudioManager.GetInstance().SaleSound();
-            Item item = col.GetComponent<Item>();
-            ItemInfo itemInfo = item.Info;
+            var item = col.GetComponent<Item>();
+            var itemInfo = item.Info;
 
-            dataController.Gold += (ulong)itemInfo.SellPrice;
-            dataController.ItemCount -= 1;
-            dataController.DeleteItem(itemInfo.Index, item.Id);
+            _dataController.Gold += (ulong) itemInfo.SellPrice;
+            _dataController.ItemCount -= 1;
+            _dataController.DeleteItem(itemInfo.Index, item.Id);
 
             Destroy(col.gameObject);
+
+            foreach (var target in _dataController.Observers) //관찰자들에게 이벤트 메세지 송출
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSell(itemInfo));
 
             //CameraController.focusOnItem = false;
         }

@@ -1,144 +1,121 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class QuestUIButton : MonoBehaviour {
-
-    private const int FIRST_QUEST = 90101;
-    private const int LAST_QUEST = 90123;//원래는 90247
-
-    private float startPosX;
-    private float minimumDiff;
-
-    private static int showingQuestIndex;
-    public static int ShowingQuestIndex
+namespace Script
+{
+    public class QuestUIButton : MonoBehaviour
     {
-        get
+        private const int FirstQuest = 90101;
+        private const int LastQuest = 90123; //원래는 90247
+
+        private static int _showingQuestIndex;
+        private Dictionary<int, string> _currentSceneName;
+
+        private List<int> _firstQuestsOf;
+
+        public static int ShowingQuestIndex
         {
-            return showingQuestIndex;
-        }
-        set
-        {
-            if (value < FIRST_QUEST)
+            get { return _showingQuestIndex; }
+            set
             {
-                showingQuestIndex = FIRST_QUEST;
-            }
-            else if (value > LAST_QUEST)
-            {
-                showingQuestIndex = LAST_QUEST;
-            }
-            else
-            {
-                showingQuestIndex = value;
+                if (value < FirstQuest)
+                    _showingQuestIndex = FirstQuest;
+                else if (value > LastQuest)
+                    _showingQuestIndex = LastQuest;
+                else
+                    _showingQuestIndex = value;
             }
         }
-    }
 
-    private List<int> FirstQuestsOf;
-    private Dictionary<int, string> CurrentSceneName;
-
-    public void Start()
-    {
-        if (ShowingQuestIndex < FIRST_QUEST)//값이 할당되지 않은 경우
+        public void Start()
         {
-            ShowingQuestIndex = DataController.Instance.QuestProcess;
-        }
-        FirstQuestsOf = DataDictionary.Instance.FirstQuestsOfScene;
-
-        minimumDiff = Screen.width / 8;
-    }
-
-    //private void Update()//주석풀어서확인, 슬라이드 구현 ppt 12번 참조
-    //{
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        startPosX = Input.mousePosition.x;
-    //        //Debug.Log(startPosX);
-    //    }
-    //    else if (Input.GetMouseButtonUp(0))
-    //    {
-    //        float posXGap = Input.mousePosition.x - startPosX;
-
-    //        if (Math.Abs(posXGap) > minimumDiff)
-    //        {
-    //            // ->
-    //            if (posXGap > 0)
-    //            {
-    //                OnLeftQuestBtnClick();
-    //            }
-    //            // <-
-    //            else if (posXGap < 0)
-    //            {
-    //                OnRightQuestBtnClick();
-    //            }
-    //        }
-    //    }
-    //}
-
-    public void OnEnable()
-    {
-        Debug.Log(ShowingQuestIndex + ", OnEnable, " + SceneManager.GetActiveScene().name);
-        GameObject star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
-        if (star != null)
-        {
-            star.GetComponent<BlinkStar>().OnClick();
-        }
-    }
-    
-    public void OnLeftQuestBtnClick()
-    {
-        ShowingQuestIndex -= 1;
-
-        Debug.Log(ShowingQuestIndex + ", Left");
-
-        if (ShowingQuestIndex < FirstQuestsOf[1] && SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aries"))
-        {
-            AudioManager.GetInstance().ActSound();
-            SceneManager.LoadScene("Aries");
-            return;
+            if (ShowingQuestIndex < FirstQuest) //값이 할당되지 않은 경우
+                ShowingQuestIndex = DataController.Instance.QuestProcess;
+            _firstQuestsOf = DataDictionary.Instance.FirstQuestsOfScene;
         }
 
-        GameObject star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
-        if (star != null)
+        private void Update() // 슬라이드 기능 구현
         {
-            star.GetComponent<BlinkStar>().ShowQuestInfo();
-        }
-
-    }
-
-    public void OnRightQuestBtnClick()
-    {
-        GameObject star;
-        ShowingQuestIndex += 1;
-        Debug.Log(ShowingQuestIndex + ", Right");
-        if (ShowingQuestIndex > DataController.Instance.QuestProcess)//progress이 진행중 퀘스트
-        {
-            star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
-            if (star != null)
+            if (Input.GetMouseButtonDown(0))
             {
+                //Debug.Log(startPosX);
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                /*var posXGap = Input.mousePosition.x - startPosX;*/
+
+                //        if (Math.Abs(posXGap) > minimumDiff)
+                //        {
+                //            // ->
+                //            if (posXGap > 0)
+                //            {
+                //                OnLeftQuestBtnClick();
+                //            }
+                //            // <-
+                //            else if (posXGap < 0)
+                //            {
+                //                OnRightQuestBtnClick();
+                //            }
+                //        }
+            }
+        }
+
+        private void OnEnable()
+        {
+            var star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
+            
+            if (star != null) 
                 star.GetComponent<BlinkStar>().OnClick();
-
-            }
-            ShowingQuestIndex = DataController.Instance.QuestProcess;
         }
-        if (FirstQuestsOf[1] <= ShowingQuestIndex && ShowingQuestIndex < FirstQuestsOf[2])
+
+        private void OnLeftQuestBtnClick()
         {
-            if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Taurus"))
+            ShowingQuestIndex -= 1;
+
+            Debug.Log(ShowingQuestIndex + ", Left");
+
+            if (ShowingQuestIndex < _firstQuestsOf[1] &&
+                SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aries"))
             {
                 AudioManager.GetInstance().ActSound();
-                SceneManager.LoadScene("Taurus");
+                SceneManager.LoadScene("Aries");
                 return;
             }
+
+            var star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
+            if (star != null) star.GetComponent<BlinkStar>().ShowQuestInfo();
         }
-        /* else if(ShowingQuestIndex > 90123)
-         {
-             SceneManager.LoadScene("Quest");
-         }*/
-        star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
-        if (star != null)
+
+        private void OnRightQuestBtnClick()
         {
-            star.GetComponent<BlinkStar>().ShowQuestInfo();
+            GameObject star;
+            ShowingQuestIndex += 1;
+            
+            Debug.Log(ShowingQuestIndex + ", Right");
+            
+            if (ShowingQuestIndex > DataController.Instance.QuestProcess) //progress이 진행중 퀘스트
+            {
+                star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
+                
+                if (star != null)
+                    star.GetComponent<BlinkStar>().OnClick();
+                
+                ShowingQuestIndex = DataController.Instance.QuestProcess;
+            }
+
+            if (_firstQuestsOf[1] <= ShowingQuestIndex && ShowingQuestIndex < _firstQuestsOf[2])
+                if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Taurus"))
+                {
+                    AudioManager.GetInstance().ActSound();
+                    SceneManager.LoadScene("Taurus");
+                    return;
+                }
+
+            star = GameObject.Find(SceneManager.GetActiveScene().name + "_" + ShowingQuestIndex);
+            
+            if (star != null)
+                star.GetComponent<BlinkStar>().ShowQuestInfo();
         }
     }
 }

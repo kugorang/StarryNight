@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class FadeOut : MonoBehaviour
 {
     public Image fade;
-    float fades = 1.0f;
-    float time = 0;
+    private float fades = 1.0f;
+    private float time;
 
     // Update is called once per frame
     public void Update()

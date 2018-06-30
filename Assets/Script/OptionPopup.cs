@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class OptionPopup : MonoBehaviour {
-
+public class OptionPopup : MonoBehaviour
+{
     private GameObject option;
 
     private void Awake()

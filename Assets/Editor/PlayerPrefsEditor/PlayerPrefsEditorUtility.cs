@@ -1,35 +1,58 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using Script;
 using UnityEditor;
+using UnityEngine;
 
-public class PlayerPrefsEditorUtility : MonoBehaviour
+namespace Editor.PlayerPrefsEditor
 {
-    [MenuItem("PlayerPrefs/Delete All")]
-    static void DeletePlayerPrefs()
+    public class PlayerPrefsEditorUtility : MonoBehaviour
     {
-        PlayerPrefs.DeleteAll();
-
-        DataController dataController = DataController.Instance;
-
-        if (dataController != null)
+        [MenuItem("PlayerPrefs/Delete All")]
+        private static void DeletePlayerPrefs()
         {
-            Dictionary<int, Dictionary<int, SerializableVector3>> haveDic = dataController.HaveDic;
-            List<int> itemOpenList = dataController.itemOpenList;
+            PlayerPrefs.DeleteAll();
 
-            haveDic.Clear();
-            itemOpenList.Clear();
+            var dataController = DataController.Instance;
 
-            dataController.SaveGameData(haveDic, dataController.HaveDicPath);
-            dataController.SaveGameData(itemOpenList, dataController.ItemOpenListPath);
+            if (dataController != null)
+            {
+                var haveDic = dataController.HaveDic;
+                var itemOpenList = dataController.ItemOpenList;
+                var newBookList = dataController.NewBookList;
+                var newItemList = dataController.NewItemList;
+
+                if (haveDic != null)
+                {
+                    haveDic.Clear();
+                    DataController.SaveGameData(haveDic, dataController.HaveDicPath);
+                }
+                
+                if (itemOpenList != null)
+                {
+                    itemOpenList.Clear();
+                    DataController.SaveGameData(itemOpenList, dataController.ItemOpenListPath);
+                }
+
+                if (newBookList != null)
+                {
+                    newBookList.Clear();
+                    DataController.SaveGameData(newBookList, dataController.NewBookListPath);
+                }
+
+                if (newItemList != null)
+                {
+                    newItemList.Clear();
+                    DataController.SaveGameData(newItemList, dataController.NewItemListPath);
+                }
+            }
+
+            Debug.Log("All PlayerPrefs deleted");
         }
-        
-        Debug.Log("All PlayerPrefs deleted");
-    }
 
-    [MenuItem("PlayerPrefs/Save All")]
-    static void SavePlayerPrefs()
-    {
-        PlayerPrefs.Save();
-        Debug.Log("PlayerPrefs saved");
+        [MenuItem("PlayerPrefs/Save All")]
+        private static void SavePlayerPrefs()
+        {
+            PlayerPrefs.Save();
+            Debug.Log("PlayerPrefs saved");
+        }
     }
 }

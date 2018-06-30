@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class OptionManager : MonoBehaviour {
-
+public class OptionManager : MonoBehaviour
+{
     public Button bgm;
-    public Button effect;
-    public Button voice;
 
     public Text bgmDisplayer;
     public Text effDisplayer;
+    public Button effect;
+    public Button voice;
     public Text voiceDisplayer;
 
     private void Awake()
@@ -105,5 +103,4 @@ public class OptionManager : MonoBehaviour {
             voiceDisplayer.text = "ON";
         }
     }
-
 }

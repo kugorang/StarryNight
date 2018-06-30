@@ -1,80 +1,70 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SwitchSunMoon : MonoBehaviour {
-
-    public Button SunMoonbtn;
-    private bool state;
-    public Sprite sun;
-    public Sprite moon;
-
-    private DataController dataController;
-    public DialogueManager dialogueManager;
-
-    private static SwitchSunMoon instance;
-
-    public static SwitchSunMoon Instance
+namespace Script
+{
+    public class SwitchSunMoon : MonoBehaviour
     {
-        get
+        private static SwitchSunMoon _instance;
+        private DataController _dataController;
+        public Sprite Moon, Sun;
+        private bool _state;
+
+        public Button SunMoonbtn;
+
+        public static SwitchSunMoon Instance
         {
-            if (instance == null)
+            get
             {
-                instance = FindObjectOfType<SwitchSunMoon>();
+                if (_instance != null)
+                    return _instance;
+                
+                _instance = FindObjectOfType<SwitchSunMoon>();
 
-                if (instance == null)
-                {
-                    GameObject container = new GameObject("SwitchSunMoon");
+                if (_instance != null) 
+                    return _instance;
+                
+                var container = new GameObject("SwitchSunMoon");
 
-                    instance = container.AddComponent<SwitchSunMoon>();
-                }
+                _instance = container.AddComponent<SwitchSunMoon>();
+
+                return _instance;
             }
-            return instance;
-        }
-    }
-
-    void Start()
-    {
-        if (SunMoonbtn == null)
-        {
-            SunMoonbtn = gameObject.GetComponent<Button>();
         }
 
-        dataController = DataController.Instance;
-    }
-
-    
-// 현재 스위치 상태 가져오기
-/// <summary>
-/// true이면 별, false이면 다른 재료
-/// </summary>
-public bool State
-    {
-        get
+        /// <summary>
+        ///     현재 스위치 상태 가져오기
+        ///     true이면 별, false이면 다른 재료
+        /// </summary>
+        public bool State
         {
-            return state;
-        }
+            get { return _state; }
 
-        private set
-        {
-            if (value)
+            private set
             {
-                gameObject.GetComponent<Image>().sprite = sun;
+                gameObject.GetComponent<Image>().sprite = value ? Sun : Moon;
+                _state = value;
             }
-            else
-            {
-                gameObject.GetComponent<Image>().sprite = moon;
-            }
-            state = value;
         }
-    }
-    // 버튼 스위치
-    public void CheckButton()
-    {
-        
-        if (dataController.IsTutorialEnd == 0 && dataController.NowIndex == 300212)
+
+        private void Start()
         {
-            dialogueManager.ContinueDialogue();
+            if (SunMoonbtn == null) 
+                SunMoonbtn = gameObject.GetComponent<Button>();
+
+            _dataController = DataController.Instance;
         }
-        State = !state; // true가 sun false가 moon
+
+        // 버튼 스위치
+        public void CheckButton()
+        {
+            // 관찰자들에게 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
+
+            // true가 sun, false가 moon
+            State = !_state; 
+        }
     }
 }

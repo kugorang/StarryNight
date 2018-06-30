@@ -1,5 +1,18 @@
 ﻿public class ItemInfo
 {
+    public ItemInfo(int _index, string _name, string _group, string _grade, int _sellPrice, string _description,
+        string _imagePath)
+    {
+        Index = _index;
+        Name = _name;
+        Group = _group;
+        Grade = _grade;
+        SellPrice = _sellPrice;
+        Description = _description;
+        ImagePath = _imagePath;
+        CheckDestroy = false;
+    }
+
     // 재료 기준 표 Index
     public int Index { get; set; }
 
@@ -23,16 +36,4 @@
 
     // 없어진지 확인하는 플래 그
     public bool CheckDestroy { get; set; }
-
-    public ItemInfo(int _index, string _name, string _group, string _grade, int _sellPrice, string _description, string _imagePath)
-    {
-        Index = _index;
-        Name = _name;
-        Group = _group;
-        Grade = _grade;
-        SellPrice = _sellPrice;
-        Description = _description;
-        ImagePath = _imagePath;
-        CheckDestroy = false;
-    }
 }
