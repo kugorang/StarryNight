@@ -544,8 +544,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AlertText: {fileID: 510655863}
-  WaitingTime: 0
-  ShakingTime: 0
+  WaitingTime: 0.1
+  ShakingTime: 4
   UpgradeSlider: {fileID: 939653900}
 --- !u!114 &625132009
 MonoBehaviour:
@@ -631,7 +631,6 @@ GameObject:
   m_Component:
   - component: {fileID: 801889351}
   - component: {fileID: 801889353}
-  - component: {fileID: 801889354}
   m_Layer: 5
   m_Name: UI&Dialogue Panel
   m_TagString: Untagged
@@ -665,18 +664,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 801889350}
---- !u!114 &801889354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 801889350}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ad58c06a08a1ca428a94305957fdc1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
 --- !u!1 &840445738
 GameObject:
   m_ObjectHideFlags: 0

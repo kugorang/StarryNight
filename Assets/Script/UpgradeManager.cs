@@ -127,20 +127,26 @@ namespace Script
                             str = "아이템 타이머3에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue +
                                   "%";
                             break;
-                        default: // 최종업그레이드
+                        // 최종 업그레이드
+                        default: 
                             str = "골드 2배, 인벤토리 2배, 높은 등급 아이템 나올 확률 2배, 아이템 2개 나올 확률 2배";
                             break;
                     }
 
                     _upgradeDisplayers[i].text = str;
-
                     _upgradeCostDisplayers[i].text = _dataDic.FindUpgrade(upgradeIndex).cost[_currentUpgradeLv[i]] + "골드";
                 }
             }
         }
 
-        public void Upgrade(int upgradeIndex) //아래 두 함수 하나로, 실패 구현
+        // 아래 두 함수 하나로, 실패 구현
+        public void Upgrade(int upgradeIndex)
         {
+            foreach (var button in _upgradeButtons)
+            {
+                button.interactable = false;
+            }
+            
             var id = upgradeIndex - 50001;
             
             if (IsMaxUpgraded(upgradeIndex))
@@ -149,7 +155,7 @@ namespace Script
                 return;
             }
 
-            //Debug.Log("Upgrade index: " + upgradeIndex);
+            // Debug.Log("Upgrade index: " + upgradeIndex);
             var prob = SuccessRate[_currentUpgradeLv[id]] / 100f;
 
             if (DataController.Instance.Gold < (ulong) _dataDic.FindUpgrade(upgradeIndex).cost[_currentUpgradeLv[id]])
@@ -162,24 +168,40 @@ namespace Script
             PopUpWindow.SetSliderValue(prob);
             DataController.Instance.Gold -= (ulong) _dataDic.FindUpgrade(upgradeIndex).cost[_currentUpgradeLv[id]];
             
-            if (Random.value < prob) //업그레이드 레벨은 0~20이고 20에선 업글 불가
+            // 업그레이드 레벨은 0 ~ 20이고 20에선 업글 불가
+            if (Random.value < prob) 
             {
                 Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!", this);
                 onComplete += PopUpWindow.HideSlider;
+                onComplete += () => {
+                    foreach (var button in _upgradeButtons)
+                    {
+                        button.interactable = true;
+                    } 
+                };
                 PopUpWindow.AnimateSlider(1, 0.6f, this, onComplete);
                 DataController.UpgradeLv.LevelUp(id);
-                foreach (var target in _dataController.Observers) //관찰자들에게 이벤트 메세지 송출
+                
+                // 관찰자들에게 이벤트 메세지 송출
+                foreach (var target in _dataController.Observers) 
                     ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this, id));
             }
             else
             {
                 Action onComplete = () => PopUpWindow.Alert("업그레이드 실패...", this);
                 onComplete += PopUpWindow.HideSlider;
+                onComplete += () => {
+                    foreach (var button in _upgradeButtons)
+                    {
+                        button.interactable = true;
+                    }
+                };
                 PopUpWindow.AnimateSlider(0, 0.6f, this, onComplete);
             }
         }
 
-        public void RemoveAlert() // 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
+        // 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
+        public void RemoveAlert() 
         {
             DataController.Instance.NewUpgrade = false;
         }
@@ -188,6 +210,7 @@ namespace Script
         {
             if (upgradeIndex == 50012)
                 return _currentUpgradeLv[upgradeIndex] >= LastUpgradeMaxLevel;
+            
             return _currentUpgradeLv[upgradeIndex] >= MaxLevel;
         }
     }

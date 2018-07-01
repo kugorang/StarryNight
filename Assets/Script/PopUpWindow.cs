@@ -9,16 +9,14 @@ namespace Script
     public class PopUpWindow : MonoBehaviour
     {
         private static bool _isLocked;
-        private static float _shakingTime;
-        private static float _waitingTime;
+        private static float _shakingTime, _waitingTime;
         private static Text _alertText;
         private static Queue _alertQueue;
         private static Slider _upgradeSlider;
         private static GameObject _alertPanel;
 
         public Text AlertText;
-        public float WaitingTime;
-        public float ShakingTime;
+        public float WaitingTime, ShakingTime;
         public Slider UpgradeSlider;
 
         /*private static GameObject AlertPanelR;
@@ -133,7 +131,7 @@ namespace Script
         /// <param name="txt">새 문자열</param>
         /// <param name="latencySecond">지연시간</param>
         /// <returns></returns>
-        public static IEnumerator ChangeDialogueText(string txt, float latencySecond)
+        private static IEnumerator ChangeDialogueText(string txt, float latencySecond)
         {
             yield return new WaitForSeconds(latencySecond);
 
@@ -148,7 +146,8 @@ namespace Script
         {
             if (_upgradeSlider != null)
             {
-                if (!_upgradeSlider.gameObject.activeSelf) _upgradeSlider.gameObject.SetActive(true);
+                if (!_upgradeSlider.gameObject.activeSelf) 
+                    _upgradeSlider.gameObject.SetActive(true);
 
                 _upgradeSlider.value = value;
             }
@@ -232,7 +231,8 @@ namespace Script
         /// </summary>
         public static void HideSlider()
         {
-            if (_upgradeSlider != null) _upgradeSlider.gameObject.SetActive(false);
+            if (_upgradeSlider != null)
+                _upgradeSlider.gameObject.SetActive(false);
         }
 
         private static IEnumerator FadeOut(Graphic img, Text txt)
@@ -286,26 +286,26 @@ namespace Script
         private static IEnumerator SliderAnimationCoroutine(float goalValue, float second, Action onComplete)
         {
             const float amplitude = 0.25f;
-            var diff = goalValue - amplitude; // 목표값-현재값
-            var deltaValue = diff / (10 * second); // 1회 변화량
+            var diff = goalValue - amplitude;              // 목표값 - 현재값
+            var deltaValue = diff / (10 * second);         // 1회 변화량
             
             yield return new WaitForSeconds(0.2f);
 
-            for (float i = 0; i <= _shakingTime; i += 0.1f)
+            for (float i = 0; i <= _shakingTime; i += 0.03f)
             {
                 var rate = 2 * Mathf.PI * i / _shakingTime;
                 _upgradeSlider.value = 0.5f + amplitude * Mathf.Sin(rate);
                 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.03f);
             }
 
             yield return new WaitForSeconds(_waitingTime);
             
-            for (float i = 0; i <= second; i += 0.1f)
+            for (float i = 0; i <= second; i += 0.03f)
             {
                 _upgradeSlider.value += deltaValue;
                 
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.03f);
             }
 
             onComplete();
@@ -313,8 +313,8 @@ namespace Script
 
         private static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second)
         {
-            var diff = goalValue - _upgradeSlider.value; // 목표값-현재값
-            var deltaValue = diff / (10 * second); // 1회 변화량
+            var diff = goalValue - _upgradeSlider.value;   // 목표값 - 현재값
+            var deltaValue = diff / (10 * second);         // 1회 변화량
             
             yield return new WaitForSeconds(0.5f);
             
@@ -328,8 +328,8 @@ namespace Script
 
         private static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second, Action onComplete)
         {
-            var diff = goalValue - _upgradeSlider.value; // 목표값-현재값
-            var deltaValue = diff / (10 * second); // 1회 변화량
+            var diff = goalValue - _upgradeSlider.value; // 목표값 - 현재값
+            var deltaValue = diff / (10 * second);       // 1회 변화량
             
             yield return new WaitForSeconds(0.5f);
             
@@ -342,7 +342,7 @@ namespace Script
             onComplete();
         }
 
-        private void OnEnable() // Awake 이후 재 검증
+        private void OnEnable()                         // Awake 이후 재 검증
         {
             if (_alertPanel == null) 
                 Initialize();
