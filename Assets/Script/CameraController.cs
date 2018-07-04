@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-namespace Assets.Script
+namespace Script
 {
     public class CameraController : MonoBehaviour
     {

@@ -597,6 +597,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8dae2e4e14c2574aa918a99b5434c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PrevButton: {fileID: 1304537753}
+  NextButton: {fileID: 1806361188}
 --- !u!1 &200870382
 GameObject:
   m_ObjectHideFlags: 0
@@ -3530,17 +3532,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 195550763}
-        m_MethodName: OnLeftQuestBtnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1304537756
@@ -4880,17 +4871,6 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1890590968}
         m_MethodName: OnClickRightBtn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 195550763}
-        m_MethodName: OnRightQuestBtnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
