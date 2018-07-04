@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-namespace Script
+namespace Assets.Script
 {
     public class CameraController : MonoBehaviour
     {
@@ -42,23 +42,9 @@ namespace Script
             _nowSceneNum = LastScene;
             
             transform.position = new Vector3(transform.position.x + LastScene * 1080.0f, transform.position.y, transform.position.z);
-
-            if (_nowScene.name == "QuestList")
-            {
-                SceneManager.LoadScene("QuestListUI", LoadSceneMode.Additive);
-            }
         }
 
-        /*private void OnEnable()
-        {
-            var sign = 1; // 오른쪽으로
-
-            if (LastScene != 0) // 왼쪽으로 가야하면
-                sign = -1; // 왼쪽으로
-
-            // 씬 떠났을 때 있었던 위치로 되돌림.
-            transform.position = new Vector3(540.0f * sign, transform.position.y, transform.position.z);
-        }*/
+     
 
         private void Update()
         {

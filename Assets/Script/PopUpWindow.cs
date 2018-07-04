@@ -26,7 +26,7 @@ namespace Script
         private void Awake()
         {
             Initialize();
-            SceneManager.sceneLoaded += (scene, mode) => Initialize();
+            //SceneManager.sceneLoaded += (scene, mode) => Initialize();
             _alertQueue = new Queue();
             _isLocked = false;
             _shakingTime = ShakingTime > 0 ? ShakingTime : 0.5f;
@@ -35,7 +35,7 @@ namespace Script
 
         private void Initialize()
         {
-            var gameObj = GameObject.Find("Alarm Window");
+           var gameObj = GameObject.Find("Alarm Window");
             
             if (gameObj == null)
             {
