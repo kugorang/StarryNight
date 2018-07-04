@@ -8,10 +8,10 @@ namespace Script
         public int Id { get; set; }
 
         // 아이템 위치
-        public SerializableVector3 Pos { get; set; }
-
+        public SerializableVector3 Pos { get; private set; }
+        
+        // 아이템 정보
         public ItemInfo Info { get; private set; }
-
 
         public void SetItemInfo(int productId, ItemInfo findItemInfo)
         {

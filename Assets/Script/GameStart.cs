@@ -1,75 +1,77 @@
 ﻿using System.Collections;
-using Script;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameStart : MonoBehaviour
+namespace Script
 {
-    public Text loading;
-
-    public Image logo;
-    public Button start;
-
-    public Image startImg;
-
-    private void Awake()
+    public class GameStart : MonoBehaviour
     {
-        Color textColor = new Vector4(1, 1, 1, 0);
-        loading.color = textColor;
-        loading.enabled = false;
-    }
+        public Text Loading;
 
-    private void Start()
-    {
-        StartCoroutine(FadeOut());
-    }
+        public Image Logo;
+        public Button StartButton;
 
-    // 로딩 완료 시 start 버튼 띄우기
-    private IEnumerator FadeOut()
-    {
-        for (var i = 0f; i <= 1; i += 0.1f)
+        public Image StartImg;
+
+        private void Awake()
         {
-            yield return new WaitForSeconds(0.1f);
-            Color color = new Vector4(1, 1, 1, i);
-            logo.color = color;
+            Color textColor = new Vector4(1, 1, 1, 0);
+            Loading.color = textColor;
+            Loading.enabled = false;
         }
 
-        yield return new WaitForSeconds(0.2f);
-        loading.text = "Loading...";
-        loading.color = new Vector4(1, 1, 1, 1);
-        while (!DataController.Instance.LoadingFinish)
+        private void Start()
         {
-            yield return new WaitForSeconds(0.2f);
-            loading.text = "Loading.";
-            yield return new WaitForSeconds(0.2f);
-            loading.text = "Loading..";
-            yield return new WaitForSeconds(0.2f);
-            loading.text = "Loading...";
+            StartCoroutine(FadeOut());
         }
 
-        loading.text = "Start";
-        loading.enabled = true;
-        StartCoroutine("FadeBtn");
-    }
-
-    private IEnumerator FadeBtn() //버튼에 페이드 효과 주기
-    {
-        for (var i = -0.7f; i <= 0.7; i += 0.05f)
+        // 로딩 완료 시 start 버튼 띄우기
+        private IEnumerator FadeOut()
         {
-            yield return new WaitForSeconds(0.1f);
-            Color color = new Vector4(1, 1, 1, 1 - Mathf.Abs(i));
-            startImg.color = color;
+            for (var i = 0f; i <= 1; i += 0.1f)
+            {
+                yield return new WaitForSeconds(0.1f);
+                Color color = new Vector4(1, 1, 1, i);
+                Logo.color = color;
+            }
+
+            yield return new WaitForSeconds(0.2f);
+            Loading.text = "Loading...";
+            Loading.color = new Vector4(1, 1, 1, 1);
+            while (!DataController.Instance.LoadingFinish)
+            {
+                yield return new WaitForSeconds(0.2f);
+                Loading.text = "Loading.";
+                yield return new WaitForSeconds(0.2f);
+                Loading.text = "Loading..";
+                yield return new WaitForSeconds(0.2f);
+                Loading.text = "Loading...";
+            }
+
+            Loading.text = "Start";
+            Loading.enabled = true;
+            StartCoroutine("FadeBtn");
         }
 
-        StartCoroutine("FadeBtn"); //StopCoroutine전까지 무한반복
-    }
+        private IEnumerator FadeBtn() // 버튼에 페이드 효과 주기
+        {
+            for (var i = -0.7f; i <= 0.7; i += 0.05f)
+            {
+                yield return new WaitForSeconds(0.1f);
+                Color color = new Vector4(1, 1, 1, 1 - Mathf.Abs(i));
+                StartImg.color = color;
+            }
 
-    // start 클릭 시 메인화면 이동
-    public void Click()
-    {
-        StopCoroutine("FadeBtn");
-        SceneManager.LoadScene("Main");
-        SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
+            StartCoroutine("FadeBtn"); // StopCoroutine 전까지 무한반복
+        }
+
+        // start 클릭 시 메인화면 이동
+        public void Click()
+        {
+            StopCoroutine("FadeBtn");
+            SceneManager.LoadScene("Main");
+            SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
+        }
     }
 }

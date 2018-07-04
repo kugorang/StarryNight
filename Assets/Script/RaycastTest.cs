@@ -41,6 +41,8 @@ namespace Script
         {
             GetComponent<BoxCollider2D>().isTrigger = true;
             StartCoroutine(CheckCollision());
+            
+            CameraController.FocusOnItem = false;
         }
 
         private IEnumerator CheckCollision()
@@ -52,12 +54,13 @@ namespace Script
 
             // 충돌 감지가 안 되었다면 아래 로직을 실행한다.
             GetComponent<BoxCollider2D>().isTrigger = false;
-            CameraController.FocusOnItem = false;
 
             // 아이템이 인벤토리 밖으로 벗어날 경우 아이템 드래그 전 위치로 다시 이동
-            if (Input.mousePosition.x > 7 * Screen.width / 8 || Input.mousePosition.x < Screen.width / 8 ||
-                Input.mousePosition.y > 7 * Screen.height / 8 ||
-                Input.mousePosition.y < Screen.height / 3) transform.position = Camera.main.ScreenToWorldPoint(_start);
+            if (Input.mousePosition.x > 7 * (float)Screen.width / 8 
+                || Input.mousePosition.x < (float)Screen.width / 8 
+                || Input.mousePosition.y > 7 * (float)Screen.height / 8 
+                || Input.mousePosition.y < (float)Screen.height / 3) 
+                transform.position = Camera.main.ScreenToWorldPoint(_start);
 
             _haveDic[_item.Info.Index][_item.Id] = transform.position;
             DataController.SaveGameData(_haveDic, _dataController.HaveDicPath);
@@ -65,70 +68,62 @@ namespace Script
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.tag == "Material" && collision.isTrigger)
-            {
-                var collItem = collision.GetComponent<Item>();
-                var collItemInfo = collItem.Info;
+            if (!collision.CompareTag("Material") || !collision.isTrigger) 
+                return;
+            
+            var collItem = collision.GetComponent<Item>();
+            var collItemInfo = collItem.Info;
 
-                if (collItemInfo.CheckDestroy) return;
+            if (collItemInfo.CheckDestroy) 
+                return;
 
-                // 조합표에 있는 조합식인지 검색한다.
+            // 조합표에 있는 조합식인지 검색한다.
+            var dataDic = DataDictionary.Instance;
+            var myItemInfo = GetComponent<Item>().Info;
 
-                var dataDic = DataDictionary.Instance;
-                var myItemInfo = GetComponent<Item>().Info;
+            var key1 = myItemInfo.Index;
+            var key2 = collItemInfo.Index;
+            var resultList = dataDic.FindCombine(key1, key2);
 
-                var key1 = myItemInfo.Index;
-                var key2 = collItemInfo.Index;
-                var resultList = dataDic.FindCombine(key1, key2);
+            if (resultList == null) 
+                return;
+            
+            collItemInfo.CheckDestroy = true;
 
-                if (resultList != null)
-                {
-                    collItemInfo.CheckDestroy = true;
+            // 조합표에 있다면 충돌 당한 물체를 결과 재료로 바꾸어준다.
+            // 조합 결과 개수를 얻어온다.
+            var resultNum = resultList.Count;
+            var findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
 
-                    // 조합표에 있다면 충돌 당한 물체를 결과 재료로 바꾸어준다.
-                    //Debug.Log("result != 0");
+            // 관찰자들에게 이벤트 메세지 송출, myItemInfo 바뀌기 전 정보 보냄.
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null,
+                    (x, y) => x.OnCombine(myItemInfo, collItemInfo, findItemInfo));
 
-                    // 조합 결과 개수를 얻어온다.
-                    var resultNum = resultList.Count;
+            myItemInfo.Index = findItemInfo.Index;
+            myItemInfo.Name = findItemInfo.Name;
+            myItemInfo.Group = findItemInfo.Group;
+            myItemInfo.Grade = findItemInfo.Grade;
+            myItemInfo.SellPrice = findItemInfo.SellPrice;
+            myItemInfo.Description = findItemInfo.Description;
+            myItemInfo.ImagePath = findItemInfo.ImagePath;
 
-                    var findItemInfo = dataDic.FindItem(resultList[Random.Range(0, resultNum)]);
+            GetComponent<SpriteRenderer>().sprite =
+                Resources.Load<Sprite>(dataDic.FindItemDic[myItemInfo.Index].ImagePath);
 
-                    foreach (var target in _dataController.Observers) //관찰자들에게 이벤트 메세지 송출, myItemInfo 바뀌기 전 정보 보냄.
-                        ExecuteEvents.Execute<IEventListener>(target, null,
-                            (x, y) => x.OnCombine(myItemInfo, collItemInfo, findItemInfo));
+            // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
+            _dataController.DeleteItem(key2, collItem.Id);
+            _dataController.DeleteItem(key1, GetComponent<Item>().Id);
 
+            _dataController.InsertNewItem(myItemInfo.Index, GetComponent<Item>().Id, transform.position);
 
-                    myItemInfo.Index = findItemInfo.Index;
-                    myItemInfo.Name = findItemInfo.Name;
-                    myItemInfo.Group = findItemInfo.Group;
-                    myItemInfo.Grade = findItemInfo.Grade;
-                    myItemInfo.SellPrice = findItemInfo.SellPrice;
-                    myItemInfo.Description = findItemInfo.Description;
-                    myItemInfo.ImagePath = findItemInfo.ImagePath;
+            _dataController.ItemCount -= 1;
 
-                    GetComponent<SpriteRenderer>().sprite =
-                        Resources.Load<Sprite>(dataDic.FindItemDic[myItemInfo.Index].ImagePath);
+            // 조합 후 충돌한 물체를 파괴한다.
+            Destroy(collision.gameObject);
+            AudioManager.GetInstance().MixSound();
 
-                    // 충돌한 물체를 가지고 있는 재료 dictionary에서 삭제한다.
-                    _dataController.DeleteItem(key2, collItem.Id);
-                    _dataController.DeleteItem(key1, GetComponent<Item>().Id);
-
-                    _dataController.InsertNewItem(myItemInfo.Index, GetComponent<Item>().Id, transform.position);
-
-                    _dataController.ItemCount -= 1;
-
-                    // 조합 후 충돌한 물체를 파괴한다.
-                    Destroy(collision.gameObject);
-                }
-                //else
-                //{
-                //    Debug.Log("result == 0");
-                //}
-
-                // 조합표에 없다면 그냥 무시한다.
-            }
-
-            //StartCoroutine(CheckCollision());
+            // 조합표에 없다면 그냥 무시한다.
         }
     }
 }

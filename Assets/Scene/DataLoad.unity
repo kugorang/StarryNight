@@ -173,7 +173,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &559132735
 GameObject:
@@ -293,7 +293,6 @@ GameObject:
   - component: {fileID: 926706588}
   - component: {fileID: 926706587}
   - component: {fileID: 926706586}
-  - component: {fileID: 926706585}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -301,13 +300,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!92 &926706585
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 926706584}
-  m_Enabled: 1
 --- !u!124 &926706586
 Behaviour:
   m_ObjectHideFlags: 0
@@ -536,10 +528,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c503e62628115c2499411ca3dec158b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loading: {fileID: 1525947137}
-  logo: {fileID: 1448052920}
-  start: {fileID: 1686730741}
-  startImg: {fileID: 559132737}
+  Loading: {fileID: 1525947137}
+  Logo: {fileID: 1448052920}
+  StartButton: {fileID: 1686730741}
+  StartImg: {fileID: 559132737}
 --- !u!114 &1670578628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,7 +601,7 @@ RectTransform:
   m_Children:
   - {fileID: 1899601958}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -996,10 +988,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d885deeed5e90a34c86c9d21f9109e20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  act: {fileID: 8300000, guid: 0576608601ec00742bc62f5ae506c232, type: 3}
-  click: {fileID: 8300000, guid: d9a4dc8d10c916e4fa24ad5329f15b63, type: 3}
-  item: {fileID: 8300000, guid: d9f9388764af2304d9633ca836ff3056, type: 3}
-  mix: {fileID: 8300000, guid: 1bd1e72dae2f32f4296f095650fbfc98, type: 3}
-  option: {fileID: 8300000, guid: 30623862a3f3ff34795c5b704f01c938, type: 3}
-  questStar: {fileID: 8300000, guid: 90cdbe9bbd5138f47bef4ad5256222e2, type: 3}
-  sale: {fileID: 8300000, guid: 14969cb75cd3f494d95d60e86fe09a02, type: 3}
+  Act: {fileID: 8300000, guid: 0576608601ec00742bc62f5ae506c232, type: 3}
+  Click: {fileID: 8300000, guid: d9a4dc8d10c916e4fa24ad5329f15b63, type: 3}
+  Item: {fileID: 8300000, guid: d9f9388764af2304d9633ca836ff3056, type: 3}
+  Mix: {fileID: 8300000, guid: 1bd1e72dae2f32f4296f095650fbfc98, type: 3}
+  Option: {fileID: 8300000, guid: 30623862a3f3ff34795c5b704f01c938, type: 3}
+  QuestStar: {fileID: 8300000, guid: 90cdbe9bbd5138f47bef4ad5256222e2, type: 3}
+  Sale: {fileID: 8300000, guid: 14969cb75cd3f494d95d60e86fe09a02, type: 3}

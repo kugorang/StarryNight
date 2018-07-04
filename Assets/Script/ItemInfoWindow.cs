@@ -1,33 +1,36 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemInfoWindow : MonoBehaviour
+namespace Script
 {
-    public GameObject itemInfoPanel;
-
-    public Image ItemImg { get; set; }
-    public Text ItemName { get; set; }
-    public Text ItemSort { get; set; }
-    public Text ItemGrade { get; set; }
-    public Text ItemCost { get; set; }
-    public Text ItemText { get; set; }
-
-    private void Awake()
+    public class ItemInfoWindow : MonoBehaviour
     {
-        ItemImg = GameObject.Find("ItemImage").GetComponent<Image>();
-        ItemName = GameObject.Find("ItemName").GetComponent<Text>();
-        ItemSort = GameObject.Find("ItemSort").GetComponent<Text>();
-        ItemGrade = GameObject.Find("ItemGrade").GetComponent<Text>();
-        ItemCost = GameObject.Find("ItemCost").GetComponent<Text>();
-        ItemText = GameObject.Find("ItemText").GetComponent<Text>();
+        public GameObject ItemInfoPanel;
 
-        itemInfoPanel.SetActive(false);
-        gameObject.SetActive(false);
-    }
+        public Image ItemImg { get; private set; }
+        public Text ItemName { get; private set; }
+        public Text ItemSort { get; private set; }
+        public Text ItemGrade { get; private set; }
+        public Text ItemCost { get; private set; }
+        public Text ItemText { get; private set; }
 
-    public void CloseWindow()
-    {
-        gameObject.SetActive(false);
-        itemInfoPanel.SetActive(false);
+        private void Awake()
+        {
+            ItemImg = GameObject.Find("ItemImage").GetComponent<Image>();
+            ItemName = GameObject.Find("ItemName").GetComponent<Text>();
+            ItemSort = GameObject.Find("ItemSort").GetComponent<Text>();
+            ItemGrade = GameObject.Find("ItemGrade").GetComponent<Text>();
+            ItemCost = GameObject.Find("ItemCost").GetComponent<Text>();
+            ItemText = GameObject.Find("ItemText").GetComponent<Text>();
+
+            ItemInfoPanel.SetActive(false);
+            gameObject.SetActive(false);
+        }
+
+        public void CloseWindow()
+        {
+            gameObject.SetActive(false);
+            ItemInfoPanel.SetActive(false);
+        }
     }
 }

@@ -1,64 +1,65 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class CartoonManager : MonoBehaviour
+namespace Script
 {
-    private static CartoonManager instance;
-    public FadeOut fadeOut;
-    private int nowImgNum, nowPage, page1ImgNum, page2ImgNum;
-    public Image[] page1ImgArr, page2ImgArr;
-
-    public static CartoonManager GetInstance()
+    public class CartoonManager : MonoBehaviour
     {
-        if (instance == null)
+        private static CartoonManager _instance;
+        public FadeOut FadeOut;
+        private int _nowImgNum, _nowPage, _page1ImgNum, _page2ImgNum;
+        public Image[] Page1ImgArr, Page2ImgArr;
+
+        public static CartoonManager GetInstance()
         {
-            instance = FindObjectOfType<CartoonManager>();
+            if (_instance != null) 
+                return _instance;
+            
+            _instance = FindObjectOfType<CartoonManager>();
 
-            if (instance == null)
-            {
-                var container = new GameObject("CartoonManager");
+            if (_instance != null) 
+                return _instance;
+            
+            var container = new GameObject("CartoonManager");
 
-                instance = container.AddComponent<CartoonManager>();
-            }
+            _instance = container.AddComponent<CartoonManager>();
+
+            return _instance;
         }
 
-        return instance;
-    }
-
-    private void Awake()
-    {
-        nowImgNum = 0;
-        nowPage = 1;
-        page1ImgNum = page1ImgArr.Length;
-        page2ImgNum = page2ImgArr.Length;
-    }
-
-    public void OnClick()
-    {
-        switch (nowPage)
+        private void Awake()
         {
-            case 1:
-                if (nowImgNum == page1ImgNum)
-                {
-                    nowImgNum = 0;
-                    nowPage++;
+            _nowImgNum = 0;
+            _nowPage = 1;
+            _page1ImgNum = Page1ImgArr.Length;
+            _page2ImgNum = Page2ImgArr.Length;
+        }
 
-                    for (var i = 0; i < page1ImgNum; i++) page1ImgArr[i].gameObject.SetActive(false);
-                }
-                else
-                {
-                    page1ImgArr[nowImgNum++].gameObject.SetActive(true);
-                }
+        public void OnClick()
+        {
+            switch (_nowPage)
+            {
+                case 1:
+                    if (_nowImgNum == _page1ImgNum)
+                    {
+                        _nowImgNum = 0;
+                        _nowPage++;
 
-                break;
-            case 2:
-                if (nowImgNum == page2ImgNum)
-                    fadeOut.gameObject.SetActive(true);
-                else
-                    page2ImgArr[nowImgNum++].gameObject.SetActive(true);
-                break;
-            default:
-                break;
+                        for (var i = 0; i < _page1ImgNum; i++) Page1ImgArr[i].gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        Page1ImgArr[_nowImgNum++].gameObject.SetActive(true);
+                    }
+
+                    break;
+                case 2:
+                    if (_nowImgNum == _page2ImgNum)
+                        FadeOut.gameObject.SetActive(true);
+                    else
+                        Page2ImgArr[_nowImgNum++].gameObject.SetActive(true);
+                    break;
+            }
         }
     }
 }

@@ -1,41 +1,44 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class AndroidBackButtonManager : MonoBehaviour
+namespace Script
 {
-    private static AndroidBackButtonManager instance;
-    private bool isPaused;
-
-    public static AndroidBackButtonManager GetInstance()
+    public class AndroidBackButtonManager : MonoBehaviour
     {
-        if (instance == null)
+        private static AndroidBackButtonManager _instance;
+        private bool _isPaused;
+
+        public static AndroidBackButtonManager GetInstance()
         {
-            instance = FindObjectOfType<AndroidBackButtonManager>();
+            if (_instance != null) 
+                return _instance;
+            
+            _instance = FindObjectOfType<AndroidBackButtonManager>();
 
-            if (instance == null)
-            {
-                var container = new GameObject("AndroidBackButttonManager");
+            if (_instance != null) 
+                return _instance;
+            
+            var container = new GameObject("AndroidBackButttonManager");
 
-                instance = container.AddComponent<AndroidBackButtonManager>();
-            }
+            _instance = container.AddComponent<AndroidBackButtonManager>();
+
+            return _instance;
         }
 
-        return instance;
-    }
-
-    private void Awake()
-    {
-        DontDestroyOnLoad(this);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.Escape))
+        private void Awake()
         {
-            if (!isPaused)
+            DontDestroyOnLoad(this);
+        }
+
+        private void Update()
+        {
+            if (!Input.GetKey(KeyCode.Escape)) 
+                return;
+            
+            if (!_isPaused)
             {
                 // if game is not yet paused, ESC will pause it
-                isPaused = true;
+                _isPaused = true;
 
                 StartCoroutine(CheckTime());
             }
@@ -45,12 +48,12 @@ public class AndroidBackButtonManager : MonoBehaviour
                 Application.Quit();
             }
         }
-    }
 
-    private IEnumerator CheckTime()
-    {
-        yield return new WaitForSeconds(3.0f);
+        private IEnumerator CheckTime()
+        {
+            yield return new WaitForSeconds(3.0f);
 
-        isPaused = false;
+            _isPaused = false;
+        }
     }
 }

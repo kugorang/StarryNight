@@ -2,21 +2,24 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Voice : MonoBehaviour
+namespace Script
 {
-    public Button character;
-
-    public void OnClick()
+    public class Voice : MonoBehaviour
     {
-        AudioManager.GetInstance().VoiceSound();
-        StartCoroutine(WaitVoice());
-    }
+        public Button Character;
 
-    // 대사 간 간격 시간 설정
-    private IEnumerator WaitVoice()
-    {
-        character.enabled = false;
-        yield return new WaitForSeconds(2.0f);
-        character.enabled = true;
+        public void OnClick()
+        {
+            AudioManager.GetInstance().VoiceSound();
+            StartCoroutine(WaitVoice());
+        }
+
+        // 대사 간 간격 시간 설정
+        private IEnumerator WaitVoice()
+        {
+            Character.enabled = false;
+            yield return new WaitForSeconds(2.0f);
+            Character.enabled = true;
+        }
     }
 }

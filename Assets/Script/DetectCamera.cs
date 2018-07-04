@@ -1,20 +1,23 @@
 ﻿using UnityEngine;
 
-public class DetectCamera : MonoBehaviour
+namespace Script
 {
-    public Camera mainCamera;
-    private Vector3 uiPos;
-
-    // Use this for initialization
-    private void Start()
+    public class DetectCamera : MonoBehaviour
     {
-        uiPos = new Vector3(mainCamera.transform.position.x, 0, 0);
-    }
+        public Camera MainCamera;
+        private Vector3 _uiPos;
 
-    // Update is called once per frame
-    private void Update()
-    {
-        uiPos.x = mainCamera.transform.position.x;
-        GetComponent<RectTransform>().localPosition = uiPos;
+        // Use this for initialization
+        private void Start()
+        {
+            _uiPos = new Vector3(MainCamera.transform.position.x, 0, 0);
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            _uiPos.x = MainCamera.transform.position.x;
+            GetComponent<RectTransform>().localPosition = _uiPos;
+        }
     }
 }

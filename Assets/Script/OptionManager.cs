@@ -1,106 +1,111 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class OptionManager : MonoBehaviour
+namespace Script
 {
-    public Button bgm;
-
-    public Text bgmDisplayer;
-    public Text effDisplayer;
-    public Button effect;
-    public Button voice;
-    public Text voiceDisplayer;
-
-    private void Awake()
+    public class OptionManager : MonoBehaviour
     {
-        // 배경음악 On Off 버튼 이미지와 텍스트 설정
-        if (AudioManager.GetInstance().GetBGMAlive() == 1)
+        public Text BgmDisplayer;
+        public Text EffDisplayer;
+        public Text VoiceDisplayer;
+        public Button Bgm;
+        public Button Effect;
+        public Button Voice;
+        private AudioManager _audioManager;
+
+        private void Awake()
         {
-            bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
-            bgmDisplayer.text = "ON";
-        }
-        else
-        {
-            AudioManager.GetInstance().BGMOff();
-            bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
-            bgmDisplayer.text = "OFF";
+            _audioManager = AudioManager.GetInstance();
+            
+            // 배경음악 On Off 버튼 이미지와 텍스트 설정
+            if (_audioManager.GetBGMAlive() == 1)
+            {
+                Bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
+                BgmDisplayer.text = "ON";
+            }
+            else
+            {
+                _audioManager.BGMOff();
+                Bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
+                BgmDisplayer.text = "OFF";
+            }
+
+            // 효과음 On Off 버튼 이미지와 텍스트 설정
+            if (_audioManager.GetEffAlive() == 1)
+            {
+                Effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
+                EffDisplayer.text = "ON";
+            }
+            else
+            {
+                Effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
+                EffDisplayer.text = "OFF";
+            }
+
+            // 캐릭터 대사 On Off 버튼 이미지와 텍스트 설정
+            if (_audioManager.GetVoiceAlive() == 1)
+            {
+                Voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
+                VoiceDisplayer.text = "ON";
+            }
+            else
+            {
+                Voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
+                VoiceDisplayer.text = "OFF";
+            }
         }
 
-        // 효과음 On Off 버튼 이미지와 텍스트 설정
-        if (AudioManager.GetInstance().GetEffAlive() == 1)
+        // 배경음악 버튼 선택 시
+        public void BGMButton()
         {
-            effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
-            effDisplayer.text = "ON";
-        }
-        else
-        {
-            effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
-            effDisplayer.text = "OFF";
+            if (_audioManager.GetBGMAlive() == 1) // 음악이 켜져 있다면
+            {
+                _audioManager.BGMOff();
+                _audioManager.SetBGMAlive(0);
+                Bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
+                BgmDisplayer.text = "OFF";
+            }
+            else // 음악이 꺼져 있다면
+            {
+                _audioManager.BGMOn();
+                _audioManager.SetBGMAlive(1);
+                Bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
+                BgmDisplayer.text = "ON";
+            }
         }
 
-        // 캐릭터 대사 On Off 버튼 이미지와 텍스트 설정
-        if (AudioManager.GetInstance().GetVoiceAlive() == 1)
+        // 효과음 버튼 선택 시
+        public void EffectButton()
         {
-            voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
-            voiceDisplayer.text = "ON";
+            if (_audioManager.GetEffAlive() == 1) // 음악이 켜져 있다면
+            {
+                _audioManager.SetEffAlive(0);
+                Effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
+                EffDisplayer.text = "OFF";
+            }
+            else // 음악이 꺼져 있다면
+            {
+                _audioManager.SetEffAlive(1);
+                Effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
+                EffDisplayer.text = "ON";
+            }
         }
-        else
-        {
-            voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
-            voiceDisplayer.text = "OFF";
-        }
-    }
 
-    // 배경음악 버튼 선택 시
-    public void BGMButton()
-    {
-        if (AudioManager.GetInstance().GetBGMAlive() == 1) // 음악이 켜져있다면
+        // 캐릭터 대사 버튼 선택 시
+        public void VoiceButton()
         {
-            AudioManager.GetInstance().BGMOff();
-            AudioManager.GetInstance().SetBGMAlive(0);
-            bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
-            bgmDisplayer.text = "OFF";
-        }
-        else // 음악이 꺼져있다면
-        {
-            AudioManager.GetInstance().BGMOn();
-            AudioManager.GetInstance().SetBGMAlive(1);
-            bgm.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
-            bgmDisplayer.text = "ON";
-        }
-    }
-
-    // 효과음 버튼 선택 시
-    public void EffectButton()
-    {
-        if (AudioManager.GetInstance().GetEffAlive() == 1) // 음악이 켜져있다면
-        {
-            AudioManager.GetInstance().SetEffAlive(0);
-            effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
-            effDisplayer.text = "OFF";
-        }
-        else // 음악이 꺼져있다면
-        {
-            AudioManager.GetInstance().SetEffAlive(1);
-            effect.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
-            effDisplayer.text = "ON";
-        }
-    }
-
-    // 캐릭터 대사 버튼 선택 시
-    public void VoiceButton()
-    {
-        if (AudioManager.GetInstance().GetVoiceAlive() == 1) // 켜져있다면
-        {
-            AudioManager.GetInstance().SetVoiceAlive(0);
-            voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
-            voiceDisplayer.text = "OFF";
-        }
-        else // 꺼져있다면
-        {
-            AudioManager.GetInstance().SetVoiceAlive(1);
-            voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
-            voiceDisplayer.text = "ON";
+            if (_audioManager.GetVoiceAlive() == 1) // 켜져 있다면
+            {
+                _audioManager.SetVoiceAlive(0);
+                Voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/pull");
+                VoiceDisplayer.text = "OFF";
+            }
+            else // 꺼져 있다면
+            {
+                _audioManager.SetVoiceAlive(1);
+                Voice.GetComponent<Image>().sprite = Resources.Load<Sprite>("optionImg/push");
+                VoiceDisplayer.text = "ON";
+            }
         }
     }
 }

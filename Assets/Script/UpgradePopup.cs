@@ -1,25 +1,28 @@
 ﻿using UnityEngine;
 
-public class UpgradePopup : MonoBehaviour
+namespace Script
 {
-    private GameObject upgrade;
-
-    private void Awake()
+    public class UpgradePopup : MonoBehaviour
     {
-        upgrade = GameObject.Find("Upgrade Panel");
-        upgrade.SetActive(false);
-    }
+        private GameObject _upgrade;
 
-    // 업그레이드 팝업 띄우기
-    public void EnterUpgrade()
-    {
-        transform.SetAsLastSibling();
-        upgrade.SetActive(true);
-    }
+        private void Awake()
+        {
+            _upgrade = GameObject.Find("Upgrade Panel");
+            _upgrade.SetActive(false);
+        }
 
-    // 업그레이드 팝업 닫기
-    public void ExitUpgrade()
-    {
-        upgrade.SetActive(false);
+        // 업그레이드 팝업 띄우기
+        public void EnterUpgrade()
+        {
+            transform.SetAsLastSibling();
+            _upgrade.SetActive(true);
+        }
+
+        // 업그레이드 팝업 닫기
+        public void ExitUpgrade()
+        {
+            _upgrade.SetActive(false);
+        }
     }
 }

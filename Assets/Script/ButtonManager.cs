@@ -1,78 +1,82 @@
-﻿using Script;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ButtonManager : MonoBehaviour
+namespace Script
 {
-    private DataController dataController;
-
-    private void Start()
+    public class ButtonManager : MonoBehaviour
     {
-        dataController = DataController.Instance;
-    }
+        private DataController _dataController;
+        /*private AudioManager _audioManager;*/
 
-    public void OnQuestBtnClick()
-    {
-        SceneManager.LoadScene("QuestList");
-
-        //현재 퀘스트로 바로 이동
-        var process = dataController.QuestProcess;
-
-        if (process <= 90104)
-            if (!dataController.IsTutorialEnd &&
-                (dataController.NowIndex == 300134 || dataController.NowIndex == 300217))
-                dataController.NowIndex++;
-        //else if (90104 < process && process <= 90123)
-        //{
-        //    AudioManager.GetInstance().ActSound();
-        //    SceneManager.LoadScene("Taurus");
-        //}
-        //else
-        //{
-        //    SceneManager.LoadScene("Quest");
-        //}
-
-        //AudioManager.GetInstance().ActSound();
-        //SceneManager.LoadScene("Aries");
-    }
-
-    // 망원경
-    public void OnTelescopeBtnClick()
-    {
-        SceneManager.LoadScene("Quest");
-    }
-
-    // 서적 (세트 아이템)
-    public void OnBookListBtnClick()
-    {
-        if (!dataController.IsTutorialEnd && (dataController.NowIndex == 300609 || dataController.NowIndex == 300622))
-            dataController.NowIndex++;
-
-        SceneManager.LoadScene("BookList");
-    }
-
-    public void OnMainBackBtnClick()
-    {
-        if (!dataController.IsTutorialEnd && dataController.NowIndex == 300204) dataController.NowIndex++;
-
-        SceneManager.LoadScene("Main");
-    }
-
-    //양자리 퀘스트 버튼
-    public void OnAriesBtnClick()
-    {
-        AudioManager.GetInstance().ActSound();
-        SceneManager.LoadScene("Cartoon");
-    }
-
-    // 황소자리 퀘스트 버튼
-    public void OnTaurusBtnClick()
-    {
-        // 퀘스트 인덱스 확인
-        if (90104 < DataController.Instance.QuestProcess)
+        private void Start()
         {
-            AudioManager.GetInstance().ActSound();
+            _dataController = DataController.Instance;
+            /*_audioManager = AudioManager.GetInstance();*/
+        }
+
+        public void OnQuestBtnClick()
+        {
+            SceneManager.LoadScene("QuestList");
+
+            //현재 퀘스트로 바로 이동
+            var process = _dataController.QuestProcess;
+
+            if (process > 90104) 
+                return;
+            
+            if (!_dataController.IsTutorialEnd 
+                && (_dataController.NowIndex == 300134 || _dataController.NowIndex == 300217))
+                _dataController.NowIndex++;
+        }
+
+        // 망원경
+        public void OnTelescopeBtnClick()
+        {
+            SceneManager.LoadScene("Quest");
+        }
+        
+        // 도감 (일반 아이템)
+        public void OnItemListBtnClick()
+        {
+            SceneManager.LoadScene("ItemList");
+
+        }
+
+        // 서적 (세트 아이템)
+        public void OnBookListBtnClick()
+        {
+            if (!_dataController.IsTutorialEnd 
+                && (_dataController.NowIndex == 300609 || _dataController.NowIndex == 300622))
+                _dataController.NowIndex++;
+
+            SceneManager.LoadScene("BookList");
+        }
+
+        // 메인 화면으로 돌아가는 버튼
+        public void OnMainBackBtnClick()
+        {
+            if (!_dataController.IsTutorialEnd && _dataController.NowIndex == 300204) 
+                _dataController.NowIndex++;
+
+            SceneManager.LoadScene("Main");
+        }
+
+        /*// 양자리 퀘스트 버튼
+        public void OnAriesBtnClick()
+        {
+            _audioManager.ActSound();
             SceneManager.LoadScene("Cartoon");
         }
+
+        // 황소자리 퀘스트 버튼
+        public void OnTaurusBtnClick()
+        {
+            // 퀘스트 인덱스 확인
+            if (90104 >= _dataController.QuestProcess) 
+                return;
+            
+            _audioManager.ActSound();
+            SceneManager.LoadScene("Cartoon");
+        }*/
     }
 }

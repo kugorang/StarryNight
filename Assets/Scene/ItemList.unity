@@ -383,10 +383,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76b9bba6b3799f49a793a2166e27b60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelPrefab: {fileID: 1052184090568086, guid: 20e125ceaeebf584d9becab3c192e1c5,
-    type: 2}
-  itemInfoPanel: {fileID: 355010976}
   NewItemAlert: {fileID: 21300000, guid: 4b8261414b97a024e8ea3ad050558736, type: 3}
+  PanelPrefab: {fileID: 1052184090568086, guid: 20e125ceaeebf584d9becab3c192e1c5,
+    type: 2}
+  ItemInfoPanel: {fileID: 355010976}
 --- !u!1 &355010976
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,7 +594,7 @@ GameObject:
   - component: {fileID: 411552458}
   - component: {fileID: 411552457}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ItemList Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -885,7 +885,6 @@ GameObject:
   m_Component:
   - component: {fileID: 610468862}
   - component: {fileID: 610468861}
-  - component: {fileID: 610468860}
   - component: {fileID: 610468859}
   m_Layer: 0
   m_Name: Main Camera
@@ -895,13 +894,6 @@ GameObject:
   m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!124 &610468859
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 610468857}
-  m_Enabled: 1
---- !u!92 &610468860
 Behaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -1727,7 +1719,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1545744979}
-        m_MethodName: OnClick
+        m_MethodName: OnMainBackBtnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1780,7 +1772,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1545744974}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f8d43ce5c7de7c4e9d37ccb01228539, type: 3}
+  m_Script: {fileID: 11500000, guid: 014486e1f42fce64d8e56168fa5f0691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1741271472
@@ -1836,7 +1828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62ccd532cf6df224eaa161fd8c1e609b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemInfoPanel: {fileID: 355010976}
+  ItemInfoPanel: {fileID: 355010976}
 --- !u!114 &1741271475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2289,8 +2281,8 @@ Canvas:
   m_GameObject: {fileID: 2074930169}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_RenderMode: 0
+  m_Camera: {fileID: 610468861}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

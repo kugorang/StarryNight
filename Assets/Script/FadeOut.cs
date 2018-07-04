@@ -2,29 +2,32 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class FadeOut : MonoBehaviour
+namespace Script
 {
-    public Image fade;
-    private float fades = 1.0f;
-    private float time;
-
-    // Update is called once per frame
-    public void Update()
+    public class FadeOut : MonoBehaviour
     {
-        time += Time.deltaTime;
+        public Image Fade;
+        private float _fades = 1.0f;
+        private float _time;
 
-        if (fades > 0.0f && time >= 0.03f)
+        // Update is called once per frame
+        public void Update()
         {
-            fades -= 0.05f;
-            fade.color = new Color(255, 255, 255, fades);
-            time = 0;
-        }
-        else if (fades <= 0.0f)
-        {
-            // 이 곳은 다음 씬으로 넘어가거나 다음 행동할 것에 대하여 적으시면 됩니다.
-            time = 0;
+            _time += Time.deltaTime;
 
-            SceneManager.LoadScene("Quest");
+            if (_fades > 0.0f && _time >= 0.03f)
+            {
+                _fades -= 0.05f;
+                Fade.color = new Color(255, 255, 255, _fades);
+                _time = 0;
+            }
+            else if (_fades <= 0.0f)
+            {
+                // 이 곳은 다음 씬으로 넘어가거나 다음 행동할 것에 대하여 적으시면 됩니다.
+                _time = 0;
+
+                SceneManager.LoadScene("Quest");
+            }
         }
     }
 }

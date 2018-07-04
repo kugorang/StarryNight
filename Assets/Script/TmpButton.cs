@@ -1,15 +1,17 @@
-﻿using Script;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TmpButton : MonoBehaviour
+namespace Script
 {
-    public void OnClick()
+    public class TmpButton : MonoBehaviour
     {
-        Debug.Log("TmpButton : " + DataController.Instance.NowIndex);
+        public void OnClick()
+        {
+            Debug.Log("TmpButton : " + DataController.Instance.NowIndex);
         
-        // 관찰자들에게 이벤트 메세지 송출
-        foreach (var target in DataController.Instance.Observers) 
-            ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
+            // 관찰자들에게 이벤트 메세지 송출
+            foreach (var target in DataController.Instance.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
+        }
     }
 }
