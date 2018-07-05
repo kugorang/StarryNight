@@ -64,7 +64,8 @@ namespace Script
             for (var i = 0; i < 12; i++)
             {
                 var upgradeIndex = 50001 + i;
-                //업그레이드 text 및 버튼 설정
+                
+                // 업그레이드 text 및 버튼 설정
                 if (upgradeIndex > _dataController.LatestUpgradeIndex)
                 {
                     _upgradeButtons[i].enabled = false;
@@ -84,7 +85,7 @@ namespace Script
                 }
                 else
                 {
-                    var nextUpgradeValue = _dataDic.FindUpDic[upgradeIndex].value[_currentUpgradeLv[i]];
+                    var nextUpgradeValue = _dataDic.FindUpDic[upgradeIndex].Value[_currentUpgradeLv[i]];
                     var str = "";
                     
                     switch (i)
@@ -134,7 +135,7 @@ namespace Script
                     }
 
                     _upgradeDisplayers[i].text = str;
-                    _upgradeCostDisplayers[i].text = _dataDic.FindUpgrade(upgradeIndex).cost[_currentUpgradeLv[i]] + "골드";
+                    _upgradeCostDisplayers[i].text = _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[i]] + "골드";
                 }
             }
         }
@@ -158,7 +159,7 @@ namespace Script
             // Debug.Log("Upgrade index: " + upgradeIndex);
             var prob = SuccessRate[_currentUpgradeLv[id]] / 100f;
 
-            if (DataController.Instance.Gold < (ulong) _dataDic.FindUpgrade(upgradeIndex).cost[_currentUpgradeLv[id]])
+            if (DataController.Instance.Gold < (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[id]])
             {
                 PopUpWindow.Alert("골드가 부족해요.", this);
                 return;
@@ -166,7 +167,7 @@ namespace Script
 
             Random.InitState((int) Time.time);
             PopUpWindow.SetSliderValue(prob);
-            DataController.Instance.Gold -= (ulong) _dataDic.FindUpgrade(upgradeIndex).cost[_currentUpgradeLv[id]];
+            DataController.Instance.Gold -= (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[id]];
             
             // 업그레이드 레벨은 0 ~ 20이고 20에선 업글 불가
             if (Random.value < prob) 
@@ -179,6 +180,7 @@ namespace Script
                         button.interactable = true;
                     } 
                 };
+                
                 PopUpWindow.AnimateSlider(1, 0.6f, this, onComplete);
                 DataController.UpgradeLv.LevelUp(id);
                 
@@ -196,6 +198,7 @@ namespace Script
                         button.interactable = true;
                     }
                 };
+                
                 PopUpWindow.AnimateSlider(0, 0.6f, this, onComplete);
             }
         }

@@ -235,8 +235,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bbae5aedf5cf8a4bb3beb681093da20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Btn: {fileID: 0}
-  Img: {fileID: 0}
+  Btn: {fileID: 3774375}
+  Img: {fileID: 3774376}
   Index: 2
   TimeDisplayer: {fileID: 232333224}
 --- !u!114 &3774375
@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 9715896}
   - component: {fileID: 9715895}
   m_Layer: 5
-  m_Name: Text (2)
+  m_Name: Voice Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -776,7 +776,7 @@ GameObject:
   - component: {fileID: 110050938}
   - component: {fileID: 110050937}
   m_Layer: 5
-  m_Name: Text
+  m_Name: BGM Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1208,8 +1208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf046451958d7d243926c4411b44fd72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Btn: {fileID: 0}
-  ImgEarthback: {fileID: 0}
+  Btn: {fileID: 141366570}
+  ImgEarthback: {fileID: 394413277}
   Item: {fileID: 1453670370652862, guid: baabcffa843f28b4f909cb6375e7c0d8, type: 2}
 --- !u!1 &141814170
 GameObject:
@@ -1606,7 +1606,7 @@ GameObject:
   - component: {fileID: 175751630}
   - component: {fileID: 175751633}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Tmp Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2316,7 +2316,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 293095784}
   m_OnClick:
     m_PersistentCalls:
@@ -2603,12 +2603,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91af5b97b1603fd48a4665cb7da6d0af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgm: {fileID: 656771423}
-  bgmDisplayer: {fileID: 242913249}
-  effDisplayer: {fileID: 1879255579}
-  effect: {fileID: 1370224898}
-  voice: {fileID: 353981565}
-  voiceDisplayer: {fileID: 1362162284}
+  BgmDisplayer: {fileID: 242913249}
+  EffDisplayer: {fileID: 1879255579}
+  VoiceDisplayer: {fileID: 1362162284}
+  Bgm: {fileID: 656771423}
+  Effect: {fileID: 1370224898}
+  Voice: {fileID: 353981565}
 --- !u!1 &317881237
 GameObject:
   m_ObjectHideFlags: 0
@@ -4923,7 +4923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80baa8776d84d6745a5faf4819968440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 592200929}
+  Character: {fileID: 592200929}
 --- !u!114 &592200929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5439,8 +5439,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bbae5aedf5cf8a4bb3beb681093da20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Btn: {fileID: 0}
-  Img: {fileID: 0}
+  Btn: {fileID: 618962936}
+  Img: {fileID: 618962937}
   Index: 0
   TimeDisplayer: {fileID: 410859579}
 --- !u!114 &618962936
@@ -6051,7 +6051,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 692711485}
-        m_MethodName: OnClick
+        m_MethodName: OnItemListBtnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6104,7 +6104,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 692711480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a74cb281fd3144d9de6b58f09436fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 014486e1f42fce64d8e56168fa5f0691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &697278907
@@ -6342,7 +6342,7 @@ GameObject:
   - component: {fileID: 750438126}
   - component: {fileID: 750438125}
   m_Layer: 5
-  m_Name: Text (1)
+  m_Name: Effect Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8314,8 +8314,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bbae5aedf5cf8a4bb3beb681093da20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Btn: {fileID: 0}
-  Img: {fileID: 0}
+  Btn: {fileID: 1086528555}
+  Img: {fileID: 1086528556}
   Index: 1
   TimeDisplayer: {fileID: 776887712}
 --- !u!114 &1086528555

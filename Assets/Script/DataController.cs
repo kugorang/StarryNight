@@ -8,8 +8,8 @@ using UnityEngine.EventSystems;
 namespace Script
 {
     /// <summary>
-    ///     Since unity doesn't flag the Vector3 as serializable, we need to create our own version. This one will
-    ///     automatically convert between Vector3 and SerializableVector3
+    ///     Since unity doesn't flag the Vector3 as serializable, we need to create our own version.
+    ///     This one will automatically convert between Vector3 and SerializableVector3.
     /// </summary>
     [Serializable]
     public struct SerializableVector3
@@ -342,7 +342,7 @@ namespace Script
             {
                 if (UpgradeLv[0] == 0)
                     return 10;
-                return 10 + _dataDic.FindUpgrade(50001).value[UpgradeLv[0] - 1];
+                return 10 + _dataDic.FindUpgrade(50001).Value[UpgradeLv[0] - 1];
             }
         }
 
@@ -367,7 +367,7 @@ namespace Script
             {
                 if (UpgradeLv[1] == 0)
                     return 2;
-                return 2 + _dataDic.FindUpgrade(50002).value[UpgradeLv[1] - 1];
+                return 2 + _dataDic.FindUpgrade(50002).Value[UpgradeLv[1] - 1];
             }
         }
 
@@ -554,7 +554,7 @@ namespace Script
         public void UnlockUpgrade(int index)
         {
             // 값 길이 = 최대 길이
-            UpgradeLv.MaxLv[index - 50001] = _dataDic.FindUpgrade(index).value.Length; 
+            UpgradeLv.MaxLv[index - 50001] = _dataDic.FindUpgrade(index).Value.Length; 
             NewUpgrade = true;
         }
 
@@ -646,13 +646,13 @@ namespace Script
 
                 HaveDic.Add(key, posList);
 
-                //!마크 띄우기
+                // !마크 띄우기
                 if (key > 4000) //서적
                 {
                     NewBookList.Add(key);
                     SaveGameData(NewBookList, NewBookListPath);
                     var setInfo = _dataDic.CheckSetItemCombine(key);
-                    if (setInfo.result != 0) InsertNewItem(setInfo.result, 1);
+                    if (setInfo.Result != 0) InsertNewItem(setInfo.Result, 1);
                 }
                 else //도감
                 {

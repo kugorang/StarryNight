@@ -1,352 +1,351 @@
 ﻿using System;
 using System.Collections.Generic;
-using Script;
 using UnityEngine;
 
-public struct SetItemInfo
+namespace Script
 {
-    public readonly int index1, index2, index3, index4, result;
-
-    public SetItemInfo(int _index1, int _index2, int _index3, int _index4, int _result)
+    public struct SetItemInfo
     {
-        index1 = _index1;
-        index2 = _index2;
-        index3 = _index3;
-        index4 = _index4;
-        result = _result;
-    }
-}
+        public readonly int Index1, Index2, Index3, Index4, Result;
 
-public struct UpgradeInfo
-{
-    public int index;
-    public string name;
-    public int[] value;
-    public int[] cost;
-}
-
-public struct TextInfo
-{
-    public readonly string name, dialogue, face, sound;
-
-    public TextInfo(string _name, string _dialogue, string _face, string _sound)
-    {
-        name = _name;
-        dialogue = _dialogue;
-        face = _face;
-        sound = _sound;
-    }
-}
-
-public class DataDictionary : MonoBehaviour
-{
-    private static DataDictionary instance;
-
-    public List<int> FirstQuestsOfScene = new List<int>();
-
-    /// <summary>
-    ///     NOTE: 재료를 찾을 때 사용하는 Dictionary
-    ///     <para> -> key(int) : 재료 기준표 인덱스</para>
-    ///     <para> -> value(ItemInfo) : 재료 정보</para>
-    /// </summary>
-    public Dictionary<int, ItemInfo> FindItemDic { get; private set; }
-
-    /// <summary>
-    ///     NOTE : 재료 조합식 Dictionary
-    ///     <para>-> key(int) : material1 인덱스</para>
-    ///     <para>-> value(int) : material1에 해당하는 조합식 list</para>
-    /// </summary>
-    public Dictionary<Tuple<int, int>, List<int>> CombineDic { get; private set; }
-
-    /// <summary>
-    ///     NOTE: 세트 아이템 조합식을 저장하는 Dictionary
-    ///     <para>-> key(int) : </para>
-    /// </summary>
-    [HideInInspector]
-    public List<SetItemInfo> SetComineList { get; private set; }
-
-    /// <summary>
-    ///     NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
-    ///     <para> -> key(int) : 퀘스트 기준표 인덱스</para>
-    ///     <para> -> value(ItemInfo) : 퀘스트 정보</para>
-    /// </summary>
-    public Dictionary<int, QuestInfo> FindQuestDic { get; private set; }
-
-    /// <summary>
-    ///     NOTE: 업그레이드를 찾을 때 사용하는 Dictionary
-    ///     <para> -> key(int) : 업그레이드 기준표 인덱스</para>
-    ///     <para> -> value(ItemInfo) : 업그레이드 정보</para>
-    /// </summary>
-    public Dictionary<int, UpgradeInfo> FindUpDic { get; private set; }
-
-    // 대화 Dictionary
-    // Key : 인덱스, Value : 대화 정보
-    public Dictionary<int, TextInfo> DialogueDic { get; private set; }
-
-    public int StarNum { get; private set; }
-    public int MaterialNum { get; private set; }
-    public int CombineNum { get; private set; }
-
-    public static DataDictionary Instance
-    {
-        get
+        public SetItemInfo(int index1, int index2, int index3, int index4, int result)
         {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<DataDictionary>();
-
-                if (instance == null)
-                {
-                    var container = new GameObject("DataDictionary");
-                    instance = container.AddComponent<DataDictionary>();
-                }
-            }
-
-            return instance;
+            Index1 = index1;
+            Index2 = index2;
+            Index3 = index3;
+            Index4 = index4;
+            Result = result;
         }
     }
 
-    private void Start()
+    public struct UpgradeInfo
     {
-        DontDestroyOnLoad(this);
-
-        // 두 Dictionary들을 초기화
-        FindItemDic = new Dictionary<int, ItemInfo>();
-        CombineDic = new Dictionary<Tuple<int, int>, List<int>>();
-        SetComineList = new List<SetItemInfo>();
-        FindQuestDic = new Dictionary<int, QuestInfo>();
-        FindUpDic = new Dictionary<int, UpgradeInfo>();
-        DialogueDic = new Dictionary<int, TextInfo>();
-
-        // 읽어들이기
-        ReadDataFile("dataTable/combineTable", FILEINFO.COMBINETABLE);
-        ReadDataFile("dataTable/itemTable", FILEINFO.ITEMTABLE);
-        ReadDataFile("dataTable/setItemTable", FILEINFO.SETITEMTABLE);
-        ReadDataFile("dataTable/questTable", FILEINFO.QUESTTABLE);
-        ReadDataFile("dataTable/upgradeTable", FILEINFO.UPGRADETABLE);
-        ReadDataFile("dataTable/dialogue", FILEINFO.DIALOGUETABLE);
+        public int Index;
+        public string Name;
+        public int[] Value;
+        public int[] Cost;
     }
 
-    private void ReadDataFile(string fileName, FILEINFO fileType)
+    public struct TextInfo
     {
-        var txtFile = (TextAsset) Resources.Load(fileName);
-        var lineList = txtFile.text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+        public readonly string Name, Dialogue, Face, Sound;
 
-        var lineListLen = lineList.Length;
-
-        var formerSceneName = "";
-
-        for (var i = 0; i < lineListLen; i++)
+        public TextInfo(string name, string dialogue, string face, string sound)
         {
-            var wordList = lineList[i].Split(',', '\t');
-            int index;
-            switch (fileType)
+            Name = name;
+            Dialogue = dialogue;
+            Face = face;
+            Sound = sound;
+        }
+    }
+
+    public class DataDictionary : MonoBehaviour
+    {
+        private static DataDictionary _instance;
+
+        public List<int> FirstQuestsOfScene = new List<int>();
+
+        /// <summary>
+        ///     NOTE: 재료를 찾을 때 사용하는 Dictionary
+        ///     <para> -> key(int) : 재료 기준표 인덱스</para>
+        ///     <para> -> value(ItemInfo) : 재료 정보</para>
+        /// </summary>
+        public Dictionary<int, ItemInfo> FindItemDic { get; private set; }
+
+        /// <summary>
+        ///     NOTE : 재료 조합식 Dictionary
+        ///     <para>-> key(int) : material1 인덱스</para>
+        ///     <para>-> value(int) : material1에 해당하는 조합식 list</para>
+        /// </summary>
+        private Dictionary<Tuple<int, int>, List<int>> CombineDic { get; set; }
+
+        /// <summary>
+        ///     NOTE: 세트 아이템 조합식을 저장하는 Dictionary
+        ///     <para>-> key(int) : </para>
+        /// </summary>
+        [HideInInspector]
+        public List<SetItemInfo> SetComineList { get; private set; }
+
+        /// <summary>
+        ///     NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
+        ///     <para> -> key(int) : 퀘스트 기준표 인덱스</para>
+        ///     <para> -> value(ItemInfo) : 퀘스트 정보</para>
+        /// </summary>
+        public Dictionary<int, QuestInfo> FindQuestDic { get; private set; }
+
+        /// <summary>
+        ///     NOTE: 업그레이드를 찾을 때 사용하는 Dictionary
+        ///     <para> -> key(int) : 업그레이드 기준표 인덱스</para>
+        ///     <para> -> value(ItemInfo) : 업그레이드 정보</para>
+        /// </summary>
+        public Dictionary<int, UpgradeInfo> FindUpDic { get; private set; }
+
+        // 대화 Dictionary
+        // Key : 인덱스, Value : 대화 정보
+        public Dictionary<int, TextInfo> DialogueDic { get; private set; }
+
+        public int StarNum { get; private set; }
+        public int MaterialNum { get; private set; }
+        public int CombineNum { get; private set; }
+
+        public static DataDictionary Instance
+        {
+            get
             {
-                case FILEINFO.COMBINETABLE:
-                    var material1 = Convert.ToInt32(wordList[0]);
-                    var material2 = Convert.ToInt32(wordList[1]);
-                    var resultNum = Convert.ToInt32(wordList[2]);
+                if (_instance != null) 
+                    return _instance;
+                
+                _instance = FindObjectOfType<DataDictionary>();
 
-                    Tuple<int, int> tuple;
+                if (_instance != null) 
+                    return _instance;
+                
+                var container = new GameObject("DataDictionary");
+                
+                _instance = container.AddComponent<DataDictionary>();
 
-                    if (material1 != material2)
-                    {
-                        tuple = new Tuple<int, int>(material2, material1);
+                return _instance;
+            }
+        }
 
+        private void Start()
+        {
+            DontDestroyOnLoad(this);
+
+            // 두 Dictionary들을 초기화
+            FindItemDic = new Dictionary<int, ItemInfo>();
+            CombineDic = new Dictionary<Tuple<int, int>, List<int>>();
+            SetComineList = new List<SetItemInfo>();
+            FindQuestDic = new Dictionary<int, QuestInfo>();
+            FindUpDic = new Dictionary<int, UpgradeInfo>();
+            DialogueDic = new Dictionary<int, TextInfo>();
+
+            // 읽어들이기
+            ReadDataFile("dataTable/combineTable", Fileinfo.Combinetable);
+            ReadDataFile("dataTable/itemTable", Fileinfo.Itemtable);
+            ReadDataFile("dataTable/setItemTable", Fileinfo.Setitemtable);
+            ReadDataFile("dataTable/questTable", Fileinfo.Questtable);
+            ReadDataFile("dataTable/upgradeTable", Fileinfo.Upgradetable);
+            ReadDataFile("dataTable/dialogue", Fileinfo.Dialoguetable);
+        }
+
+        private void ReadDataFile(string fileName, Fileinfo fileType)
+        {
+            var txtFile = (TextAsset) Resources.Load(fileName);
+            var lineList = txtFile.text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+
+            var lineListLen = lineList.Length;
+
+            var formerSceneName = "";
+
+            for (var i = 0; i < lineListLen; i++)
+            {
+                var wordList = lineList[i].Split(',', '\t');
+                int index;
+                
+                switch (fileType)
+                {
+                    case Fileinfo.Combinetable:
+                        var material1 = Convert.ToInt32(wordList[0]);
+                        var material2 = Convert.ToInt32(wordList[1]);
+                        var resultNum = Convert.ToInt32(wordList[2]);
+
+                        Tuple<int, int> tuple;
+
+                        if (material1 != material2)
+                        {
+                            tuple = new Tuple<int, int>(material2, material1);
+                            CombineDic[tuple] = new List<int>();
+
+                            for (var j = 0; j < resultNum; j++) 
+                                CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
+                        }
+
+                        tuple = new Tuple<int, int>(material1, material2);
                         CombineDic[tuple] = new List<int>();
 
-                        for (var j = 0; j < resultNum; j++) CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
-                    }
+                        for (var j = 0; j < resultNum; j++) 
+                            CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
 
-                    tuple = new Tuple<int, int>(material1, material2);
+                        break;
+                    case Fileinfo.Itemtable:
+                        index = Convert.ToInt32(wordList[0]);
+                        var sellPrice = Convert.ToInt32(wordList[5]);
+                        var group = wordList[2];
 
-                    CombineDic[tuple] = new List<int>();
+                        switch (group)
+                        {
+                            case "별":
+                                StarNum++;
+                                break;
+                            case "재료":
+                                MaterialNum++;
+                                break;
+                            case "아이템":
+                                CombineNum++;
+                                break;
+                        }
 
-                    for (var j = 0; j < resultNum; j++) CombineDic[tuple].Add(Convert.ToInt32(wordList[3 + j]));
+                        FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4],
+                            "itemImg/item_" + index);
 
-                    break;
-                case FILEINFO.ITEMTABLE:
-                    index = Convert.ToInt32(wordList[0]);
-                    var sellPrice = Convert.ToInt32(wordList[5]);
-                    var group = wordList[2];
+                        break;
+                    case Fileinfo.Setitemtable:
+                        var setItemInfo = new SetItemInfo(Convert.ToInt32(wordList[0]), Convert.ToInt32(wordList[1]),
+                            Convert.ToInt32(wordList[2]), Convert.ToInt32(wordList[3]), Convert.ToInt32(wordList[4]));
 
-                    switch (group)
-                    {
-                        case "별":
-                            StarNum++;
-                            break;
-                        case "재료":
-                            MaterialNum++;
-                            break;
-                        case "아이템":
-                            CombineNum++;
-                            break;
-                        default:
-                            break;
-                    }
+                        SetComineList.Add(setItemInfo);
 
-                    FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4],
-                        "itemImg/item_" + index);
+                        break;
+                    case Fileinfo.Questtable:
+                        index = Convert.ToInt32(wordList[0]);
+                        //int dialogueStart = Convert.ToInt32(wordList[1]);
+                        //int dialogueEnd = Convert.ToInt32(wordList[2]);
 
-                    break;
-                case FILEINFO.SETITEMTABLE:
-                    var setItemInfo = new SetItemInfo(Convert.ToInt32(wordList[0]), Convert.ToInt32(wordList[1]),
-                        Convert.ToInt32(wordList[2]), Convert.ToInt32(wordList[3]), Convert.ToInt32(wordList[4]));
+                        var termsItem = Convert.ToInt32(wordList[4]);
+                        var termsCount = Convert.ToInt32(wordList[5]);
+                        var reward = Convert.ToInt32(wordList[6]);
+                        var rewardCount = Convert.ToInt32(wordList[7]);
 
-                    SetComineList.Add(setItemInfo);
-
-                    break;
-                case FILEINFO.QUESTTABLE:
-                    index = Convert.ToInt32(wordList[0]);
-                    //int dialogueStart = Convert.ToInt32(wordList[1]);
-                    //int dialogueEnd = Convert.ToInt32(wordList[2]);
-
-                    var termsItem = Convert.ToInt32(wordList[4]);
-                    var termsCount = Convert.ToInt32(wordList[5]);
-                    var reward = Convert.ToInt32(wordList[6]);
-                    var rewardCount = Convert.ToInt32(wordList[7]);
-
-                    FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem,
-                        termsCount, reward, rewardCount);
+                        FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem,
+                            termsCount, reward, rewardCount);
 
 
-                    if (wordList[1] != formerSceneName) //씬의 첫 퀘스트의 인덱스 구하기
-                    {
-                        FirstQuestsOfScene.Add(index);
-                        formerSceneName = wordList[1];
-                    }
+                        if (wordList[1] != formerSceneName) //씬의 첫 퀘스트의 인덱스 구하기
+                        {
+                            FirstQuestsOfScene.Add(index);
+                            formerSceneName = wordList[1];
+                        }
 
-                    break;
-                case FILEINFO.UPGRADETABLE:
-                    index = Convert.ToInt32(wordList[0]);
-                    var len = (wordList.Length - 2) / 2; //wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
-                    UpgradeInfo upInfo;
-                    upInfo.index = index;
-                    upInfo.name = wordList[1];
+                        break;
+                    case Fileinfo.Upgradetable:
+                        index = Convert.ToInt32(wordList[0]);
+                        var len = (wordList.Length - 2) / 2; //wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
+                        UpgradeInfo upInfo;
+                        upInfo.Index = index;
+                        upInfo.Name = wordList[1];
 
-                    upInfo.value = new int[len];
-                    upInfo.cost = new int[len];
+                        upInfo.Value = new int[len];
+                        upInfo.Cost = new int[len];
 
-                    for (var j = 0; j < len; j++)
-                    {
-                        var value = Convert.ToInt32(wordList[2 * j + 2]);
-                        var cost = Convert.ToInt32(wordList[2 * j + 3]);
-                        upInfo.value[j] = value;
-                        upInfo.cost[j] = cost;
-                    }
+                        for (var j = 0; j < len; j++)
+                        {
+                            var value = Convert.ToInt32(wordList[2 * j + 2]);
+                            var cost = Convert.ToInt32(wordList[2 * j + 3]);
+                            upInfo.Value[j] = value;
+                            upInfo.Cost[j] = cost;
+                        }
 
-                    FindUpDic[index] = upInfo;
-                    break;
-                case FILEINFO.DIALOGUETABLE:
-                    index = Convert.ToInt32(wordList[0]);
+                        FindUpDic[index] = upInfo;
+                        break;
+                    case Fileinfo.Dialoguetable:
+                        index = Convert.ToInt32(wordList[0]);
 
-                    string name = wordList[1], dialogue = wordList[2], face = wordList[3], sound = wordList[4];
-
-                    DialogueDic[index] = new TextInfo(name, dialogue, face, sound);
-                    break;
-                default:
-                    break;
+                        // wordList[1] : name, wordList[2] : dialogue, wordList[3] : face, wordList[4] : sound
+                        DialogueDic[index] = new TextInfo(wordList[1], wordList[2], wordList[3], wordList[4]);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("fileType", fileType, null);
+                }
             }
         }
-    }
 
-    /// <summary>
-    ///     기준표에서 아이템을 찾는 함수
-    /// </summary>
-    /// <param name="key">findDic의 key값</param>
-    /// <returns>리턴값</returns>
-    public ItemInfo FindItem(int key)
-    {
-        return FindItemDic[key];
-    }
-
-    /// <summary>
-    ///     조합표에서 검색하는 함수
-    /// </summary>
-    /// <param name="key1">재료1의 인덱스</param>
-    /// <param name="key2">재료2의 인덱스</param>
-    /// <returns>찾았다면 결과를, 아니라면 0을 반환</returns>
-    public List<int> FindCombine(int key1, int key2)
-    {
-        var tuple = new Tuple<int, int>(key1, key2);
-
-        if (CombineDic.ContainsKey(tuple)) return CombineDic[tuple];
-
-        return null;
-    }
-
-    public SetItemInfo CheckSetItemCombine(int key)
-    {
-        var dataController = DataController.Instance;
-        var haveDic = dataController.HaveDic;
-
-        foreach (var setItemInfo in SetComineList)
-            if (key == setItemInfo.index1)
-            {
-                if (haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index4) &&
-                    haveDic[setItemInfo.index4].Count > 0) return setItemInfo;
-            }
-            else if (key == setItemInfo.index2)
-            {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index3) && haveDic[setItemInfo.index3].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index4) &&
-                    haveDic[setItemInfo.index4].Count > 0) return setItemInfo;
-            }
-            else if (key == setItemInfo.index3)
-            {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index4) &&
-                    haveDic[setItemInfo.index4].Count > 0) return setItemInfo;
-            }
-            else if (key == setItemInfo.index4)
-            {
-                if (haveDic.ContainsKey(setItemInfo.index1) && haveDic[setItemInfo.index1].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index2) && haveDic[setItemInfo.index2].Count > 0 &&
-                    haveDic.ContainsKey(setItemInfo.index3) &&
-                    haveDic[setItemInfo.index3].Count > 0) return setItemInfo;
-            }
-
-        return new SetItemInfo(0, 0, 0, 0, 0);
-    }
-
-    /// <summary>
-    ///     기준표에서 퀘스트를 찾는 함수
-    /// </summary>
-    /// <param name="key">findQuestDic의 key값</param>
-    /// <returns>리턴값</returns>
-    public QuestInfo FindQuest(int key)
-    {
-        return FindQuestDic[key];
-    }
-
-    public UpgradeInfo FindUpgrade(int key)
-    {
-        return FindUpDic[key];
-    }
-
-    private enum FILEINFO
-    {
-        COMBINETABLE,
-        ITEMTABLE,
-        SETITEMTABLE,
-        QUESTTABLE,
-        UPGRADETABLE,
-        DIALOGUETABLE
-    }
-
-    public struct Tuple<T1, T2>
-    {
-        public readonly T1 m_item1;
-        public readonly T2 m_item2;
-
-        public Tuple(T1 item1, T2 item2)
+        /// <summary>
+        ///     기준표에서 아이템을 찾는 함수
+        /// </summary>
+        /// <param name="key">findDic의 key값</param>
+        /// <returns>리턴값</returns>
+        public ItemInfo FindItem(int key)
         {
-            m_item1 = item1;
-            m_item2 = item2;
+            return FindItemDic[key];
+        }
+
+        /// <summary>
+        ///     조합표에서 검색하는 함수
+        /// </summary>
+        /// <param name="key1">재료1의 인덱스</param>
+        /// <param name="key2">재료2의 인덱스</param>
+        /// <returns>찾았다면 결과를, 아니라면 0을 반환</returns>
+        public List<int> FindCombine(int key1, int key2)
+        {
+            var tuple = new Tuple<int, int>(key1, key2);
+
+            return CombineDic.ContainsKey(tuple) ? CombineDic[tuple] : null;
+        }
+
+        public SetItemInfo CheckSetItemCombine(int key)
+        {
+            var dataController = DataController.Instance;
+            var haveDic = dataController.HaveDic;
+
+            foreach (var setItemInfo in SetComineList)
+                if (key == setItemInfo.Index1)
+                {
+                    if (haveDic.ContainsKey(setItemInfo.Index2) && haveDic[setItemInfo.Index2].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index3) && haveDic[setItemInfo.Index3].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index4) && haveDic[setItemInfo.Index4].Count > 0) 
+                        return setItemInfo;
+                }
+                else if (key == setItemInfo.Index2)
+                {
+                    if (haveDic.ContainsKey(setItemInfo.Index1) && haveDic[setItemInfo.Index1].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index3) && haveDic[setItemInfo.Index3].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index4) && haveDic[setItemInfo.Index4].Count > 0) 
+                        return setItemInfo;
+                }
+                else if (key == setItemInfo.Index3)
+                {
+                    if (haveDic.ContainsKey(setItemInfo.Index1) && haveDic[setItemInfo.Index1].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index2) && haveDic[setItemInfo.Index2].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index4) && haveDic[setItemInfo.Index4].Count > 0) 
+                        return setItemInfo;
+                }
+                else if (key == setItemInfo.Index4)
+                {
+                    if (haveDic.ContainsKey(setItemInfo.Index1) && haveDic[setItemInfo.Index1].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index2) && haveDic[setItemInfo.Index2].Count > 0 
+                        && haveDic.ContainsKey(setItemInfo.Index3) && haveDic[setItemInfo.Index3].Count > 0) 
+                        return setItemInfo;
+                }
+
+            return new SetItemInfo(0, 0, 0, 0, 0);
+        }
+
+        /// <summary>
+        ///     기준표에서 퀘스트를 찾는 함수
+        /// </summary>
+        /// <param name="key">findQuestDic의 key값</param>
+        /// <returns>리턴값</returns>
+        public QuestInfo FindQuest(int key)
+        {
+            return FindQuestDic[key];
+        }
+
+        public UpgradeInfo FindUpgrade(int key)
+        {
+            return FindUpDic[key];
+        }
+
+        private enum Fileinfo
+        {
+            Combinetable,
+            Itemtable,
+            Setitemtable,
+            Questtable,
+            Upgradetable,
+            Dialoguetable
+        }
+
+        private struct Tuple<T1, T2>
+        {
+            public readonly T1 Item1;
+            public readonly T2 Item2;
+
+            public Tuple(T1 item1, T2 item2)
+            {
+                Item1 = item1;
+                Item2 = item2;
+            }
         }
     }
 }

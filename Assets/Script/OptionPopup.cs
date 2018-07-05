@@ -1,25 +1,28 @@
 ﻿using UnityEngine;
 
-public class OptionPopup : MonoBehaviour
+namespace Script
 {
-    private GameObject option;
-
-    private void Awake()
+    public class OptionPopup : MonoBehaviour
     {
-        option = GameObject.Find("Option Panel");
-        option.SetActive(false);
-    }
+        private GameObject _option;
 
-    // 설정 팝업 띄우기
-    public void EnterOption()
-    {
-        AudioManager.GetInstance().OptionSound();
-        option.SetActive(true);
-    }
+        private void Awake()
+        {
+            _option = GameObject.Find("Option Panel");
+            _option.SetActive(false);
+        }
 
-    // 설정 팝업 닫기
-    public void ExitOption()
-    {
-        option.SetActive(false);
+        // 설정 팝업 띄우기
+        public void EnterOption()
+        {
+            AudioManager.GetInstance().OptionSound();
+            _option.SetActive(true);
+        }
+
+        // 설정 팝업 닫기
+        public void ExitOption()
+        {
+            _option.SetActive(false);
+        }
     }
 }

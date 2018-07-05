@@ -1,27 +1,30 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class FadeIn : MonoBehaviour
+namespace Script
 {
-    public Image fade;
-    private float fades;
-    private float time;
-
-    // Update is called once per frame
-    private void Update()
+    public class FadeIn : MonoBehaviour
     {
-        time += Time.deltaTime;
+        public Image Fade;
+        private float _fades;
+        private float _time;
 
-        if (fades < 1.0f && time >= 0.03f)
+        // Update is called once per frame
+        private void Update()
         {
-            fades += 0.05f;
-            fade.color = new Color(255, 255, 255, fades);
-            time = 0;
-        }
-        else if (fades >= 1.0f)
-        {
-            // 이 곳은 다음 씬으로 넘어가거나 다음 행동할 것에 대하여 적으시면 됩니다.
-            time = 0;
+            _time += Time.deltaTime;
+
+            if (_fades < 1.0f && _time >= 0.03f)
+            {
+                _fades += 0.05f;
+                Fade.color = new Color(255, 255, 255, _fades);
+                _time = 0;
+            }
+            else if (_fades >= 1.0f)
+            {
+                // 이 곳은 다음 씬으로 넘어가거나 다음 행동할 것에 대하여 적으시면 됩니다.
+                _time = 0;
+            }
         }
     }
 }

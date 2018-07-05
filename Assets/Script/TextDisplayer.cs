@@ -2,95 +2,99 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextDisplayer : MonoBehaviour
+namespace Script
 {
-    public GameObject dialougeWindowHolder;
-
-    private string m_currentTypingDialgoue;
-    public Text nameDisplayer, sayDisplayer;
-
-    [Range(0.0f, 1.0f)] public float timeBetUpdateLetters;
-
-    public bool IsTyping { get; private set; }
-
-    public void ShowDialogueHolder()
+    public class TextDisplayer : MonoBehaviour
     {
-        dialougeWindowHolder.SetActive(true);
-    }
+        public GameObject DialougeWindowHolder;
 
-    public void HideDialogueHolder()
-    {
-        dialougeWindowHolder.SetActive(false);
-    }
+        private string _currentTypingDialgoue;
+        public Text NameDisplayer, SayDisplayer;
 
-    // Skip and Complete Current Dialogues
-    public void SkipTypingLetter()
-    {
-        StopCoroutine("TypeText");
-        StopCoroutine("TypeAndAddText");
+        [Range(0.0f, 1.0f)] 
+        public float TimeBetUpdateLetters;
 
-        IsTyping = false;
+        public bool IsTyping { get; private set; }
 
-        sayDisplayer.text = m_currentTypingDialgoue;
-    }
-
-    public void SetSay(string dialogue)
-    {
-        m_currentTypingDialgoue = dialogue;
-
-        if (timeBetUpdateLetters <= 0f)
+        private void ShowDialogueHolder()
         {
-            sayDisplayer.text = dialogue;
-        }
-        else
-        {
-            gameObject.SetActive(true);
-            StartCoroutine("TypeText", m_currentTypingDialgoue);
-        }
-    }
-
-    public void SetSay(string speakerName, string dialogue)
-    {
-        nameDisplayer.text = speakerName;
-        m_currentTypingDialgoue = dialogue;
-
-        if (timeBetUpdateLetters <= 0f)
-            sayDisplayer.text = dialogue;
-        else
-            StartCoroutine("TypeText", m_currentTypingDialgoue);
-    }
-
-    // Update Text from buffer
-    public IEnumerator TypeText(string texts)
-    {
-        IsTyping = true;
-
-        ShowDialogueHolder();
-
-        sayDisplayer.text = string.Empty;
-
-        foreach (var letter in texts)
-        {
-            sayDisplayer.text += letter;
-            yield return new WaitForSeconds(timeBetUpdateLetters);
+            DialougeWindowHolder.SetActive(true);
         }
 
-        IsTyping = false;
-    }
-
-    // Add Text, not replace 
-    public IEnumerator TypeAndAddText(string texts)
-    {
-        IsTyping = true;
-
-        ShowDialogueHolder();
-
-        foreach (var letter in texts)
+        public void HideDialogueHolder()
         {
-            sayDisplayer.text += letter;
-            yield return new WaitForSeconds(timeBetUpdateLetters);
+            DialougeWindowHolder.SetActive(false);
         }
 
-        IsTyping = false;
+        // Skip and Complete Current Dialogues
+        public void SkipTypingLetter()
+        {
+            StopCoroutine("TypeText");
+            StopCoroutine("TypeAndAddText");
+
+            IsTyping = false;
+
+            SayDisplayer.text = _currentTypingDialgoue;
+        }
+
+        public void SetSay(string dialogue)
+        {
+            _currentTypingDialgoue = dialogue;
+
+            if (TimeBetUpdateLetters <= 0f)
+            {
+                SayDisplayer.text = dialogue;
+            }
+            else
+            {
+                gameObject.SetActive(true);
+                StartCoroutine("TypeText", _currentTypingDialgoue);
+            }
+        }
+
+        public void SetSay(string speakerName, string dialogue)
+        {
+            NameDisplayer.text = speakerName;
+            _currentTypingDialgoue = dialogue;
+
+            if (TimeBetUpdateLetters <= 0f)
+                SayDisplayer.text = dialogue;
+            else
+                StartCoroutine("TypeText", _currentTypingDialgoue);
+        }
+
+        // Update Text from buffer
+        private IEnumerator TypeText(string texts)
+        {
+            IsTyping = true;
+
+            ShowDialogueHolder();
+
+            SayDisplayer.text = string.Empty;
+
+            foreach (var letter in texts)
+            {
+                SayDisplayer.text += letter;
+                yield return new WaitForSeconds(TimeBetUpdateLetters);
+            }
+
+            IsTyping = false;
+        }
+
+        // Add Text, not replace 
+        private IEnumerator TypeAndAddText(string texts)
+        {
+            IsTyping = true;
+
+            ShowDialogueHolder();
+
+            foreach (var letter in texts)
+            {
+                SayDisplayer.text += letter;
+                yield return new WaitForSeconds(TimeBetUpdateLetters);
+            }
+
+            IsTyping = false;
+        }
     }
 }

@@ -107,7 +107,7 @@ namespace Script
             }
 
             // 현재 알림창이 떠 있다면, ContinueDialogue 이외의 방법으로 다음 대사로 넘어가선 안 됨.
-            if (_dialogueDic[_dataController.NowIndex].name != "알림창") 
+            if (_dialogueDic[_dataController.NowIndex].Name != "알림창") 
                 _dataController.NowIndex++;
 
             if (_dataController.NowIndex == 0)
@@ -118,7 +118,7 @@ namespace Script
 
             var textInfo = _dialogueDic[_dataController.NowIndex];
 
-            switch (textInfo.name)
+            switch (textInfo.Name)
             {
                 case "메테스":
                     BgImg.gameObject.GetComponent<Image>().sprite =
@@ -136,11 +136,11 @@ namespace Script
                     break;
                 case "알림창":
                     TextDisplayer.gameObject.SetActive(false);
-                    PopUpWindow.ShowDialogue(textInfo.dialogue);
+                    PopUpWindow.ShowDialogue(textInfo.Dialogue);
                     return;
             }
 
-            TextDisplayer.SetSay(textInfo.dialogue);
+            TextDisplayer.SetSay(textInfo.Dialogue);
         }
 
         private void ContinueDialogue()
@@ -156,14 +156,14 @@ namespace Script
         {
             var textInfo = _dialogueDic[_dataController.NowIndex];
 
-            if (textInfo.name == "알림창")
+            if (textInfo.Name == "알림창")
             {
                 TextDisplayer.gameObject.SetActive(false);
-                PopUpWindow.ShowDialogue(textInfo.dialogue);
+                PopUpWindow.ShowDialogue(textInfo.Dialogue);
             }
             else
             {
-                TextDisplayer.SetSay(textInfo.dialogue);
+                TextDisplayer.SetSay(textInfo.Dialogue);
             }
         }
 
@@ -216,7 +216,7 @@ namespace Script
                     break;
                 case "Script.DataController":
                     break;
-                case "ItemInfo":
+                case "Script.ItemInfo":
                     var index = options[0];
                 
                     if (_dataController.NowIndex == 300305 && index >= 1001 && index <= 1003) 
@@ -230,7 +230,7 @@ namespace Script
                     if (_dataController.NowIndex == 300212) 
                         ContinueDialogue();
                     break;
-                case "TmpButton":
+                case "Script.TmpButton":
                     if (_dataController.NowIndex == 300421 || _dataController.NowIndex == 300509) 
                         ContinueDialogue();
                     break;

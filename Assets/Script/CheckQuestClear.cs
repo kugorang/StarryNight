@@ -1,23 +1,27 @@
-﻿using Script;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CheckQuestClear : MonoBehaviour
+namespace Script
 {
-    private GameObject ariesClear;
-    private GameObject taurusClear;
-
-    private void Awake()
+    public class CheckQuestClear : MonoBehaviour
     {
-        ariesClear = GameObject.Find("Aries Clear");
-        taurusClear = GameObject.Find("Taurus Clear");
+        private GameObject _ariesClear;
+        private GameObject _taurusClear;
 
-        ariesClear.SetActive(false);
-        taurusClear.SetActive(false);
+        private void Awake()
+        {
+            _ariesClear = GameObject.Find("Aries Clear");
+            _taurusClear = GameObject.Find("Taurus Clear");
 
-        // 양자리 퀘스트 클리어 시 클리어 이미지 띄우기
-        if (DataController.Instance.QuestProcess > 90104) ariesClear.SetActive(true);
+            _ariesClear.SetActive(false);
+            _taurusClear.SetActive(false);
 
-        // 황소자리 퀘스트 클리어 시 클리어 이미지 띄우기
-        if (DataController.Instance.QuestProcess > 90123) taurusClear.SetActive(true);
+            // 양자리 퀘스트 클리어 시 클리어 이미지 띄우기
+            if (DataController.Instance.QuestProcess > 90104) 
+                _ariesClear.SetActive(true);
+
+            // 황소자리 퀘스트 클리어 시 클리어 이미지 띄우기
+            if (DataController.Instance.QuestProcess > 90123) 
+                _taurusClear.SetActive(true);
+        }
     }
 }

@@ -63,9 +63,7 @@ namespace Script
         // 현재 퀘스트
         private QuestInfo _currentQuest;
         private DataController _dataController;
-
         private DataDictionary _dataDic;
-        /*private DialogueManager dialogueManager;*/
 
         private QuestInfo _ownQuest;
         public int QuestIndex;
@@ -92,7 +90,6 @@ namespace Script
         {
             _dataDic = DataDictionary.Instance;
             _dataController = DataController.Instance;
-
 
             _btn = gameObject.GetComponent<Button>();
             _btnImg = gameObject.GetComponent<Image>();
@@ -132,7 +129,6 @@ namespace Script
 
         private void Start()
         {
-            /*dialogueManager = DialogueManager.Instance;*/
             if (QuestUIButton.ShowingQuestIndex < 90101 && _dataController.QuestProcess == QuestIndex) 
                 OnClick();
         }
@@ -342,7 +338,7 @@ namespace Script
                             GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                         else
                             GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                                _dataDic.FindUpgrade(termItemIndex).name + DataController.UpgradeLv[termItemIndex] + "/" +
+                                _dataDic.FindUpgrade(termItemIndex).Name + DataController.UpgradeLv[termItemIndex] + "/" +
                                 _ownQuest.TermsCount;
                     }
                     else
@@ -368,7 +364,7 @@ namespace Script
                 GameObject.Find("Reward Displayer").GetComponent<Text>().text = "골드 " + _ownQuest.RewardCount;
             else if (rewardIndex > 50000)
                 GameObject.Find("Reward Displayer").GetComponent<Text>().text =
-                    _dataDic.FindUpgrade(rewardIndex).name + " Lv." + _ownQuest.RewardCount + " 오픈";
+                    _dataDic.FindUpgrade(rewardIndex).Name + " Lv." + _ownQuest.RewardCount + " 오픈";
             else
                 GameObject.Find("Reward Displayer").GetComponent<Text>().text =
                     _dataDic.FindItem(rewardIndex).Name + " " + _ownQuest.RewardCount;

@@ -1364,10 +1364,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c9ce8e9d137e1a4eab4a4ee567a9d8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialougeWindowHolder: {fileID: 1687390806}
-  nameDisplayer: {fileID: 100031434}
-  sayDisplayer: {fileID: 840445740}
-  timeBetUpdateLetters: 0.03
+  DialougeWindowHolder: {fileID: 1687390806}
+  NameDisplayer: {fileID: 100031434}
+  SayDisplayer: {fileID: 840445740}
+  TimeBetUpdateLetters: 0
 --- !u!1 &1678100209
 GameObject:
   m_ObjectHideFlags: 0

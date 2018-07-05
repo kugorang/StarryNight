@@ -47,11 +47,11 @@ namespace Script
             {
                 var setItemInfo = _dataDic.SetComineList[index];
 
-                AddItemButton(setItemInfo.index1, _setContentPanel);
-                AddItemButton(setItemInfo.index2, _setContentPanel);
-                AddItemButton(setItemInfo.index3, _setContentPanel);
-                AddItemButton(setItemInfo.index4, _setContentPanel);
-                AddItemButton(setItemInfo.result, _setContentPanel);
+                AddItemButton(setItemInfo.Index1, _setContentPanel);
+                AddItemButton(setItemInfo.Index2, _setContentPanel);
+                AddItemButton(setItemInfo.Index3, _setContentPanel);
+                AddItemButton(setItemInfo.Index4, _setContentPanel);
+                AddItemButton(setItemInfo.Result, _setContentPanel);
             }
         }
 

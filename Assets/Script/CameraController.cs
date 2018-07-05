@@ -8,8 +8,26 @@ namespace Script
     public class CameraController : MonoBehaviour
     {
         private DataController _dataController;
-        private Scene _nowScene;
-        private int _nowSceneNum, _minimumDiff;
+        private int _minimumDiff;
+        private static int NowSceneNum
+        {
+            get
+            {
+                return PlayerPrefs.GetInt("NowSceneNum", 0);
+            }
+            set 
+            {
+                PlayerPrefs.SetInt("NowSceneNum", value);
+            }
+        }
+        private static string LastScene 
+        {
+            set
+            {
+                PlayerPrefs.SetString("LastScene", value);
+            }
+        }
+        
         private float _startPosX;
         
         public GameObject MainCamera;
@@ -21,31 +39,15 @@ namespace Script
 
         public static bool FocusOnItem { private get; set; }
 
-        private int LastScene 
-        {
-            get
-            {
-                return PlayerPrefs.GetInt(_nowScene.name == "Main" ? "MainLastScene" : "QuestLastScene", 0);
-            }
-            set
-            {
-                PlayerPrefs.SetInt(_nowScene.name == "Main" ? "MainLastScene" : "QuestLastScene", value);
-            }
-        }
-
         private void Awake()
         {
             FocusOnItem = false;
             _minimumDiff = Screen.width / 8;
             _dataController = DataController.Instance;
-            _nowScene = SceneManager.GetActiveScene();
-            _nowSceneNum = LastScene;
             
-            transform.position = new Vector3(transform.position.x + LastScene * 1080.0f, transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x + NowSceneNum * 1080.0f, transform.position.y, transform.position.z);
         }
-
-     
-
+        
         private void Update()
         {
             if (Input.GetMouseButtonDown(0) && !FocusOnItem)
@@ -60,7 +62,7 @@ namespace Script
                     return;
 
                 // 오른쪽에서 왼쪽 (<-)
-                if (posXGap > 0 && _nowSceneNum > 0)
+                if (posXGap > 0 && NowSceneNum > 0)
                 {
                     // 관찰자들에게 Slide 이벤트 메세지 송출
                     foreach (var target in _dataController.Observers) 
@@ -68,10 +70,10 @@ namespace Script
                     
                     iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x - 1080.0f, 
                         "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-                    LastScene = --_nowSceneNum;
+                    --NowSceneNum;
                 }
                 // 왼쪽에서 오른쪽 (->)
-                else if (posXGap < 0 && _startPosX > MinimumX && _nowSceneNum < MaxSceneNum - 1)
+                else if (posXGap < 0 && _startPosX > MinimumX && NowSceneNum < MaxSceneNum - 1)
                 {
                     // 관찰자들에게 Slide 이벤트 메세지 송출
                     foreach (var target in _dataController.Observers) 
@@ -79,7 +81,7 @@ namespace Script
 
                     iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x + 1080.0f, 
                         "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-                    LastScene += ++_nowSceneNum;
+                    ++NowSceneNum;
                 }
             }
         }
@@ -92,7 +94,7 @@ namespace Script
             
             iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x - 1080.0f, 
                 "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-            LastScene = --_nowSceneNum;
+            --NowSceneNum;
         }
 
         public void OnClickRightBtn()
@@ -103,13 +105,13 @@ namespace Script
             
             iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x + 1080.0f, 
                 "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-            LastScene = ++_nowSceneNum;
+            ++NowSceneNum;
         }
 
         public void OnApplicationQuit()
         {
             // 앱 종료시 현재 표시하고 있는 화면인 상태로 종료
-            LastScene = _nowSceneNum; 
+            LastScene = SceneManager.GetActiveScene().ToString(); 
         }
     }
 }
