@@ -64,7 +64,7 @@ namespace Script
                 if (SceneManager.GetSceneByName("Dialog").isLoaded || SceneManager.sceneCount >= 2) 
                     return;
             
-                Debug.Log(scene.name + ", Count: " + SceneManager.sceneCount + " Active: " + SceneManager.GetActiveScene().name);
+               // Debug.Log(scene.name + ", Count: " + SceneManager.sceneCount + " Active: " + SceneManager.GetActiveScene().name);
             
                 var str = "";
             

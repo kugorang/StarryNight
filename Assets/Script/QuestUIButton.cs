@@ -17,7 +17,7 @@ namespace Script
             get
             {
                 int i = 0;
-                foreach (var v in _firstQuestsOf)
+                foreach (var v in DataDictionary.Instance.FirstQuestsOfScene)
                 {
                     
                     if ((_firstQuestsOf.Count <= i + 1)||((_firstQuestsOf[i] <= ShowingQuestIndex) && (_firstQuestsOf[i + 1] > ShowingQuestIndex)))
