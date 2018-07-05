@@ -64,7 +64,7 @@ namespace Script
         ///     <para>-> key(int) : </para>
         /// </summary>
         [HideInInspector]
-        public List<SetItemInfo> SetComineList { get; private set; }
+        public List<SetItemInfo> SetCombineList { get; private set; }
 
         /// <summary>
         ///     NOTE: 퀘스트를 찾을 때 사용하는 Dictionary
@@ -115,7 +115,7 @@ namespace Script
             // 두 Dictionary들을 초기화
             FindItemDic = new Dictionary<int, ItemInfo>();
             CombineDic = new Dictionary<Tuple<int, int>, List<int>>();
-            SetComineList = new List<SetItemInfo>();
+            SetCombineList = new List<SetItemInfo>();
             FindQuestDic = new Dictionary<int, QuestInfo>();
             FindUpDic = new Dictionary<int, UpgradeInfo>();
             DialogueDic = new Dictionary<int, TextInfo>();
@@ -194,7 +194,7 @@ namespace Script
                         var setItemInfo = new SetItemInfo(Convert.ToInt32(wordList[0]), Convert.ToInt32(wordList[1]),
                             Convert.ToInt32(wordList[2]), Convert.ToInt32(wordList[3]), Convert.ToInt32(wordList[4]));
 
-                        SetComineList.Add(setItemInfo);
+                        SetCombineList.Add(setItemInfo);
 
                         break;
                     case Fileinfo.Questtable:
@@ -278,7 +278,7 @@ namespace Script
             var dataController = DataController.Instance;
             var haveDic = dataController.HaveDic;
 
-            foreach (var setItemInfo in SetComineList)
+            foreach (var setItemInfo in SetCombineList)
                 if (key == setItemInfo.Index1)
                 {
                     if (haveDic.ContainsKey(setItemInfo.Index2) && haveDic[setItemInfo.Index2].Count > 0 

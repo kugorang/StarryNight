@@ -18,20 +18,23 @@ namespace Script
         private int _starIdxMax, _materialIdxMax, _combineIdxMax;
         private int _starIdxStart, _materialIdxStart, _combineIdxStart;
 
-        public static ItemListManager GetInstance()
+        public static ItemListManager Instance
         {
-            if (_instance != null) 
-                return _instance;
-            
-            _instance = FindObjectOfType<ItemListManager>();
+            get
+            {
+                if (_instance != null)
+                    return _instance;
 
-            if (_instance != null) 
-                return _instance;
-            
-            var container = new GameObject("ItemListManager");
-            _instance = container.AddComponent<ItemListManager>();
+                _instance = FindObjectOfType<ItemListManager>();
 
-            return _instance;
+                if (_instance != null)
+                    return _instance;
+
+                var container = new GameObject("ItemListManager");
+                _instance = container.AddComponent<ItemListManager>();
+
+                return _instance;
+            }
         }
 
         private void Awake()
@@ -67,16 +70,20 @@ namespace Script
         private void AddItemButton(int idx, Transform tf)
         {
             var itemListPanel = Instantiate(PanelPrefab);
-            var itemBtn = itemListPanel.GetComponentInChildren<Button>();
+            var itemBtn = itemListPanel.transform.Find("ItemListButton").GetComponent<Button>();
             var itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
+           
 
             var findItemInfo = _dataDic.FindItemDic[idx];
 
             itemListPanel.transform.SetParent(tf);
             itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
 
-            if (!_dataController.ItemOpenList.Contains(idx)) 
+            if (!_dataController.ItemOpenList.Contains(idx))
+            {
                 return;
+            }
+              
             
             var btnColors = itemBtn.colors;
 

@@ -150,7 +150,6 @@ namespace Script
                         : Random.Range(1001, 1004), true);
             }
 
-            _dataController.ItemCount += 1;
             ResetEnergy();
             AudioManager.GetInstance().ItemSound();
         }
@@ -192,20 +191,6 @@ namespace Script
             }
         }
 
-        /* void OnClick(SetItemInfo setItemInfo)//아이템 교환 때 쓸 코드
-   {
-       dataController.DeleteItem(setItemInfo.index1);
-       dataController.DeleteItem(setItemInfo.index2);
-       dataController.DeleteItem(setItemInfo.index3);
-       dataController.DeleteItem(setItemInfo.index4);
-
-       dataController.SubItemCount();
-       dataController.SubItemCount();
-       dataController.SubItemCount();
-
-       dataController.InsertNewItem(setItemInfo.result, 1);
-
-       SceneManager.LoadScene("Main");
-   }*/
+  
     }
 }

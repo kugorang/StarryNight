@@ -328,7 +328,7 @@ namespace Script
             {
                 return _itemcount;
             }
-            set
+            private set
             {
                 _itemcount = value < 0 ? 0 : value;
                 PlayerPrefs.SetInt("ItemCount", _itemcount);
@@ -618,6 +618,14 @@ namespace Script
         #endregion
 
         #region Item
+        /// <summary>
+        /// 아이템 인덱스를 받아 그 아이템을 추가하는 함수.
+        /// </summary>
+        /// <param name="key">아이템 인덱스</param>
+        public void InsertNewItem(int key)
+        {
+            InsertNewItem(key, 1, new Vector3(0, 0, 0));
+        }
 
         public void InsertNewItem(int key, int itemId)
         {
@@ -628,8 +636,8 @@ namespace Script
         ///     아이템을 추가하는 함수
         /// </summary>
         /// <param name="key">추가하는 아이템의 Index</param>
-        /// <param name="itemId"></param>
-        /// <param name="itemPos"></param>
+        /// <param name="itemId">아이템 고유의 id</param>
+        /// <param name="itemPos">아이템 위치</param>
         public void InsertNewItem(int key, int itemId, Vector3 itemPos)
         {
             if (!CheckExistItem(key))
@@ -663,7 +671,7 @@ namespace Script
             else
             {
                 var id = itemId;
-                // id 에러 방지용 땜빵 코드. itemTimer 부분 참조.
+                // id 에러 방지용 땜빵 코드. itemid 에 아무 정수나 넣어도 충돌을 방지해준다.
                 if (HaveDic[key].ContainsKey(id)) 
                     while (HaveDic[key].ContainsKey(id))
                         id++;
@@ -671,6 +679,10 @@ namespace Script
                 HaveDic[key].Add(id, itemPos);
             }
 
+            if (key < 4000)//서적이 아니면 아이템 카운트 늘림
+            {
+                ItemCount += 1;
+            }
             // 관찰자들에게 이벤트 메세지 송출
             foreach (var target in Observers) 
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObtain(_dataDic.FindItemDic[key]));
@@ -697,6 +709,10 @@ namespace Script
         public void DeleteItem(int key, int itemId)
         {
             if (!HaveDic[key].Remove(itemId)) Debug.Log("DataController - DeleteItem : Item Cannot Delete.");
+            else if (key < 4000)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
+            {
+                ItemCount -= 1;
+            }
 
             SaveGameData(HaveDic, HaveDicPath);
         }

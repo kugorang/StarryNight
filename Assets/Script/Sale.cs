@@ -22,7 +22,6 @@ namespace Script
             var itemInfo = item.Info;
 
             _dataController.Gold += (ulong) itemInfo.SellPrice;
-            _dataController.ItemCount -= 1;
             _dataController.DeleteItem(itemInfo.Index, item.Id);
 
             Destroy(col.gameObject);

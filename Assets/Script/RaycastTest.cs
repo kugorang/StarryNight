@@ -117,8 +117,6 @@ namespace Script
 
             _dataController.InsertNewItem(myItemInfo.Index, GetComponent<Item>().Id, transform.position);
 
-            _dataController.ItemCount -= 1;
-
             // 조합 후 충돌한 물체를 파괴한다.
             Destroy(collision.gameObject);
             AudioManager.GetInstance().MixSound();
