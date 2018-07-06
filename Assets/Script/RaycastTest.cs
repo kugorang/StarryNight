@@ -41,8 +41,6 @@ namespace Script
         {
             GetComponent<BoxCollider2D>().isTrigger = true;
             StartCoroutine(CheckCollision());
-            
-            CameraController.FocusOnItem = false;
         }
 
         private IEnumerator CheckCollision()
@@ -64,6 +62,8 @@ namespace Script
 
             _haveDic[_item.Info.Index][_item.Id] = transform.position;
             DataController.SaveGameData(_haveDic, _dataController.HaveDicPath);
+            
+            CameraController.FocusOnItem = false;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -122,6 +122,7 @@ namespace Script
             AudioManager.GetInstance().MixSound();
 
             // 조합표에 없다면 그냥 무시한다.
+            CameraController.FocusOnItem = false;
         }
     }
 }

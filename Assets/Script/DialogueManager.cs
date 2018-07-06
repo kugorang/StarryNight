@@ -66,12 +66,12 @@ namespace Script
             
                // Debug.Log(scene.name + ", Count: " + SceneManager.sceneCount + " Active: " + SceneManager.GetActiveScene().name);
             
-                var str = "";
+                /*var str = "";
             
                 for (var i = 0; i < SceneManager.sceneCount; i++)
                     str += i + ":" + SceneManager.GetSceneAt(i).name + '\n';
             
-                Debug.Log(str);
+                Debug.Log(str);*/
             
                 SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
             }
@@ -88,7 +88,7 @@ namespace Script
 
                 TextDisplayer = dialoguePanel.Find("Text Displayer").GetComponent<TextDisplayer>();
                 BgImg = TextDisplayer.transform.Find("Holder").GetComponent<Image>();
-                TextDisplayer.gameObject.GetComponent<Button>().onClick.AddListener(OnClick);
+                /*TextDisplayer.gameObject.GetComponent<Button>().onClick.AddListener(OnClick);*/
                 
                 // 튜토리얼 끝나면 구독 해제
                 if (!_dataController.IsTutorialEnd) 

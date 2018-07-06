@@ -13,19 +13,33 @@ namespace Script
         {
             get
             {
-                return PlayerPrefs.GetInt("NowSceneNum", 0);
+                switch (NowScene)
+                {
+                    case "Main":
+                        return PlayerPrefs.GetInt("MainSceneNum", 0);
+                    case "QuestList":
+                        return PlayerPrefs.GetInt("QuestListSceneNum", 0);
+                }
+
+                return 0;
             }
             set 
             {
-                PlayerPrefs.SetInt("NowSceneNum", value);
+                switch (NowScene)
+                {
+                    case "Main":
+                        PlayerPrefs.SetInt("MainSceneNum", value);
+                        break;
+                    case "QuestList":
+                        PlayerPrefs.SetInt("QuestListSceneNum", value);
+                        break;
+                }
             }
         }
-        private static string LastScene 
+        
+        private static string NowScene 
         {
-            set
-            {
-                PlayerPrefs.SetString("LastScene", value);
-            }
+            get { return SceneManager.GetActiveScene().name; }
         }
         
         private float _startPosX;
@@ -106,12 +120,6 @@ namespace Script
             iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x + 1080.0f, 
                 "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
             ++NowSceneNum;
-        }
-
-        public void OnApplicationQuit()
-        {
-            // 앱 종료시 현재 표시하고 있는 화면인 상태로 종료
-            LastScene = SceneManager.GetActiveScene().ToString(); 
         }
     }
 }

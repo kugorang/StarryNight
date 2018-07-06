@@ -29,7 +29,7 @@ namespace Script
             foreach (var target in _dataController.Observers) //관찰자들에게 이벤트 메세지 송출
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSell(itemInfo));
 
-            //CameraController.focusOnItem = false;
+            CameraController.FocusOnItem = false;
         }
     }
 }
