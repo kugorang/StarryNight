@@ -239,11 +239,11 @@ namespace Script
                 {
                     _nowIndex = 300401;
                 }
-                else if (_nowIndex == 300428)
+                else if (_nowIndex == 300427)
                 {
                     _nowIndex = 300501;
                 }
-                else if (_nowIndex == 300516)
+                else if (_nowIndex == 300515)
                 {
                     _nowIndex = 300601;
                 }
