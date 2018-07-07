@@ -73,7 +73,6 @@ namespace Script
             var itemBtn = itemListPanel.transform.Find("ItemListButton").GetComponent<Button>();
             var itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
            
-
             var findItemInfo = _dataDic.FindItemDic[idx];
 
             itemListPanel.transform.SetParent(tf);
@@ -83,7 +82,6 @@ namespace Script
             {
                 return;
             }
-              
             
             var btnColors = itemBtn.colors;
 
@@ -118,7 +116,7 @@ namespace Script
             infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
             infoWindow.ItemName.text = itemInfo.Name;
             infoWindow.ItemSort.text = itemInfo.Group;
-            infoWindow.ItemGrade.text = itemInfo.Grade;
+            infoWindow.ItemGrade.text = itemInfo.Grade + "레벨 아이템";
             infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice;
             infoWindow.ItemText.text = itemInfo.Description;
         }

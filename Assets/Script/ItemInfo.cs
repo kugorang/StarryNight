@@ -2,12 +2,11 @@
 {
     public class ItemInfo
     {
-        public ItemInfo(int index, string name, string @group, string grade, 
-            int sellPrice, string description, string imagePath)
+        public ItemInfo(int index, string name, string group, string grade, int sellPrice, string description, string imagePath)
         {
             Index = index;
             Name = name;
-            Group = @group;
+            Group = group;
             Grade = grade;
             SellPrice = sellPrice;
             Description = description;
@@ -36,7 +35,7 @@
         // 재료 이미지 경로
         public string ImagePath { get; set; }
 
-        // 없어진지 확인하는 플래 그
+        // 없어진지 확인하는 플래그
         public bool CheckDestroy { get; set; }
     }
 }

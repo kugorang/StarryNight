@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 namespace Script
@@ -163,27 +165,29 @@ namespace Script
             }
             else // 아이템일 때
             {
+                int[] itemIndex;
+                
                 switch (_currentQuest.Index)
                 {
                     // 퀘스트 인덱스 90101의 경우
                     case 90101:
-                        for (var i = 1001; i < 1004; i++)
-                            currentItemNum += _dataController.GetItemNum(i);
+                        itemIndex = new[] {1001, 1006, 1011};
+                        currentItemNum += itemIndex.Sum(i => _dataController.GetItemNum(i));
                         break;
                     // 퀘스트 인덱스 90102의 경우
                     case 90102:
-                        for (var i = 1004; i < 1007; i++)
-                            currentItemNum += _dataController.GetItemNum(i);
+                        itemIndex = new[] {1002, 1007, 1012};
+                        currentItemNum += itemIndex.Sum(i => _dataController.GetItemNum(i));
                         break;
                     // 퀘스트 인덱스 90103의 경우
                     case 90103:
-                        for (var i = 2001; i < 2007; i++)
-                            currentItemNum += _dataController.GetItemNum(i);
+                        itemIndex = new [] {2001, 2006, 2011, 2016, 2021, 2026};
+                        currentItemNum += itemIndex.Sum(i => _dataController.GetItemNum(i));
                         break;
                     // 퀘스트 인덱스 90104의 경우
                     case 90104:
-                        for (var i = 3001; i < 3019; i++)
-                            currentItemNum += _dataController.GetItemNum(i);
+                        itemIndex = new[] {3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 3046, 3047, 3048, 3061, 3062, 3063, 3076, 3077, 3078};
+                        currentItemNum += itemIndex.Sum(i => _dataController.GetItemNum(i));
                         break;
                     default:
                         currentItemNum = _dataController.GetItemNum(checkItemIndex);
@@ -267,10 +271,8 @@ namespace Script
                 // 퀘스트 진행상태 출력
                 case 90101:
                 {
-                    var questItemNum = 0;
-                    
-                    for (var i = 1001; i < 1004; i++) 
-                        questItemNum += _dataController.GetItemNum(i);
+                    int[] itemIndex = {1001, 1006, 1011};
+                    var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
 
                     if (QuestIndex < _dataController.QuestProcess)
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
@@ -281,10 +283,8 @@ namespace Script
                 }
                 case 90102:
                 {
-                    var questItemNum = 0;
-                    
-                    for (var i = 1004; i < 1007; i++) 
-                        questItemNum += _dataController.GetItemNum(i);
+                    int[] itemIndex = {1002, 1007, 1012};
+                    var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
                     
                     if (QuestIndex < _dataController.QuestProcess)
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
@@ -295,10 +295,8 @@ namespace Script
                 }
                 case 90103:
                 {
-                    var questItemNum = 0;
-                    
-                    for (var i = 2001; i < 2007; i++) 
-                        questItemNum += _dataController.GetItemNum(i);
+                    int[] itemIndex = {2001, 2006, 2011, 2016, 2021, 2026};
+                    var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
 
                     if (QuestIndex < _dataController.QuestProcess)
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
@@ -309,10 +307,8 @@ namespace Script
                 }
                 case 90104:
                 {
-                    var questItemNum = 0;
-
-                    for (var i = 3001; i < 3019; i++) 
-                        questItemNum += _dataController.GetItemNum(i);
+                    int[] itemIndex = {3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 3046, 3047, 3048, 3061, 3062, 3063, 3076, 3077, 3078};
+                    var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
 
                     if (QuestIndex < _dataController.QuestProcess)
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";

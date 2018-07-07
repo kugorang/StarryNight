@@ -170,24 +170,24 @@ namespace Script
                         break;
                     case Fileinfo.Itemtable:
                         index = Convert.ToInt32(wordList[0]);
-                        var sellPrice = Convert.ToInt32(wordList[5]);
                         var group = wordList[2];
+                        var sellPrice = Convert.ToInt32(wordList[4]);
 
                         switch (group)
                         {
-                            case "별":
+                            case "별":            // 별
                                 StarNum++;
                                 break;
-                            case "재료":
+                            case "재료":          // 재료
                                 MaterialNum++;
                                 break;
-                            case "아이템":
+                            case "아이템":        // 아이템
                                 CombineNum++;
                                 break;
                         }
-
-                        FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[4],
-                            "itemImg/item_" + index);
+                        
+                        // 인덱스, 이름, 분류, 등급, 판매 가격, 설명, 이미지 경로
+                        FindItemDic[index] = new ItemInfo(index, wordList[1], group, wordList[3], sellPrice, wordList[5], "itemImg/item_" + index);
 
                         break;
                     case Fileinfo.Setitemtable:
@@ -209,7 +209,6 @@ namespace Script
 
                         FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem,
                             termsCount, reward, rewardCount);
-
 
                         if (wordList[1] != formerSceneName) //씬의 첫 퀘스트의 인덱스 구하기
                         {

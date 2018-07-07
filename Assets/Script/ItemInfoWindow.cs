@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Script
@@ -19,7 +20,10 @@ namespace Script
             ItemImg = GameObject.Find("ItemImage").GetComponent<Image>();
             ItemName = GameObject.Find("ItemName").GetComponent<Text>();
             ItemSort = GameObject.Find("ItemSort").GetComponent<Text>();
-            ItemGrade = GameObject.Find("ItemGrade").GetComponent<Text>();
+            
+            if (SceneManager.GetActiveScene().name == "ItemList")
+                ItemGrade = GameObject.Find("ItemGrade").GetComponent<Text>();
+            
             ItemCost = GameObject.Find("ItemCost").GetComponent<Text>();
             ItemText = GameObject.Find("ItemText").GetComponent<Text>();
 

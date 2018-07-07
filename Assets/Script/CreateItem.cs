@@ -139,15 +139,15 @@ namespace Script
             {
                 GenerateItem(
                     Random.Range(0, 100) >= DataController.AtlasItemProb
-                        ? Random.Range(2007, 2013)
-                        : Random.Range(2001, 2007), true);
+                        ? Random.Range(0, 6) * 5 + 2002
+                        : Random.Range(0, 6) * 5 + 2001, true);
             }
             else
             {
                 GenerateItem(
                     Random.Range(0, 100) >= DataController.AtlasItemProb
-                        ? Random.Range(1004, 1007)
-                        : Random.Range(1001, 1004), true);
+                        ? Random.Range(0, 3) * 5 + 1002
+                        : Random.Range(0, 3) * 5 + 1001, true);
             }
 
             ResetEnergy();
@@ -190,7 +190,5 @@ namespace Script
                 DataController.SaveGameData(_dataController.HaveDic, _dataController.HaveDicPath);
             }
         }
-
-  
     }
 }

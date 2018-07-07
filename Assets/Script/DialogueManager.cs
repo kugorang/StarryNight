@@ -219,7 +219,7 @@ namespace Script
                 case "Script.ItemInfo":
                     var index = options[0];
                 
-                    if (_dataController.NowIndex == 300305 && index >= 1001 && index <= 1003) 
+                    if (_dataController.NowIndex == 300305 && (index == 1001 || index == 1006 || index == 1011)) 
                         ContinueDialogue();
                     break;
                 case "Script.ItemTimer":
@@ -352,9 +352,10 @@ namespace Script
             }
             else if (_dataController.NowIndex == 300310)
             {
-                if (1003 < result.Index && result.Index < 1007)
-                    _condition300310++;
-                if (_condition300310 >= 2)
+                if (result.Index != 1002 && result.Index != 1007 && result.Index != 1012)
+                    return;
+                
+                if (++_condition300310 >= 2)
                     ContinueDialogue();
             }
         }

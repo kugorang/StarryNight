@@ -12,8 +12,9 @@ namespace Script
         private DataController _dataController;
         private DataDictionary _dataDic;
         public Sprite NewItemAlert;
-        public GameObject PanelPrefab, ItemInfoPanel, ExchangePanel;//Exchange는 기본적으로 비활성화 상태
-        public int[] ExchangeRatio={10,8,6,4,3};//1번째 원소는 1단계 아이템 교환개수, ... 5번째 원소는 5단계아이템 교환개수
+        public GameObject PanelPrefab, ItemInfoPanel, ExchangePanel; // Exchange는 기본적으로 비활성화 상태
+        // 1번째 원소는 1단계 아이템 교환 개수, ... 5번째 원소는 5단계 아이템 교환 개수
+        public int[] ExchangeRatio = {10, 8, 6, 4, 2};
 
         private Transform _setContentPanel;
         private int _setIdxStart, _setIdxMax;
@@ -50,7 +51,6 @@ namespace Script
         {
             foreach (var setItemInfo in _dataDic.SetCombineList)
             {
-
                 AddItemButton(setItemInfo.Index1, _setContentPanel);
                 AddItemButton(setItemInfo.Index2, _setContentPanel);
                 AddItemButton(setItemInfo.Index3, _setContentPanel);
@@ -58,6 +58,7 @@ namespace Script
                 AddItemButton(setItemInfo.Result, _setContentPanel);
             }
         }
+        
         /// <summary>
         /// 아이템의 인덱스를 받아 그 아이템에 대한 버튼을 만들어주는 함수
         /// </summary>
@@ -86,15 +87,19 @@ namespace Script
 
                 itemBtn.onClick.AddListener(() => ShowWindow(findItemInfo));
             }
-            else//안 열렸으면 교환기능 사용가능
+            // 안 열렸으면 교환 기능 사용 가능
+            else
             {
                 var isResultItem = false;
-                foreach (var setItemInfo in _dataDic.SetCombineList)//조합된 서적 아이템인지 확인
+                
+                // 조합된 서적 아이템인지 확인
+                foreach (var setItemInfo in _dataDic.SetCombineList)
                 {
                     isResultItem = isResultItem || (setItemInfo.Result == idx);
                 }
 
-                if (!isResultItem)//서적이 아니어야 교환기능 사용
+                // 서적이 아니어야 교환기능 사용
+                if (!isResultItem) 
                 {
                     itemBtn.onClick.AddListener(() => ExchangeItem(idx));
                 }
@@ -102,7 +107,7 @@ namespace Script
 
             if (_dataController.NewBookList.Contains(idx))
             {
-                //새 아이템이면 느낌표 표시
+                // 새 아이템이면 느낌표 표시
                 itemLock.sprite = NewItemAlert;
                 itemLock.raycastTarget = false;
                 itemBtn.onClick.AddListener(() => RemoveAlert(idx, itemLock));
@@ -112,6 +117,7 @@ namespace Script
                 itemLock.gameObject.SetActive(false);
             }
         }
+        
         /// <summary>
         /// 아이템의 정보를 창에 띄워 표시해줌
         /// </summary>
@@ -127,10 +133,11 @@ namespace Script
             infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
             infoWindow.ItemName.text = itemInfo.Name;
             infoWindow.ItemSort.text = itemInfo.Group;
-            infoWindow.ItemGrade.text = itemInfo.Grade;
+            /*infoWindow.ItemGrade.text = itemInfo.Grade;*/
             infoWindow.ItemCost.text = "획득 보상 : " + itemInfo.SellPrice + " 골드";
             infoWindow.ItemText.text = itemInfo.Description;
         }
+        
         /// <summary>
         /// 새 아이템 더티 플래그를 제거해줌
         /// </summary>
@@ -143,7 +150,7 @@ namespace Script
             DataController.SaveGameData(_dataController.NewBookList, _dataController.NewBookListPath);
             lockImg.gameObject.SetActive(false);
 
-            // 아이템 정보를 얻어 획득 보상 처리(최초 1회)
+            // 아이템 정보를 얻어 획득 보상 처리 (최초 1회)
             var item = _dataDic.FindItemDic[idx];
             PopUpWindow.Alert(item.Name + " 획득 보상: " + item.SellPrice + " 골드");
             _dataController.Gold += (ulong)item.SellPrice;
@@ -156,51 +163,68 @@ namespace Script
         private void ExchangeItem(int idx)
         {
             ExchangePanel.transform.Find("Text").GetComponent<Text>().text = _dataDic.FindItemDic[idx].Name + " 교환";
-            for (int i = 1; i <= 5; i++)
+            
+            for (var i = 1; i <= 5; i++)
             {
-                var btnIdx = i - 1;//혹시 있을 Closure 오류 방지
-                ExchangePanel.transform.Find("Button"+i).GetComponent<Button>().onClick.AddListener(() => ExchangeBtnClick(idx,btnIdx));
+                // 혹시 있을 Closure 오류 방지
+                var btnIdx = i - 1;
+                ExchangePanel.transform.Find("Button" + i).GetComponent<Button>()
+                    .onClick.AddListener(() => ExchangeBtnClick(idx,btnIdx));
             }
+            
             ExchangePanel.SetActive(true);
         }
 
-        private void ExchangeBtnClick(int itemIdx,int btnIdx)
+        private void ExchangeBtnClick(int itemIdx, int btnIdx)
         {
-            var sum = 0;
-            var starIdx = 1000;//별 아이템의 index
-            var starIdList = new List<KeyValuePair<int,int>>();//지워질 id 목록(StarIdx,itemid)
+            var itemSum = 0;
+            // 지워질 id 목록 (StarIdx, itemid)
+            var starIdList = new List<KeyValuePair<int,int>>();
+            
             for (var i = 1; i <= 3; i++)
             {
-                starIdx = 1000 + btnIdx * 3 + i;//1단계 버튼이면 1001, 1002, 1003. 5단계면 1013, 1014, 1015.
-                sum += _dataController.GetItemNum(starIdx);
-                if (_dataController.GetItemNum(starIdx) > 0)//별 아이템이 있다면
+                // 별 아이템의 index
+                var starIdx = 1000 + btnIdx * 3 + i;
+                var itemNum = _dataController.GetItemNum(starIdx);
+
+                if (itemNum == 0)
+                    continue;
+                
+                itemSum += itemNum;
+                
+                // 별 아이템이 있다면
+                foreach (var itemid in _dataController.HaveDic[starIdx].Keys)
                 {
-                    foreach (var itemid in _dataController.HaveDic[starIdx].Keys)
+                    // 별 아이템의 id를 알아내 지울 목록에 추가한다.
+                    starIdList.Add(new KeyValuePair<int, int>(starIdx, itemid));
+                    
+                    // id를 필요한 만큼 모았으면 나간다.
+                    if (starIdList.Count >= itemSum)
                     {
-                        starIdList.Add(new KeyValuePair<int, int>(starIdx,itemid));//별 아이템의 id를 알아내 지울 목록에 추가한다.
-                        if (starIdList.Count >= sum)//id를 필요한 만큼 모았으면 나간다.
-                        {
-                            break;
-                        }
-                    }                    
+                        break;
+                    }
                 }
             }
-            if (sum>=ExchangeRatio[btnIdx])//별 아이템 개수가 필요한 양(ExchangeRatio[btnIdx])보다 많거나 같을 경우
+            
+            // 별 아이템 개수가 필요한 양(ExchangeRatio[btnIdx])보다 많거나 같을 경우
+            if (itemSum >= ExchangeRatio[btnIdx])
             {
                 foreach (var kvPair in starIdList)
                 {
                     _dataController.DeleteItem(kvPair.Key, kvPair.Value);
                 }
+                
                 _dataController.InsertNewItem(itemIdx);
                 ExchangePanel.SetActive(false);
-                SceneManager.LoadScene("BookList");//refresh scene
+                
+                // refresh scene
+                SceneManager.LoadScene("BookList");
             }
             else
             {
-                PopUpWindow.Alert("재료가 부족합니다.");//TODO: 잠깐 버튼 클릭 막기
+                // TODO: 잠깐 버튼 클릭 막기
+                PopUpWindow.Alert("재료가 부족합니다.");
             }
         }
-
-       
     }
 }
