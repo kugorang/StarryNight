@@ -124,9 +124,9 @@ namespace Script
             ReadDataFile("dataTable/combineTable", Fileinfo.Combinetable);
             ReadDataFile("dataTable/itemTable", Fileinfo.Itemtable);
             ReadDataFile("dataTable/setItemTable", Fileinfo.Setitemtable);
-            ReadDataFile("dataTable/questTable", Fileinfo.Questtable);
+            ReadDataFile("dataTable/newquestTable2", Fileinfo.Questtable);
             ReadDataFile("dataTable/upgradeTable", Fileinfo.Upgradetable);
-            ReadDataFile("dataTable/dialogue", Fileinfo.Dialoguetable);
+            ReadDataFile("dataTable/dialogue2", Fileinfo.Dialoguetable);
         }
 
         private void ReadDataFile(string fileName, Fileinfo fileType)
@@ -209,6 +209,8 @@ namespace Script
 
                         FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem,
                             termsCount, reward, rewardCount);
+
+                        Debug.Log(wordList[2]);
 
                         if (wordList[1] != formerSceneName) //씬의 첫 퀘스트의 인덱스 구하기
                         {
