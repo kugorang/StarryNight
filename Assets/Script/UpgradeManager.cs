@@ -143,10 +143,6 @@ namespace Script
         // 아래 두 함수 하나로, 실패 구현
         public void Upgrade(int upgradeIndex)
         {
-            foreach (var button in _upgradeButtons)
-            {
-                button.interactable = false;
-            }
             
             var id = upgradeIndex - 50001;
             
@@ -161,7 +157,7 @@ namespace Script
 
             if (DataController.Instance.Gold < (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[id]])
             {
-                PopUpWindow.Alert("골드가 부족해요.", this);
+                PopUpWindow.Alert("골드가 부족해요.");
                 return;
             }
 
@@ -172,16 +168,10 @@ namespace Script
             // 업그레이드 레벨은 0 ~ 20이고 20에선 업글 불가
             if (Random.value < prob) 
             {
-                Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!", this);
-                onComplete += PopUpWindow.HideSlider;
-                onComplete += () => {
-                    foreach (var button in _upgradeButtons)
-                    {
-                        button.interactable = true;
-                    } 
-                };
+                Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!");
                 
-                PopUpWindow.AnimateSlider(1, 0.6f, this, onComplete);
+                
+                PopUpWindow.AnimateSlider(1, 0.6f, onComplete);
                 DataController.UpgradeLv.LevelUp(id);
                 
                 // 관찰자들에게 이벤트 메세지 송출
@@ -190,16 +180,10 @@ namespace Script
             }
             else
             {
-                Action onComplete = () => PopUpWindow.Alert("업그레이드 실패...", this);
-                onComplete += PopUpWindow.HideSlider;
-                onComplete += () => {
-                    foreach (var button in _upgradeButtons)
-                    {
-                        button.interactable = true;
-                    }
-                };
+                Action onComplete = () => PopUpWindow.Alert("업그레이드 실패...");
+              
                 
-                PopUpWindow.AnimateSlider(0, 0.6f, this, onComplete);
+                PopUpWindow.AnimateSlider(0, 0.6f, onComplete);
             }
         }
 

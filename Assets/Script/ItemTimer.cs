@@ -87,7 +87,7 @@ namespace Script
             // 도감에 등록만 되면 됨
             _leftTimer.InsertNewItem(id); 
             AudioManager.GetInstance().ItemSound();
-            PopUpWindow.Alert("[서적] " + DataDictionary.Instance.FindItemDic[id].Name + " 획득", this);
+            PopUpWindow.Alert("[서적] " + DataDictionary.Instance.FindItemDic[id].Name + " 획득");
 
             _leftTimer[Index] = Cooltime;
             Btn.enabled = false;

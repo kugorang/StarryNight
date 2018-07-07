@@ -14,10 +14,17 @@ namespace Script
         private static Queue _alertQueue;
         private static Slider _upgradeSlider;
         private static GameObject _alertPanel;
+        private static Image _blockTouchImage;//Raycast Target을 켜서 중요한 알람 도중 다른 조작을 막기위한 패널(의 이미지 컴포넌트.)
+        private static PopUpWindow _this;
 
         public Text AlertText;
         public float WaitingTime, ShakingTime;
         public Slider UpgradeSlider;
+
+        public static bool IsAlerting
+        {
+            get { return _alertQueue.Count > 0; }
+        }
 
         /*private static GameObject AlertPanelR;
     private static Text AlertTextR;*/
@@ -45,17 +52,18 @@ namespace Script
 
             if (_alertPanel == null) 
                 _alertPanel = gameObj;
-            
+
             _alertText = AlertText == null ? _alertPanel.GetComponentInChildren<Text>() : AlertText;
             _upgradeSlider = UpgradeSlider == null ? gameObj.GetComponentInChildren<Slider>() : UpgradeSlider;
+            _this = gameObj.GetComponent<PopUpWindow>();
+            _blockTouchImage = gameObj.transform.parent.parent.gameObject.GetComponent<Image>();//UI&DialogPanel(임시)은 AlarmWindow의 할아버지
         }
 
         /// <summary>
         ///     화면에 PopUp알림을 띄웁니다.
         /// </summary>
         /// <param name="text">띄울 알림 문자열</param>
-        /// <param name="obj">이 함수를 호출한 인스턴스 (this)</param>
-        public static void Alert(string text, MonoBehaviour obj)
+        public static void Alert(string text)//TODO: 동일한 요청 여러 번 올시 Fade하지 않거나 무시하는 기능 구현
         {
             if (_isLocked)
             {
@@ -64,7 +72,7 @@ namespace Script
                 
                 Debug.LogWarning("Queue is Locked.");
                 
-                obj.StartCoroutine(ChangeDialogueText(temp, 0.8f));
+                _this.StartCoroutine(ChangeDialogueText(temp, 0.8f));
                 
                 return;
             }
@@ -77,15 +85,15 @@ namespace Script
 
             _alertQueue.Enqueue(text);
 
-            if (_alertQueue.Count > 1) 
+            if (_alertQueue.Count > 1)
+            {
                 return;
+            }
+                
+            var pos = _alertPanel.transform.position;
             
-            var alertPanel = _alertPanel;
-            var alertText = _alertText;
-            var pos = alertPanel.transform.position;
-            
-            alertPanel.transform.position = new Vector3(540, pos.y, pos.z);
-            obj.StartCoroutine(FadeOut(alertPanel.GetComponent<Image>(), alertText));
+            _alertPanel.transform.position = new Vector3(540, pos.y, pos.z);
+            _this.StartCoroutine(FadeOut(_alertPanel.GetComponent<Image>(), _alertText));
         }
 
         /// <summary>
@@ -162,14 +170,13 @@ namespace Script
         /// </summary>
         /// <param name="goalValue">목표값(0~1사이)</param>
         /// <param name="second">애니메이션 진행시간(초)</param>
-        /// <param name="obj">이 함수를 호출한 인스턴스(this)</param>
-        public static void AnimateSlider(float goalValue, float second, MonoBehaviour obj)
+        public static void AnimateSlider(float goalValue, float second)
         {
             if (_upgradeSlider == null) 
                 return;
             
             SetSliderValue(0.5f);
-            obj.StartCoroutine(SliderAnimationCoroutine(goalValue, second));
+            _this.StartCoroutine(SliderAnimationCoroutine(goalValue, second, () => { }));
         }
 
         /// <summary>
@@ -177,15 +184,14 @@ namespace Script
         /// </summary>
         /// <param name="goalValue">목표값(0~1사이)</param>
         /// <param name="second">애니메이션 진행시간(초)</param>
-        /// <param name="obj">이 함수를 호출한 인스턴스(this)</param>
         /// <param name="onComplete">호출할 함수 f(void)</param>
-        public static void AnimateSlider(float goalValue, float second, MonoBehaviour obj, Action onComplete)
+        public static void AnimateSlider(float goalValue, float second, Action onComplete)
         {
             if (_upgradeSlider == null) 
                 return;
             
             SetSliderValue(0.5f);
-            obj.StartCoroutine(SliderAnimationCoroutine(goalValue, second, onComplete));
+            _this.StartCoroutine(SliderAnimationCoroutine(goalValue, second, onComplete));
         }
 
         /// <summary>
@@ -193,9 +199,8 @@ namespace Script
         /// </summary>
         /// <param name="goalValue">목표값(0~1사이)</param>
         /// <param name="second">애니메이션 진행시간(초)</param>
-        /// <param name="obj">이 함수를 호출한 인스턴스(this)</param>
         /// <param name="normal"></param>
-        public static void AnimateSlider(float goalValue, float second, MonoBehaviour obj, bool normal)
+        public static void AnimateSlider(float goalValue, float second, bool normal)
         {
             if (_upgradeSlider == null) 
                 return;
@@ -203,7 +208,7 @@ namespace Script
             if (!_upgradeSlider.gameObject.activeSelf) 
                 _upgradeSlider.gameObject.SetActive(true);
             
-            obj.StartCoroutine(NormalSliderAnimationCoroutine(goalValue, second));
+            _this.StartCoroutine(NormalSliderAnimationCoroutine(goalValue, second, () => { }));
         }
 
         /// <summary>
@@ -212,10 +217,9 @@ namespace Script
         /// </summary>
         /// <param name="goalValue">목표값(0~1사이)</param>
         /// <param name="second">애니메이션 진행시간(초)</param>
-        /// <param name="obj">이 함수를 호출한 인스턴스(this)</param>
         /// <param name="onComplete">호출할 함수 f(void)</param>
         /// <param name="normal"></param>
-        public static void AnimateSlider(float goalValue, float second, MonoBehaviour obj, Action onComplete, bool normal)
+        public static void AnimateSlider(float goalValue, float second, Action onComplete, bool normal)
         {
             if (_upgradeSlider == null) 
                 return;
@@ -223,7 +227,7 @@ namespace Script
             if (!_upgradeSlider.gameObject.activeSelf) 
                 _upgradeSlider.gameObject.SetActive(true);
             
-            obj.StartCoroutine(NormalSliderAnimationCoroutine(goalValue, second, onComplete));
+            _this.StartCoroutine(NormalSliderAnimationCoroutine(goalValue, second, onComplete));
         }
 
         /// <summary>
@@ -251,44 +255,19 @@ namespace Script
                     img.color = new Color(1, 1, 1, 1 - i);
                     txt.color = new Color(1, 1, 1, 1 - i);
                 }
-
-                if (_alertQueue.Count > 0) 
-                    _alertQueue.Dequeue();
+ 
+                 _alertQueue.Dequeue();//작업이 끝난 후에 Dequeue하지 않으면, Fade 중에 _alertQueue.Count=0이 되어 Alert에 오류가 발생
             }
         }
 
-        private static IEnumerator SliderAnimationCoroutine(float goalValue, float second)
-        {
-            const float amplitude = 0.25f;
-            var diff = goalValue - amplitude; // 목표값 - 현재값
-            var deltaValue = diff / (10 * second); // 1회 변화량
-            
-            yield return new WaitForSeconds(0.2f);
-
-            for (float i = 0; i <= _shakingTime; i += 0.1f)
-            {
-                var rate = 2 * Mathf.PI * i / _shakingTime;
-                _upgradeSlider.value = 0.5f + amplitude * Mathf.Sin(rate);
-                
-                yield return new WaitForSeconds(0.1f);
-            }
-
-            yield return new WaitForSeconds(_waitingTime);
-            
-            for (float i = 0; i <= second; i += 0.1f)
-            {
-                _upgradeSlider.value += deltaValue;
-                
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
 
         private static IEnumerator SliderAnimationCoroutine(float goalValue, float second, Action onComplete)
         {
             const float amplitude = 0.25f;
             var diff = goalValue - amplitude;              // 목표값 - 현재값
             var deltaValue = diff / (10 * second);         // 1회 변화량
-            
+
+            _blockTouchImage.raycastTarget = true;
             yield return new WaitForSeconds(0.2f);
 
             for (float i = 0; i <= _shakingTime; i += 0.03f)
@@ -307,30 +286,17 @@ namespace Script
                 
                 yield return new WaitForSeconds(0.03f);
             }
-
+            _blockTouchImage.raycastTarget = false;
+            HideSlider();
             onComplete();
         }
-
-        private static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second)
-        {
-            var diff = goalValue - _upgradeSlider.value;   // 목표값 - 현재값
-            var deltaValue = diff / (10 * second);         // 1회 변화량
-            
-            yield return new WaitForSeconds(0.5f);
-            
-            for (float i = 0; i <= second; i += 0.1f)
-            {
-                _upgradeSlider.value += deltaValue;
-                
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
+     
 
         private static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second, Action onComplete)
         {
             var diff = goalValue - _upgradeSlider.value; // 목표값 - 현재값
             var deltaValue = diff / (10 * second);       // 1회 변화량
-            
+            _blockTouchImage.raycastTarget = true;
             yield return new WaitForSeconds(0.5f);
             
             for (float i = 0; i <= second; i += 0.1f)
@@ -338,7 +304,8 @@ namespace Script
                 _upgradeSlider.value += deltaValue;
                 yield return new WaitForSeconds(0.1f);
             }
-
+            _blockTouchImage.raycastTarget = false;
+            HideSlider();
             onComplete();
         }
 

@@ -145,7 +145,7 @@ namespace Script
 
             // 아이템 정보를 얻어 획득 보상 처리(최초 1회)
             var item = _dataDic.FindItemDic[idx];
-            PopUpWindow.Alert(item.Name + " 획득 보상: " + item.SellPrice + " 골드", this);
+            PopUpWindow.Alert(item.Name + " 획득 보상: " + item.SellPrice + " 골드");
             _dataController.Gold += (ulong)item.SellPrice;
 
             // 관찰자들에게 이벤트 메세지 송출
@@ -177,7 +177,7 @@ namespace Script
                 {
                     foreach (var itemid in _dataController.HaveDic[starIdx].Keys)
                     {
-                        starIdList.Add(new KeyValuePair<int, int>(starIdx,itemid));//별 아이템의 id를 알아내 지울 목록에 추가한다..
+                        starIdList.Add(new KeyValuePair<int, int>(starIdx,itemid));//별 아이템의 id를 알아내 지울 목록에 추가한다.
                         if (starIdList.Count >= sum)//id를 필요한 만큼 모았으면 나간다.
                         {
                             break;
@@ -191,13 +191,13 @@ namespace Script
                 {
                     _dataController.DeleteItem(kvPair.Key, kvPair.Value);
                 }
-                _dataController.InsertNewItem(itemIdx);//TODO: 교환후 화면 갱신
+                _dataController.InsertNewItem(itemIdx);
                 ExchangePanel.SetActive(false);
                 SceneManager.LoadScene("BookList");//refresh scene
             }
             else
             {
-                PopUpWindow.Alert("재료가 부족합니다.",this);
+                PopUpWindow.Alert("재료가 부족합니다.");//TODO: 잠깐 버튼 클릭 막기
             }
         }
 

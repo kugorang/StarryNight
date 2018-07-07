@@ -130,7 +130,7 @@ namespace Script
             // 아이템 갯수 제한
             if (_dataController.ItemCount >= _dataController.ItemLimit) 
             {
-                PopUpWindow.Alert("아이템 상자가 꽉 찼어요.", this);
+                PopUpWindow.Alert("아이템 상자가 꽉 찼어요.");
                 return;
             }
 

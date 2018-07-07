@@ -80,7 +80,7 @@ namespace Script
         private const int FirstUpgradeIndex = 50001;
         public readonly int[] MaxLv = new int[12];
 
-        private readonly int[] _upgradeLv;
+        private int[] _upgradeLv;//Readonly로 만들지 말 것.
         public UpgradeMethod[] UpgradeMethods;
 
         public UpgradeClass()
@@ -103,7 +103,7 @@ namespace Script
         }
 
         /// <summary>
-        ///     id를 통해 현재 업그레이드 레벨을 반환합니다.
+        /// id를 통해 현재 업그레이드 레벨을 반환합니다.
         /// </summary>
         /// <param name="id">양자리(0)~물고기자리(11)</param>
         /// <returns></returns>
@@ -200,7 +200,7 @@ namespace Script
         private int _nowIndex;
 
         /// <summary>
-        ///     (임시) 이벤트 관찰자 목록
+        ///     (임시) 이벤트 관찰자 목록. 각관찰자가 등록함.
         /// </summary>
         public List<GameObject> Observers;
 
