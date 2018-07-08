@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -176,44 +177,28 @@ namespace Script
         }
 
         private void ExchangeBtnClick(int itemIdx, int btnIdx)
-        {
-            var itemSum = 0;
-            // 지워질 id 목록 (StarIdx, itemid)
-            var starIdList = new List<KeyValuePair<int,int>>();
-            
-            for (var i = 1; i <= 3; i++)
+        {            
+            int[] deleteAmount=new int[3];//[0]Red [1]Blue [2]Green 삭제될 별 개수
+            for (var i = 0; i < 3; i++)
             {
                 // 별 아이템의 index
-                var starIdx = 1000 + btnIdx * 3 + i;
-                var itemNum = _dataController.GetItemNum(starIdx);
-
-                if (itemNum == 0)
-                    continue;
-                
-                itemSum += itemNum;
-                
-                // 별 아이템이 있다면
-                foreach (var itemid in _dataController.HaveDic[starIdx].Keys)
-                {
-                    // 별 아이템의 id를 알아내 지울 목록에 추가한다.
-                    starIdList.Add(new KeyValuePair<int, int>(starIdx, itemid));
-                    
-                    // id를 필요한 만큼 모았으면 나간다.
-                    if (starIdList.Count >= itemSum)
-                    {
-                        break;
-                    }
-                }
+                var starIdx = 1001 + btnIdx  + i*5;
+                deleteAmount[i] = _dataController.GetItemNum(starIdx);
             }
             
             // 별 아이템 개수가 필요한 양(ExchangeRatio[btnIdx])보다 많거나 같을 경우
-            if (itemSum >= ExchangeRatio[btnIdx])
+            if (deleteAmount.Sum() >= ExchangeRatio[btnIdx])
             {
-                foreach (var kvPair in starIdList)
+                for (var i = 0; i < 3; i++)
                 {
-                    _dataController.DeleteItem(kvPair.Key, kvPair.Value);
+                    // 별 아이템의 index
+                    var starIdx = 1001 + btnIdx + i * 5;
+                    for (var j = 0; j < deleteAmount[i]; j++)
+                    {
+                        _dataController.DeleteItem(starIdx);
+                    }
                 }
-                
+
                 _dataController.InsertNewItem(itemIdx);
                 ExchangePanel.SetActive(false);
                 

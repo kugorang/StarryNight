@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -690,26 +691,31 @@ namespace Script
             SaveGameData(HaveDic, HaveDicPath);
         }
 
-        // 퀘스트에 쓰이는 아이템 추가 함수
-        // 퀘스트 쪽 로직을 아직 잘 몰라 일단 돌아가게끔 추가했고
-        // 필요 없으면 삭제 등의 조치를 취할 것.
-        //public void InsertNewItem(int key, int itemNum)
-        //{
-        //    for (int i = 0; i < itemNum; i++)
-        //    {
-        //        InsertNewItem(key, new Vector3(UnityEngine.Random.Range(175, 953), UnityEngine.Random.Range(616, -227), -3));
-        //    }
-        //}
-
         /// <summary>
         ///     아이템을 삭제하는 함수
         /// </summary>
-        /// <param name="key">삭제할 아이템의 key값</param>
-        /// <param name="itemId"></param>
-        public void DeleteItem(int key, int itemId)
+        /// <param name="index">삭제할 아이템의 index값</param>
+        public void DeleteItem(int index)
         {
-            if (!HaveDic[key].Remove(itemId)) Debug.Log("DataController - DeleteItem : Item Cannot Delete.");
-            else if (key < 4000)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
+            if (!CheckExistItem(index))//아이템이 없으면 삭제 불가.
+            {
+                Debug.Log("DataController - DeleteItem : Item Does NOT Exist.");
+                return;
+            }
+            int id=HaveDic[index].Keys.Last();//마지막 id 제거
+            DeleteItem(index, id);
+        }
+
+
+        /// <summary>
+        /// 아이템을 삭제하는 함수
+        /// </summary>
+        /// <param name="index">삭제할 아이템의 index값</param>
+        /// <param name="itemId">아이템의 id</param>
+        public void DeleteItem(int index, int itemId)
+        {
+            if (!HaveDic[index].Remove(itemId)) Debug.Log("DataController - DeleteItem : Item Cannot Delete.");
+            else if (index < 4000)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
             {
                 ItemCount -= 1;
             }
@@ -720,21 +726,21 @@ namespace Script
         /// <summary>
         ///     현재 이 아이템을 보유하고 있는지 확인하는 함수
         /// </summary>
-        /// <param name="key">haveDic의 key값</param>
+        /// <param name="index">haveDic의 index값</param>
         /// <returns></returns>
-        private bool CheckExistItem(int key)
+        private bool CheckExistItem(int index)
         {
-            return HaveDic.ContainsKey(key);
+            return HaveDic.ContainsKey(index);
         }
 
         /// <summary>
         ///     현재 보유하고 있는 아이템의 갯수를 보여주는 함수
         /// </summary>
-        /// <param name="key">haveDic의 key값</param>
+        /// <param name="index">haveDic의 index값</param>
         /// <returns></returns>
-        public int GetItemNum(int key)
+        public int GetItemNum(int index)
         {
-            return CheckExistItem(key) ? HaveDic[key].Count : 0;
+            return CheckExistItem(index) ? HaveDic[index].Count : 0;
         }
 
         #endregion
