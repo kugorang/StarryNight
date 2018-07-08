@@ -19,9 +19,8 @@ namespace Script
             SceneManager.LoadScene("QuestList");
 
             //현재 퀘스트로 바로 이동
-            var process = _dataController.QuestProcess;
 
-            if (process > 90104) 
+            if (Quest.Progress > 90104) 
                 return;
             
             if (!_dataController.IsTutorialEnd 
@@ -55,28 +54,10 @@ namespace Script
         // 메인 화면으로 돌아가는 버튼
         public void OnMainBackBtnClick()
         {
-            if (!_dataController.IsTutorialEnd && _dataController.NowIndex == 300204) 
+            if (!_dataController.IsTutorialEnd && _dataController.NowIndex == 300204)
                 _dataController.NowIndex++;
 
             SceneManager.LoadScene("Main");
         }
-
-        /*// 양자리 퀘스트 버튼
-        public void OnAriesBtnClick()
-        {
-            _audioManager.ActSound();
-            SceneManager.LoadScene("Cartoon");
-        }
-
-        // 황소자리 퀘스트 버튼
-        public void OnTaurusBtnClick()
-        {
-            // 퀘스트 인덱스 확인
-            if (90104 >= _dataController.QuestProcess) 
-                return;
-            
-            _audioManager.ActSound();
-            SceneManager.LoadScene("Cartoon");
-        }*/
     }
 }

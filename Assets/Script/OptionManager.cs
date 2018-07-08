@@ -15,7 +15,7 @@ namespace Script
 
         private void Awake()
         {
-            _audioManager = AudioManager.GetInstance();
+            _audioManager = AudioManager.Instance;
             
             // 배경음악 On Off 버튼 이미지와 텍스트 설정
             if (_audioManager.GetBGMAlive() == 1)

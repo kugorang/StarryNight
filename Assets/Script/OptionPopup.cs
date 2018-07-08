@@ -15,7 +15,7 @@ namespace Script
         // 설정 팝업 띄우기
         public void EnterOption()
         {
-            AudioManager.GetInstance().OptionSound();
+            AudioManager.Instance.OptionSound();
             _option.SetActive(true);
         }
 

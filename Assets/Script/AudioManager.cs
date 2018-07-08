@@ -26,21 +26,24 @@ namespace Script
         // 캐릭터 대사 상태
         private int _voiceAlive;
 
-        public static AudioManager GetInstance()
+        public static AudioManager Instance
         {
-            if (_instance != null) 
-                return _instance;
-            
-            _instance = FindObjectOfType<AudioManager>();
+            get
+            {
+                if (_instance != null)
+                    return _instance;
 
-            if (_instance != null) 
-                return _instance;
-            
-            var container = new GameObject("AudioManager");
-            
-            _instance = container.AddComponent<AudioManager>();
+                _instance = FindObjectOfType<AudioManager>();
 
-            return _instance;
+                if (_instance != null)
+                    return _instance;
+
+                var container = new GameObject("AudioManager");
+
+                _instance = container.AddComponent<AudioManager>();
+
+                return _instance;
+            }
         }
 
         private void Awake()

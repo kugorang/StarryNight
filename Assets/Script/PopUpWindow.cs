@@ -255,8 +255,10 @@ namespace Script
                     img.color = new Color(1, 1, 1, 1 - i);
                     txt.color = new Color(1, 1, 1, 1 - i);
                 }
- 
+                if (_alertQueue.Count > 0)//동기화 오류로 추정되는 문제로 인해 검증 구문이 필요함. InvalidOperationException: Operation is not valid due to the current state of the object
+                { 
                  _alertQueue.Dequeue();//작업이 끝난 후에 Dequeue하지 않으면, Fade 중에 _alertQueue.Count=0이 되어 Alert에 오류가 발생
+                }
             }
         }
 

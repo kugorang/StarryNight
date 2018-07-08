@@ -10,7 +10,7 @@ namespace Script
 
         public void OnClick()
         {
-            AudioManager.GetInstance().VoiceSound();
+            AudioManager.Instance.VoiceSound();
             StartCoroutine(WaitVoice());
         }
 

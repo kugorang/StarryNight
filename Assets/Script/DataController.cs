@@ -105,8 +105,13 @@ namespace Script
 
         ~UpgradeClass()
     {
-            Debug.LogWarning("UpgradeClass is Destroyed");//파괴된다면 에러가 날 수 밖에 없다.
+            Debug.LogWarning("UpgradeClass is Destroyed. At: "+Time.time);//게임 중 파괴된다면 에러가 날 수 밖에 없다.
     }
+
+        public void Reset()
+        {
+            _upgradeLv=new int[12];
+        }
 
         /// <summary>
         /// id를 통해 현재 업그레이드 레벨을 반환합니다.
@@ -437,7 +442,6 @@ namespace Script
             // Key : Value로써 PlayerPrefs에 저장
             _gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
             _itemcount = PlayerPrefs.GetInt("ItemCount", 0);
-            QuestProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
             _leftTimer = new[]
             {
                 PlayerPrefs.GetFloat("LeftTimer1", 300.0f), 
@@ -474,9 +478,18 @@ namespace Script
         private void Start()
         {
             // 종료 후 실행 시간 계산
-            for (var i = 0; i < 3; i++) 
+            for (var i = 0; i < 3; i++)
                 _leftTimer[i] -= TimeAfterLastPlay;
+            var actualItemCount = 0;
+            foreach (var key in HaveDic.Keys)
+            {
+                if (!(key > 4000))
+                {
+                    actualItemCount += HaveDic[key].Count;
+                }
+            }
 
+            ItemCount = actualItemCount;
             InvokeRepeating("OnApplicationQuit", 0f, 5f);
 
             LoadingFinish = true;
@@ -545,7 +558,7 @@ namespace Script
         public void UpgradeInvenLv()
         {
             UpgradeLv[0] += 1;
-            PlayerPrefs.SetInt("InvenLevel", UpgradeLv[0]);
+            //PlayerPrefs.SetInt("InvenLevel", UpgradeLv[0]);
         }
 
         /// <summary>
@@ -580,7 +593,7 @@ namespace Script
 
             _gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
             _itemcount = PlayerPrefs.GetInt("ItemCount", 0);
-            QuestProcess = PlayerPrefs.GetInt("QuestProcess", 90101);
+            Quest.ProgressReset();
             
             // 리셋 즉시 시험할 수 있게
             _leftTimer = new[]
@@ -591,7 +604,7 @@ namespace Script
             _energy = PlayerPrefs.GetInt("Energy", 0);
             _latestUpgradeIndex = PlayerPrefs.GetInt("LatestUpgrade", 50000);
 
-            UpgradeLv = new UpgradeClass();
+            UpgradeLv.Reset();
 
             for (var i = 0; i < 12; i++) 
                 UpgradeLv[i] = PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
@@ -750,19 +763,6 @@ namespace Script
 
         #endregion
 
-        #region Quest
-
-        public int QuestProcess { get; private set; }
-
-        /// <summary>
-        ///     다음 퀘스트로 넘어가기
-        /// </summary>
-        public void NextQuest()
-        {
-            QuestProcess += 1;
-            PlayerPrefs.SetInt("QuestProcess", QuestProcess);
-        }
-
-        #endregion
+       
     }
 }

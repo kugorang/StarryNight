@@ -15,23 +15,7 @@ namespace Script
         private static int _showingQuestIndex;
         private static int CurrentScene
         {
-            get
-            {
-                int i = 0;
-                foreach (var v in DataDictionary.Instance.FirstQuestsOfScene)
-
-                {
-                    if ((_firstQuestsOf.Count <= i + 1) 
-                        || ((_firstQuestsOf[i] <= ShowingQuestIndex) && (_firstQuestsOf[i + 1] > ShowingQuestIndex)))
-                    {
-                        break;
-                    }
-
-                    i++;
-                }
-                
-                return i;
-            }
+            get { return ( ShowingQuestIndex/ 100) % 10; }//1~12
         }
 
         private static readonly Dictionary<int, string> CurrentSceneName = new Dictionary<int, string>()
@@ -40,8 +24,7 @@ namespace Script
             {1,"Taurus"}
         };
     
-        private static List<int> _firstQuestsOf;
-
+        
         public static int ShowingQuestIndex
         {
             get { return _showingQuestIndex; }
@@ -61,9 +44,8 @@ namespace Script
         {
             // ShowingQuestIndex 값이 할당되지 않은 경우
             if (ShowingQuestIndex < FirstQuest) 
-                ShowingQuestIndex = DataController.Instance.QuestProcess;
-            
-            _firstQuestsOf = DataDictionary.Instance.FirstQuestsOfScene;
+                ShowingQuestIndex = Quest.Progress;
+         
         }
 
         // 슬라이드 기능 구현
@@ -96,7 +78,7 @@ namespace Script
             if (CurrentScene < 1)
             {
                 // Taurus를 못 연 경우 두 버튼 다 끄기
-                if (DataController.Instance.QuestProcess < _firstQuestsOf[1]) 
+                if (Quest.Progress < (int)Quest.Zodiac.Taurus) 
                 {
                     PrevButton.SetActive(false);
                     NextButton.SetActive(false);
@@ -109,7 +91,7 @@ namespace Script
             }
             // (_firstQuestsOf.Count - 1)은 _firstQuestsOf의 index중 가장 큰 값이다.
             // 따라서 마지막 별자리일 때 참이되는 조건이다.
-            else if (CurrentScene >= _firstQuestsOf.Count - 1) 
+            else if (CurrentScene >= Quest.NumberOfZodiac) 
             {
                 PrevButton.SetActive(true);
                 NextButton.SetActive(false);
@@ -135,14 +117,7 @@ namespace Script
             /*ShowingQuestIndex -= 1;
 
             Debug.Log(ShowingQuestIndex + ", Left");
-
-           /* if (ShowingQuestIndex < _firstQuestsOf[1] &&
-                SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Aries"))
-            {
-                AudioManager.GetInstance().ActSound();
-                SceneManager.LoadScene("Aries");
-                return;
-            }*/
+*/
 
             var star = GameObject.Find(CurrentSceneName[CurrentScene] + "_" + ShowingQuestIndex);
             
@@ -169,12 +144,6 @@ namespace Script
                 ShowingQuestIndex = DataController.Instance.QuestProcess;
             }
 
-            /*if (_firstQuestsOf[1] <= ShowingQuestIndex && ShowingQuestIndex < _firstQuestsOf[2])
-                if (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Taurus"))
-                {
-                    AudioManager.GetInstance().ActSound();
-                    SceneManager.LoadScene("Taurus");
-                    return;
                 }*/
 
             if (star != null)

@@ -116,7 +116,7 @@ namespace Script
             foreach (var target in _dataController.Observers) 
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
 
-            AudioManager.GetInstance().ClickSound();
+            AudioManager.Instance.ClickSound();
             AddEnergy();
             NewObject();
         }
@@ -151,7 +151,7 @@ namespace Script
             }
 
             ResetEnergy();
-            AudioManager.GetInstance().ItemSound();
+            AudioManager.Instance.ItemSound();
         }
 
         // C# 에서는 디폴트 파라미터를 허용하지 않기 때문에 이렇게 함수 오버로딩을 통해 구현하였습니다.

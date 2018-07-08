@@ -119,7 +119,7 @@ namespace Script
 
             // 조합 후 충돌한 물체를 파괴한다.
             Destroy(collision.gameObject);
-            AudioManager.GetInstance().MixSound();
+            AudioManager.Instance.MixSound();
 
             // 조합표에 없다면 그냥 무시한다.
             CameraController.FocusOnItem = false;

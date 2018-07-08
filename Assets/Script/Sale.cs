@@ -17,7 +17,7 @@ namespace Script
             if (!col.CompareTag("Material")) 
                 return;
             
-            AudioManager.GetInstance().SaleSound();
+            AudioManager.Instance.SaleSound();
             var item = col.GetComponent<Item>();
             var itemInfo = item.Info;
 
