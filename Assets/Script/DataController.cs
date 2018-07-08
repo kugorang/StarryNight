@@ -103,6 +103,11 @@ namespace Script
             };
         }
 
+        ~UpgradeClass()
+    {
+            Debug.LogWarning("UpgradeClass is Destroyed");//파괴된다면 에러가 날 수 밖에 없다.
+    }
+
         /// <summary>
         /// id를 통해 현재 업그레이드 레벨을 반환합니다.
         /// </summary>

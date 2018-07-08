@@ -120,7 +120,7 @@ namespace Script
             FindUpDic = new Dictionary<int, UpgradeInfo>();
             DialogueDic = new Dictionary<int, TextInfo>();
 
-            // 읽어들이기
+            // 읽어들이기 IMPORTANT:절대 빈 줄을 만들지 말 것. ReadDataFile의 Parse 방식 때문에 오류가 발생함.
             ReadDataFile("dataTable/combineTable", Fileinfo.Combinetable);
             ReadDataFile("dataTable/itemTable", Fileinfo.Itemtable);
             ReadDataFile("dataTable/setItemTable", Fileinfo.Setitemtable);
