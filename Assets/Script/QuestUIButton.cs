@@ -23,12 +23,10 @@ namespace Script
             {0,"Aries"},
             {1,"Taurus"}
         };
-    
         
         public static int ShowingQuestIndex
         {
             get { return _showingQuestIndex; }
-            
             set
             {
                 if (value < FirstQuest)
@@ -45,7 +43,6 @@ namespace Script
             // ShowingQuestIndex 값이 할당되지 않은 경우
             if (ShowingQuestIndex < FirstQuest) 
                 ShowingQuestIndex = Quest.Progress;
-         
         }
 
         // 슬라이드 기능 구현
@@ -114,10 +111,10 @@ namespace Script
         // TODO: Quest.cs 이후, 화면 전환 후 ShowQuestInfo 해주기 위해 쓰일 것 (n번째 별자리에서 누르면 n-1번째 별자리의 마지막 퀘스트를 보여줌)
         private void OnLeftQuestBtnClick()
         {
-            /*ShowingQuestIndex -= 1;
-
-            Debug.Log(ShowingQuestIndex + ", Left");
-*/
+            /*
+                ShowingQuestIndex -= 1;
+                Debug.Log(ShowingQuestIndex + ", Left");
+            */
 
             var star = GameObject.Find(CurrentSceneName[CurrentScene] + "_" + ShowingQuestIndex);
             
@@ -130,21 +127,21 @@ namespace Script
         {
             var star = GameObject.Find(CurrentSceneName[CurrentScene] + "_" + ShowingQuestIndex);
             
-            /*ShowingQuestIndex += 1;
+            /*
+                ShowingQuestIndex += 1;
             
-            Debug.Log(ShowingQuestIndex + ", Right");
-            
-            if (ShowingQuestIndex > DataController.Instance.QuestProcess) //QuestProcess = 진행중인 퀘스트
-            {
-                star = GameObject.Find(CurrentSceneName[CurrentScene] + "_" + ShowingQuestIndex);
+                Debug.Log(ShowingQuestIndex + ", Right");
                 
-                if (star != null)
-                    star.GetComponent<BlinkStar>().OnClick();
-                
-                ShowingQuestIndex = DataController.Instance.QuestProcess;
-            }
-
-                }*/
+                if (ShowingQuestIndex > DataController.Instance.QuestProcess) //QuestProcess = 진행중인 퀘스트
+                {
+                    star = GameObject.Find(CurrentSceneName[CurrentScene] + "_" + ShowingQuestIndex);
+                    
+                    if (star != null)
+                        star.GetComponent<BlinkStar>().OnClick();
+                    
+                    ShowingQuestIndex = DataController.Instance.QuestProcess;
+                }
+            */
 
             if (star != null)
                 star.GetComponent<BlinkStar>().ShowQuestInfo();

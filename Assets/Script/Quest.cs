@@ -1,16 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Script
 {
     public class QuestInfo
     {
-        public QuestInfo(int index, string act, string title, string content,
-            int termsItem, int termsCount, int reward, int rewardCount)
+        public QuestInfo(int index, string act, int dialogueStartIndex, int dialogueEndIndex, 
+            string title, string content, int termsItem, int termsCount, int reward, int rewardCount)
         {
             Index = index;
             Act = act;
+            DialogueStartIndex = dialogueStartIndex;
+            DialogueEndIndex = dialogueEndIndex;
             Title = title;
             Content = content;
             TermsItem = termsItem;
@@ -24,7 +25,13 @@ namespace Script
 
         // 퀘스트 발생 액트
         public string Act { get; private set; }
-
+        
+        // 퀘스트 다이얼로그 시작 인덱스
+        public int DialogueStartIndex { get; private set; }
+        
+        // 퀘스트 다이얼로그 끝 인덱스
+        public int DialogueEndIndex { get; private set; }
+        
         // 퀘스트 제목
         public string Title { get; private set; }
 
@@ -101,7 +108,7 @@ namespace Script
         /// </summary>
         /// <param name="questIndex"></param>
         /// <returns>별자리 순서</returns>
-        public static int ZodiacIndex(int questIndex)
+        private static int ZodiacIndex(int questIndex)
         {
             return ((questIndex / 100)%100)-1;
         }
@@ -167,7 +174,8 @@ namespace Script
         public static bool CheckQuestClear(int index)
         {
             var dataController = DataController.Instance;
-            var currentQuest = DataDictionary.Instance.FindQuest(Quest.Progress);
+            var currentQuest = DataDictionary.Instance.FindQuest(Progress);
+            
             // 진행중인 퀘스트 조건 아이템의 인덱스
             var checkItemIndex = currentQuest.TermsItem;
 
@@ -211,8 +219,8 @@ namespace Script
                     case 90104:
                         itemIndex = new[]
                         {
-                            3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 3046, 3047, 3048, 3061, 3062, 3063,
-                            3076, 3077, 3078
+                            3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 
+                            3046, 3047, 3048, 3061, 3062, 3063, 3076, 3077, 3078
                         };
                         currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
                         break;
@@ -223,48 +231,48 @@ namespace Script
             }
 
             // 조건 아이템의 갯수 확인 및 보상 지급
-            if (checkItemCount <= currentItemNum)
+            if (checkItemCount > currentItemNum) 
+                return false;
+            
+            // 보상이 골드일 때
+            if (currentQuest.Reward == 9999) 
             {
-                if (currentQuest.Reward == 9999) // 보상이 골드일 때
-                {
-                    dataController.Gold += (ulong) currentQuest.RewardCount;
-                }
-                else
-                {
-                    // 아이템 인벤토리가 꽉 차있는지 확인
-                    if (dataController.ItemCount < dataController.ItemLimit)
-                    {
-                        if (currentQuest.Reward > 50000) // 보상이 업그레이드 오픈일 때
-                        {
-                            if (currentQuest.TermsItem == 9999) // 조건이 골드일 때 골드 감소
-                                dataController.Gold -= (ulong) currentQuest.TermsCount;
-
-                            dataController.LatestUpgradeIndex = currentQuest.Reward; //업그레이드가 순차적으로 열릴 것을 가정한 코드.
-                        }
-                        else
-                        {
-                            // 조건이 골드일 경우 골드 감소
-                            if (currentQuest.TermsItem == 9999)
-                                dataController.Gold -= (ulong) currentQuest.TermsCount;
-
-                            dataController.InsertNewItem(currentQuest.Reward, currentQuest.RewardCount);
-                            //dataController.AddItemCount(); 서적 아이템 인벤토리 차지 안 함;
-                        }
-                    }
-                }
-
-                return true;
-
+                dataController.Gold += (ulong)currentQuest.RewardCount;
             }
             else
             {
-                return false;
+                // 아이템 인벤토리가 꽉 차있는지 확인
+                if (dataController.ItemCount >= dataController.ItemLimit) 
+                    return true;
+                    
+                // 보상이 업그레이드 오픈일 때
+                if (currentQuest.Reward > 50000) 
+                {
+                    // 조건이 골드일 때 골드 감소
+                    if (currentQuest.TermsItem == 9999) 
+                        dataController.Gold -= (ulong)currentQuest.TermsCount;
+
+                    // 업그레이드가 순차적으로 열릴 것을 가정한 코드.
+                    dataController.LatestUpgradeIndex = currentQuest.Reward; 
+                }
+                else
+                {
+                    // 조건이 골드일 경우 골드 감소
+                    if (currentQuest.TermsItem == 9999)
+                        dataController.Gold -= (ulong)currentQuest.TermsCount;
+
+                    dataController.InsertNewItem(currentQuest.Reward, currentQuest.RewardCount);
+                    //dataController.AddItemCount(); 서적 아이템 인벤토리 차지 안 함;
+                }
             }
+
+            return true;
         }
 
-        /*public QuestInfo CurrentQuestInfo() { }
-     public bool HasQuestFinished;
-     */
+        /*
+            public QuestInfo CurrentQuestInfo() { }
+            public bool HasQuestFinished;
+        */
     }
 }
 

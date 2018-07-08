@@ -9,8 +9,6 @@ using UnityEngine.UI;
 namespace Script
 {
     // TODO: quest.cs로 BlinkStar, QuestUIButton로 퀘스트 부분만 떼서 통합 정리
-   
-
     public class BlinkStar : MonoBehaviour, IClickables
     {
         // 별 깜박임 활성화 유무
@@ -67,7 +65,8 @@ namespace Script
             _blinkAlive = true;
 
             var findQuestInfo = _dataDic.FindQuestDic[QuestIndex];
-            _ownQuest = new QuestInfo(QuestIndex, findQuestInfo.Act, findQuestInfo.Title, findQuestInfo.Content,
+            _ownQuest = new QuestInfo(QuestIndex, findQuestInfo.Act, findQuestInfo.DialogueStartIndex,
+                findQuestInfo.DialogueEndIndex, findQuestInfo.Title, findQuestInfo.Content,
                 findQuestInfo.TermsItem, findQuestInfo.TermsCount, findQuestInfo.Reward, findQuestInfo.RewardCount);
 
             // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
@@ -100,7 +99,6 @@ namespace Script
         public void OnClick()
         {
             AudioManager.Instance.QuestStarSound();
-       
 
             // 관찰자들에게 이벤트 메세지 송출
             foreach (var target in _dataController.Observers) 
@@ -110,16 +108,23 @@ namespace Script
             {
                 OnQuestClear();
             }
+            else if (_dataController.IsTutorialEnd && _ownQuest.DialogueStartIndex >= 300701)
+            {
+                _dataController.NowIndex = _ownQuest.DialogueStartIndex;
+                DialogueManager.Instance.ShowDialogue();
+            }
 
             QuestUIButton.ShowingQuestIndex = QuestIndex;
             ShowQuestInfo();
 
             // 클릭 메시지를 다른 별들에게 송출
             var stars = GameObject.FindGameObjectsWithTag("BlinkStars");
-            foreach (var target in stars) ExecuteEvents.Execute<IClickables>(target, null, (x, y) => x.OnOtherClick());
+            
+            foreach (var target in stars) 
+                ExecuteEvents.Execute<IClickables>(target, null, (x, y) => x.OnOtherClick());
         }
 
-        public void OnQuestClear()
+        private void OnQuestClear()
         {
             Quest.NextQuest();
             _blinkAlive = false;

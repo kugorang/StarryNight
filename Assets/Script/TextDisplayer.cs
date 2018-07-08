@@ -16,7 +16,7 @@ namespace Script
 
         public bool IsTyping { get; private set; }
 
-        private void ShowDialogueHolder()
+        public void ShowDialogueHolder()
         {
             DialougeWindowHolder.SetActive(true);
         }

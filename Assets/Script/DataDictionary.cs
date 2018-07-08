@@ -120,7 +120,7 @@ namespace Script
             FindUpDic = new Dictionary<int, UpgradeInfo>();
             DialogueDic = new Dictionary<int, TextInfo>();
 
-            // 읽어들이기 IMPORTANT:절대 빈 줄을 만들지 말 것. ReadDataFile의 Parse 방식 때문에 오류가 발생함.
+            // TODO: 절대 빈 줄을 만들지 말 것. ReadDataFile의 Parse 방식 때문에 오류가 발생함.
             ReadDataFile("dataTable/combineTable", Fileinfo.Combinetable);
             ReadDataFile("dataTable/itemTable", Fileinfo.Itemtable);
             ReadDataFile("dataTable/setItemTable", Fileinfo.Setitemtable);
@@ -199,20 +199,19 @@ namespace Script
                         break;
                     case Fileinfo.Questtable:
                         index = Convert.ToInt32(wordList[0]);
-                        //int dialogueStart = Convert.ToInt32(wordList[1]);
-                        //int dialogueEnd = Convert.ToInt32(wordList[2]);
+                        var dialogueStart = Convert.ToInt32(wordList[2]);
+                        var dialogueEnd = Convert.ToInt32(wordList[3]);
+                        var termsItem = Convert.ToInt32(wordList[6]);
+                        var termsCount = Convert.ToInt32(wordList[7]);
+                        var reward = Convert.ToInt32(wordList[8]);
+                        var rewardCount = Convert.ToInt32(wordList[9]);
 
-                        var termsItem = Convert.ToInt32(wordList[4]);
-                        var termsCount = Convert.ToInt32(wordList[5]);
-                        var reward = Convert.ToInt32(wordList[6]);
-                        var rewardCount = Convert.ToInt32(wordList[7]);
+                        FindQuestDic[index] = new QuestInfo(index, wordList[1], dialogueStart, dialogueEnd, 
+                            wordList[4], wordList[5], termsItem, termsCount, reward, rewardCount);
 
-                        FindQuestDic[index] = new QuestInfo(index, wordList[1], wordList[2], wordList[3], termsItem,
-                            termsCount, reward, rewardCount);
+                        /*Debug.Log(wordList[4]);*/
 
-                        Debug.Log(wordList[2]);
-
-                        if (wordList[1] != formerSceneName) //씬의 첫 퀘스트의 인덱스 구하기
+                        if (wordList[1] != formerSceneName) // 씬의 첫 퀘스트의 인덱스 구하기
                         {
                             FirstQuestsOfScene.Add(index);
                             formerSceneName = wordList[1];
@@ -221,7 +220,7 @@ namespace Script
                         break;
                     case Fileinfo.Upgradetable:
                         index = Convert.ToInt32(wordList[0]);
-                        var len = (wordList.Length - 2) / 2; //wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
+                        var len = (wordList.Length - 2) / 2; // wordList의 앞 두 개는 각각 이름과 설명이므로 -2, 그리고 (효과,값)쌍이므로 /2
                         UpgradeInfo upInfo;
                         upInfo.Index = index;
                         upInfo.Name = wordList[1];

@@ -103,10 +103,10 @@ namespace Script
             };
         }
 
-        ~UpgradeClass()
-    {
+        /*~UpgradeClass()
+        {    
             Debug.LogWarning("UpgradeClass is Destroyed. At: "+Time.time);//게임 중 파괴된다면 에러가 날 수 밖에 없다.
-    }
+        }*/
 
         public void Reset()
         {
@@ -263,6 +263,51 @@ namespace Script
                     IsTutorialEnd = true;
                     Observers.Remove(DialogueManager.Instance.gameObject);
                     _nowIndex = 300701;
+                    return 0;
+                }
+                else if (_nowIndex == 300707)
+                {
+                    _nowIndex = 300801;
+                    return 0;
+                }
+                else if (_nowIndex == 300808)
+                {
+                    _nowIndex = 300901;
+                    return 0;
+                }
+                else if (_nowIndex == 300906)
+                {
+                    _nowIndex = 301001;
+                    return 0;
+                }
+                else if (_nowIndex == 301016)
+                {
+                    _nowIndex = 301101;
+                    return 0;
+                }
+                else if (_nowIndex == 301103)
+                {
+                    _nowIndex = 301201;
+                    return 0;
+                }
+                else if (_nowIndex == 301205)
+                {
+                    _nowIndex = 301301;
+                    return 0;
+                }
+                else if (_nowIndex == 301309)
+                {
+                    _nowIndex = 301401;
+                    return 0;
+                }
+                else if (_nowIndex == 301413)
+                {
+                    _nowIndex = 301501;
+                    return 0;
+                }
+                else if (_nowIndex == 301537)
+                {
+                    _nowIndex = 301601;
                     return 0;
                 }
 

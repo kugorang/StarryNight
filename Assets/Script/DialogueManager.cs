@@ -112,7 +112,8 @@ namespace Script
 
             if (_dataController.NowIndex == 0)
             {
-                TextDisplayer.HideDialogueHolder();
+                /*TextDisplayer.HideDialogueHolder();*/
+                TextDisplayer.gameObject.SetActive(false);
                 return;
             }
 
@@ -152,7 +153,7 @@ namespace Script
             ShowDialogue();
         }
 
-        private void ShowDialogue()
+        public void ShowDialogue()
         {
             var textInfo = _dialogueDic[_dataController.NowIndex];
 
@@ -163,6 +164,11 @@ namespace Script
             }
             else
             {
+                if (TextDisplayer.gameObject.activeSelf == false)
+                {
+                    TextDisplayer.gameObject.SetActive(true);
+                }
+                
                 TextDisplayer.SetSay(textInfo.Dialogue);
             }
         }
@@ -327,7 +333,7 @@ namespace Script
                 return;
             }
 
-            if (_dataController.NowIndex == 300423)
+            if (_dataController.NowIndex == 300422)
                 ContinueDialogue();
         }
 
@@ -380,7 +386,8 @@ namespace Script
             switch (vt)
             {
                 case ValueType.Gold:
-                    if (_dataController.NowIndex == 300427 && currentValue >= 200) ContinueDialogue();
+                    if (_dataController.NowIndex == 300427 && currentValue >= 200) 
+                        ContinueDialogue();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("vt", vt, null);
@@ -402,7 +409,8 @@ namespace Script
             switch (vt)
             {
                 case ValueType.Gold:
-                    if (_dataController.NowIndex == 300427 && currentValue >= 200) ContinueDialogue();
+                    if (_dataController.NowIndex == 300426 && currentValue >= 200) 
+                        ContinueDialogue();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("vt", vt, null);
