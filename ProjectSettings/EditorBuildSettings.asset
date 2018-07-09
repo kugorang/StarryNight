@@ -21,12 +21,6 @@ EditorBuildSettings:
     path: Assets/Scene/Quest.unity
     guid: ff41cfe3e019b214fb5790e8e0d3f8d6
   - enabled: 1
-    path: Assets/Scene/Aries.unity
-    guid: 0281501b078900b4a85836620c155247
-  - enabled: 1
-    path: Assets/Scene/Taurus.unity
-    guid: de8df20af5cea1542ac4b9711f0d7d78
-  - enabled: 1
     path: Assets/Scene/BookList.unity
     guid: aa448e0e416962a43baee11bb73297d4
   - enabled: 1
@@ -35,6 +29,3 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/QuestList.unity
     guid: d4c128585f4803c48927229e29a29bb6
-  - enabled: 1
-    path: Assets/Scene/QuestListUI.unity
-    guid: 4429d8f8dc09a7d4d8b26c9302767268

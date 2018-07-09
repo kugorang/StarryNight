@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,9 @@ namespace Script
         private DataDictionary _dataDictionary;
         private Dictionary<int, TextInfo> _dialogueDic;
         public TextDisplayer TextDisplayer;
+        public GameObject[] Fingers;    // 0이 편 손가락, 1이 굽힌 손가락
+        private IEnumerator _fingerAnim;
+        private bool _runningAnim;
 
         public static DialogueManager Instance { get; private set; }
 
@@ -27,6 +31,7 @@ namespace Script
             _dataController = DataController.Instance;
             _dataDictionary = DataDictionary.Instance;
             _dialogueDic = _dataDictionary.DialogueDic;
+            _runningAnim = false;
 
             if (Instance == null)
             {
@@ -53,6 +58,8 @@ namespace Script
                 if (_dataController.Observers.Contains(gameObject))
                     _dataController.Observers.Remove(gameObject);
             }
+
+            /*_dataController.NowIndex = 300133;*/
         }
 
         private void OnSceneChange(Scene scene, LoadSceneMode mode)
@@ -110,42 +117,265 @@ namespace Script
             if (_dialogueDic[_dataController.NowIndex].Name != "알림창") 
                 _dataController.NowIndex++;
 
-            if (_dataController.NowIndex == 0)
+            var nowIndex = _dataController.NowIndex;
+            
+            switch (nowIndex)
             {
-                /*TextDisplayer.HideDialogueHolder();*/
-                TextDisplayer.gameObject.SetActive(false);
-                return;
-            }
-
-            var textInfo = _dialogueDic[_dataController.NowIndex];
-
-            switch (textInfo.Name)
-            {
-                case "메테스":
-                    BgImg.gameObject.GetComponent<Image>().sprite =
-                        Resources.Load<Sprite>("dialogueImg/metes/default-right");
-                    break;
-                case "민":
-                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/min/default-right");
-                    break;
-                case "피터":
-                    BgImg.gameObject.GetComponent<Image>().sprite =
-                        Resources.Load<Sprite>("dialogueImg/peter/default-right");
-                    break;
-                case "나레이션":
-                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
-                    break;
-                case "알림창":
+                case 0:
+                    // NowIndex가 0을 반환한 경우는 다이얼로그를 끝내는 인덱스이므로 TextDisplayer를 비활성화한 후 메소드를 종료한다.
+                    /*TextDisplayer.HideDialogueHolder(); // 이전에 사용했던 TextDisplayer 비활성화 코드*/
                     TextDisplayer.gameObject.SetActive(false);
-                    PopUpWindow.ShowDialogue(textInfo.Dialogue);
                     return;
+                // 아래는 손가락 이미지를 표시하기 위한 코드
+                case 300129:    // 지구본을 클릭하는 튜토리얼
+                case 300131:    // 오른쪽으로 슬라이드하는 튜토리얼
+                case 300134:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                /*case 300135:    // 반짝이는 별을 클릭하는 튜토리얼
+                case 300204:    // 뒤로가기 버튼을 클릭하는 튜토리얼
+                case 300210:    // 왼쪽 화살표 버튼을 클릭하는 튜토리얼
+                case 300212:    // 별 버튼을 클릭하는 튜토리얼
+                case 300213:    // 재료 아이템 3개를 구하는 튜토리얼
+                case 300215:    // 오른쪽 화살표 버튼을 클릭하는 튜토리얼
+                case 300217:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                case 300305:    // 별 아이템을 클릭하는 튜토리얼
+                case 300306:    // 조합을 하는 튜토리얼
+                case 300310:    // 별의 파편을 2개 만드는 튜토리얼
+                case 300422:    // 아이템을 끌어서 판매하는 튜토리얼
+                case 300426:    // 200 골드를 획득하는 튜토리얼
+                case 300514:    // 양털 가방을 업그레이드하는 튜토리얼
+                case 300609:    // 서적 버튼을 클릭하는 튜토리얼
+                case 300612:    // 느낌표가 붙은 서적 아이템을 클릭하는 튜토리얼
+                case 300617:    // 지구본이 있는 화면으로 이동하는 튜토리얼
+                case 300619:    // 왼쪽 화면 상단의 파란색 별을 클릭하는 튜토리얼
+                case 300622:    // 서적 버튼을 클릭하는 튜토리얼
+                case 300623:    // 활성화되지 않은 서적 재료 아이템을 클릭하는 튜토리얼*/
+                    _fingerAnim = FingerAnim(nowIndex);
+                    StartCoroutine(_fingerAnim);
+                    break;
             }
 
+            var textInfo = _dialogueDic[nowIndex];
+
+            SwitchCharacterImage(textInfo);
             TextDisplayer.SetSay(textInfo.Dialogue);
+        }
+
+        private IEnumerator FingerAnim(int questIndex)
+        {
+            _runningAnim = true;
+            
+            foreach (var finger in Fingers)
+            {
+                finger.SetActive(true);
+            }
+            
+            // 반복되지 않아야 하는 초기화 작업을 여기서 진행한다.
+            switch (questIndex)
+            {
+                case 300129:    // 지구본을 클릭하는 튜토리얼
+                    Fingers[1].transform.position = new Vector3(-456, -637, -3);
+                    Fingers[1].SetActive(false);
+                    break;
+                case 300134:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                    Fingers[0].transform.position = new Vector3(465, -930, -3);
+                    Fingers[1].transform.position = new Vector3(465, -930, -3);
+                    /*Fingers[1].SetActive(false);*/
+                    break;
+                case 300135:    // 반짝이는 별을 클릭하는 튜토리얼
+                    break;
+                case 300204:    // 뒤로가기 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300210:    // 왼쪽 화살표 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300212:    // 별 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300213:    // 재료 아이템 3개를 구하는 튜토리얼
+                    break;
+                case 300215:    // 오른쪽 화살표 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300217:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300305:    // 별 아이템을 클릭하는 튜토리얼
+                    break;
+                case 300306:    // 조합을 하는 튜토리얼
+                    break;
+                case 300310:    // 별의 파편을 2개 만드는 튜토리얼
+                    break;
+                case 300422:    // 아이템을 끌어서 판매하는 튜토리얼
+                    break;
+                case 300426:    // 200 골드를 획득하는 튜토리얼
+                    break;
+                case 300514:    // 양털 가방을 업그레이드하는 튜토리얼
+                    break;
+                case 300609:    // 서적 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300612:    // 느낌표가 붙은 서적 아이템을 클릭하는 튜토리얼
+                    break;
+                case 300617:    // 지구본이 있는 화면으로 이동하는 튜토리얼
+                    break;
+                case 300619:    // 왼쪽 화면 상단의 파란색 별을 클릭하는 튜토리얼
+                    break;
+                case 300622:    // 서적 버튼을 클릭하는 튜토리얼
+                    break;
+                case 300623:    // 활성화되지 않은 서적 재료 아이템을 클릭하는 튜토리얼
+                    break;    
+            }
+            
+            while (_dataController.NowIndex == questIndex)
+            {
+                switch (questIndex)
+                {
+                    case 300129:    // 지구본을 클릭하는 튜토리얼
+                        // 위치 설정
+                        Fingers[0].transform.position = new Vector3(-356, -737, -3);
+                        
+                        // 이동하기
+                        iTween.MoveBy(Fingers[0], iTween.Hash("x", -100, "y", 100, "time", 0.8f));
+                        
+                        yield return new WaitForSeconds(0.8f);
+                
+                        // 구부리기
+                        Fingers[0].SetActive(false);
+                        Fingers[1].SetActive(true);
+                
+                        yield return new WaitForSeconds(0.4f);
+                
+                        // 펴기
+                        Fingers[0].SetActive(true);
+                        Fingers[1].SetActive(false);
+                
+                        yield return new WaitForSeconds(0.4f);
+                        break;
+                    case 300131:    // 오른쪽으로 슬라이드하는 튜토리얼
+                        // 위치 설정
+                        Fingers[0].transform.position = new Vector3(-230, -600, -3);
+                        Fingers[1].transform.position = new Vector3(-230, -600, -3);
+                        
+                        // 펴기
+                        Fingers[0].SetActive(true);
+                        Fingers[1].SetActive(false);
+                
+                        yield return new WaitForSeconds(0.4f);
+                        
+                        // 구부리기
+                        Fingers[0].SetActive(false);
+                        Fingers[1].SetActive(true);
+                
+                        yield return new WaitForSeconds(0.4f);
+                        
+                        // 이동하기
+                        iTween.MoveBy(Fingers[1], iTween.Hash("x", -370, "y", 0, "time", 0.8f));
+                        Fingers[0].transform.position = new Vector3(-600, -600, -3);
+                        
+                        yield return new WaitForSeconds(0.8f);
+                
+                        // 펴기
+                        Fingers[0].SetActive(true);
+                        Fingers[1].SetActive(false);
+                
+                        yield return new WaitForSeconds(0.4f);
+                        break;
+                    case 300134:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                        /*// 위치 설정
+                        Fingers[0].transform.position = new Vector3(500, -700, -3);
+                        
+                        // 이동하기
+                        iTween.MoveBy(Fingers[0], iTween.Hash("x", -35, "y", -230, "time", 1.5f));
+                        
+                        yield return new WaitForSeconds(1.5f);
+                
+                        // 구부리기
+                        Fingers[0].SetActive(false);
+                        Fingers[1].SetActive(true);
+                
+                        yield return new WaitForSeconds(0.4f);
+                
+                        // 펴기
+                        Fingers[0].SetActive(true);
+                        Fingers[1].SetActive(false);
+                
+                        yield return new WaitForSeconds(0.4f);*/
+                        
+                        // 펴기
+                        Fingers[0].SetActive(true);
+                        Fingers[1].SetActive(false);
+                
+                        yield return new WaitForSeconds(0.4f);
+                        
+                        // 구부리기
+                        Fingers[0].SetActive(false);
+                        Fingers[1].SetActive(true);
+                
+                        yield return new WaitForSeconds(0.4f);
+                        break;
+                    case 300135:    // 반짝이는 별을 클릭하는 튜토리얼
+                        break;
+                    case 300204:    // 뒤로가기 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300210:    // 왼쪽 화살표 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300212:    // 별 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300213:    // 재료 아이템 3개를 구하는 튜토리얼
+                        break;
+                    case 300215:    // 오른쪽 화살표 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300217:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300305:    // 별 아이템을 클릭하는 튜토리얼
+                        break;
+                    case 300306:    // 조합을 하는 튜토리얼
+                        break;
+                    case 300310:    // 별의 파편을 2개 만드는 튜토리얼
+                        break;
+                    case 300422:    // 아이템을 끌어서 판매하는 튜토리얼
+                        break;
+                    case 300426:    // 200 골드를 획득하는 튜토리얼
+                        break;
+                    case 300514:    // 양털 가방을 업그레이드하는 튜토리얼
+                        break;
+                    case 300609:    // 서적 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300612:    // 느낌표가 붙은 서적 아이템을 클릭하는 튜토리얼
+                        break;
+                    case 300617:    // 지구본이 있는 화면으로 이동하는 튜토리얼
+                        break;
+                    case 300619:    // 왼쪽 화면 상단의 파란색 별을 클릭하는 튜토리얼
+                        break;
+                    case 300622:    // 서적 버튼을 클릭하는 튜토리얼
+                        break;
+                    case 300623:    // 활성화되지 않은 서적 재료 아이템을 클릭하는 튜토리얼
+                        break;    
+                }
+            }
+
+            FinishFingerAnim();
+
+            yield return null;
+        }
+
+        private void FinishFingerAnim()
+        {
+            foreach (var finger in Fingers)
+            {
+                if (finger == null || !finger.activeSelf) 
+                    continue;
+                
+                iTween.Stop(finger);
+                finger.SetActive(false);
+            }
+
+            _runningAnim = false;
         }
 
         private void ContinueDialogue()
         {
+            if (_runningAnim && !_dataController.IsTutorialEnd)
+            {
+                StopCoroutine(_fingerAnim);
+                FinishFingerAnim();
+            }
+            
             PopUpWindow.HideDialogue();
             TextDisplayer.gameObject.SetActive(true);
 
@@ -164,12 +394,112 @@ namespace Script
             }
             else
             {
+                // 퀘스트를 눌렀을 때 다이얼로그를 띄우기 위한 코드
                 if (TextDisplayer.gameObject.activeSelf == false)
                 {
+                    // 평소에 비활성화 되어 있는 TextDisplayer를 활성화 시킨 후 배경 이미지 변경
                     TextDisplayer.gameObject.SetActive(true);
+                    SwitchCharacterImage(textInfo);
                 }
                 
                 TextDisplayer.SetSay(textInfo.Dialogue);
+            }
+        }
+
+        private void SwitchCharacterImage(TextInfo textInfo)
+        {
+            switch (textInfo.Name)
+            {
+                case "메테스":
+                    switch (textInfo.Face)
+                    {
+                        case "놀람":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/metes/surprise-right");
+                            break;
+                        case "슬픔":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/metes/sad-right");
+                            break;
+                        case "웃음":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/metes/laugh-right");
+                            break;
+                        case "화남":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/metes/angry-right");
+                            break;
+                        default:    // 메인 혹은 기타
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/metes/default-right");
+                            break;
+                    }
+                    break;
+                case "민":    case "??? (민)":
+                    switch (textInfo.Face)
+                    {
+                        case "놀람":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/min/surprise-right");
+                            break;
+                        case "슬픔":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/min/sad-right");
+                            break;
+                        case "웃음":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/min/laugh-right");
+                            break;
+                        case "화남":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/min/angry-right");
+                            break;
+                        default:    // 메인 혹은 기타
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/min/default-right");
+                            break;
+                    }
+                    break;
+                case "피터":
+                    switch (textInfo.Face)
+                    {
+                        case "놀람":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/peter/surprise-right");
+                            break;
+                        case "슬픔":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/peter/sad-right");
+                            break;
+                        case "웃음":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/peter/laugh-right");
+                            break;
+                        case "화남":
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/peter/angry-right");
+                            break;
+                        default:    // 메인 혹은 기타
+                            BgImg.gameObject.GetComponent<Image>().sprite =
+                                Resources.Load<Sprite>("dialogueImg/peter/default-right");
+                            break;
+                    }
+                    break;
+                case "유노":    case "??? (유노)":
+                    // TODO : 유노 이미지가 나오면 유노 이미지로 바꿀 것. 현재는 없는 상태
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
+                    break;
+                case "아나":    case "??? (아나)":
+                    // TODO : 아나 이미지가 나오면 아나 이미지로 바꿀 것. 현재는 없는 상태
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
+                    break;
+                case "나레이션":
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
+                    break;
+                case "알림창":
+                    TextDisplayer.gameObject.SetActive(false);
+                    PopUpWindow.ShowDialogue(textInfo.Dialogue);
+                    return;
             }
         }
 
@@ -217,8 +547,11 @@ namespace Script
                     }
                     break;
                 case "Script.CreateItem":
-                    if (_dataController.NowIndex == 300129) 
+                    if (_dataController.NowIndex == 300129)
+                    {
                         ContinueDialogue();
+                    }
+                        
                     break;
                 case "Script.DataController":
                     break;

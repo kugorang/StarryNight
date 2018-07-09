@@ -157,7 +157,7 @@ namespace Script
         // C# 에서는 디폴트 파라미터를 허용하지 않기 때문에 이렇게 함수 오버로딩을 통해 구현하였습니다.
         private void GenerateItem(int productId, bool isNew)
         {
-            GenerateItem(productId, isNew, -1, new Vector3(-758, -284, -3));
+            GenerateItem(productId, isNew, -1, new Vector3(-758, -284, -2));
         }
 
         private void GenerateItem(int productId, bool isNew, int itemId, Vector3 itemPos)

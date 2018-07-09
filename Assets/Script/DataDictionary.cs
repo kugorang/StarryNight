@@ -209,7 +209,7 @@ namespace Script
                         FindQuestDic[index] = new QuestInfo(index, wordList[1], dialogueStart, dialogueEnd, 
                             wordList[4], wordList[5], termsItem, termsCount, reward, rewardCount);
 
-                        Debug.Log(wordList[4]);
+                        /*Debug.Log(wordList[4]);*/
 
                         if (wordList[1] != formerSceneName) // 씬의 첫 퀘스트의 인덱스 구하기
                         {
