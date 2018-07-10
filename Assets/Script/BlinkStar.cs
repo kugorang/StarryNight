@@ -165,21 +165,9 @@ namespace Script
                 }
                 case 90102:
                 {
-                    int[] itemIndex = {1002, 1007, 1012};
+                    int[] itemIndex = {2001, 2006, 2011, 2016, 2021, 2026 };
                     var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
                     
-                    if (QuestIndex < Quest.Progress)
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                    else
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                            "별의 파편 " + questItemNum + "/" + _ownQuest.TermsCount;
-                    break;
-                }
-                case 90103:
-                {
-                    int[] itemIndex = {2001, 2006, 2011, 2016, 2021, 2026};
-                    var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
-
                     if (QuestIndex < Quest.Progress)
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                     else
@@ -187,6 +175,19 @@ namespace Script
                             "재료 아이템 " + questItemNum + "/" + _ownQuest.TermsCount;
                     break;
                 }
+                case 90103:
+                {
+                    int[] itemIndex = { 1002, 1007, 1012 };
+                    var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
+
+                    if (QuestIndex < Quest.Progress)
+                        GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
+                    else
+                        GameObject.Find("Progress Displayer").GetComponent<Text>().text =
+                            "별의 파편 " + questItemNum + "/" + _ownQuest.TermsCount;
+                    break;
+                }
+                    /*
                 case 90104:
                 {
                     int[] itemIndex = {3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 3046, 3047, 3048, 3061, 3062, 3063, 3076, 3077, 3078};
@@ -196,9 +197,10 @@ namespace Script
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                     else
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                            "레벨 1 조합 아이템 " + questItemNum + "/" + _ownQuest.TermsCount;
+                            "골드 " + questItemNum + "/" + _ownQuest.TermsCount;
                     break;
                 }
+                */
                 default:
                     var termItemIndex = _ownQuest.TermsItem;
                     

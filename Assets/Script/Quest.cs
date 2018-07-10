@@ -207,14 +207,15 @@ namespace Script
                         break;
                     // 퀘스트 인덱스 90102의 경우
                     case 90102:
-                        itemIndex = new[] {1002, 1007, 1012};
+                        itemIndex = new[] {2001, 2006, 2011, 2016, 2021, 2026 };
                         currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
                         break;
                     // 퀘스트 인덱스 90103의 경우
                     case 90103:
-                        itemIndex = new[] {2001, 2006, 2011, 2016, 2021, 2026};
+                        itemIndex = new[] { 1002, 1007, 1012 };
                         currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
                         break;
+                       /*
                     // 퀘스트 인덱스 90104의 경우
                     case 90104:
                         itemIndex = new[]
@@ -224,6 +225,7 @@ namespace Script
                         };
                         currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
                         break;
+                        */
                     default:
                         currentItemNum = dataController.GetItemNum(checkItemIndex);
                         break;
