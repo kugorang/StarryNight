@@ -238,7 +238,7 @@ namespace Script
         {
             get
             {
-                if (_nowIndex == 300136)
+                if (_nowIndex == 300137)
                 {
                     _nowIndex = 300201;
                 }
@@ -280,7 +280,7 @@ namespace Script
                     _nowIndex = 301001;
                     return 0;
                 }
-                else if (_nowIndex == 301016)
+                else if (_nowIndex == 301017)
                 {
                     _nowIndex = 301101;
                     return 0;
@@ -305,9 +305,94 @@ namespace Script
                     _nowIndex = 301501;
                     return 0;
                 }
-                else if (_nowIndex == 301537)
+                else if (_nowIndex == 301539)
                 {
                     _nowIndex = 301601;
+                    return 0;
+                }
+                else if (_nowIndex == 301608)
+                {
+                    _nowIndex = 301701;
+                    return 0;
+                }
+                else if (_nowIndex == 301729)
+                {
+                    _nowIndex = 301801;
+                    return 0;
+                }
+                else if (_nowIndex == 301829)
+                {
+                    _nowIndex = 301901;
+                    return 0;
+                }
+                else if (_nowIndex == 301912)
+                {
+                    _nowIndex = 302001;
+                    return 0;
+                }
+                else if (_nowIndex == 302004)
+                {
+                    _nowIndex = 302101;
+                    return 0;
+                }
+                else if (_nowIndex == 302122)
+                {
+                    _nowIndex = 302201;
+                    return 0;
+                }
+                else if (_nowIndex == 302221)
+                {
+                    _nowIndex = 302301;
+                    return 0;
+                }
+                else if (_nowIndex == 302323)
+                {
+                    _nowIndex = 302401;
+                    return 0;
+                }
+                else if (_nowIndex == 302413)
+                {
+                    _nowIndex = 302501;
+                    return 0;
+                }
+                else if (_nowIndex == 302514)
+                {
+                    _nowIndex = 302601;
+                    return 0;
+                }
+                else if (_nowIndex == 302609)
+                {
+                    _nowIndex = 302701;
+                    return 0;
+                }
+                else if (_nowIndex == 302711)
+                {
+                    _nowIndex = 302801;
+                    return 0;
+                }
+                else if (_nowIndex == 302803)
+                {
+                    _nowIndex = 302901;
+                    return 0;
+                }
+                else if (_nowIndex == 302909)
+                {
+                    _nowIndex = 303001;
+                    return 0;
+                }
+                else if (_nowIndex == 303018)
+                {
+                    _nowIndex = 303101;
+                    return 0;
+                }
+                else if (_nowIndex == 303116)
+                {
+                    _nowIndex = 303201;
+                    return 0;
+                }
+                else if (_nowIndex == 303228)
+                {
+                    _nowIndex = 303301;
                     return 0;
                 }
 
