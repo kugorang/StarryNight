@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace Script
@@ -18,14 +19,14 @@ namespace Script
         {
             SceneManager.LoadScene("QuestList");
 
-            //현재 퀘스트로 바로 이동
+            // 현재 퀘스트로 바로 이동
 
             if (Quest.Progress > 90104) 
                 return;
             
-            if (!_dataController.IsTutorialEnd 
-                && (_dataController.NowIndex == 300134 || _dataController.NowIndex == 300217))
-                _dataController.NowIndex++;
+            // 관찰자들에게 Click 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
         }
 
         // 망원경

@@ -126,7 +126,7 @@ namespace Script
             ReadDataFile("dataTable/setItemTable", Fileinfo.Setitemtable);
             ReadDataFile("dataTable/newquestTable2", Fileinfo.Questtable);
             ReadDataFile("dataTable/upgradeTable", Fileinfo.Upgradetable);
-            ReadDataFile("dataTable/dialogue2", Fileinfo.Dialoguetable);
+            ReadDataFile("dataTable/dialogue", Fileinfo.Dialoguetable);
         }
 
         private void ReadDataFile(string fileName, Fileinfo fileType)

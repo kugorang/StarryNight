@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace Script
 {
-    public class RaycastTest : MonoBehaviour
+    public class CombineItem : MonoBehaviour
     {
         private DataController _dataController;
         private Dictionary<int, Dictionary<int, SerializableVector3>> _haveDic;
@@ -85,8 +85,11 @@ namespace Script
             var key2 = collItemInfo.Index;
             var resultList = dataDic.FindCombine(key1, key2);
 
-            if (resultList == null) 
+            if (resultList == null)
+            {
+                PopUpWindow.Alert("조합할 수 없어요");
                 return;
+            }
             
             collItemInfo.CheckDestroy = true;
 

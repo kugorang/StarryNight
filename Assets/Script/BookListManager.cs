@@ -43,7 +43,7 @@ namespace Script
         {
             _dataController = DataController.Instance;
 
-            GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+            /*GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();*/
             _dataDic = DataController.Instance.GetComponent<DataDictionary>();
             _setContentPanel = GameObject.Find("SetContentPanel").transform;
         }
