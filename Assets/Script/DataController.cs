@@ -246,7 +246,7 @@ namespace Script
                 {
                     _nowIndex = 300301;
                 }
-                else if (_nowIndex == 300311)
+                else if (_nowIndex == 300312)
                 {
                     _nowIndex = 300401;
                 }
