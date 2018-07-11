@@ -8,10 +8,7 @@ namespace Script
     public class GameStart : MonoBehaviour
     {
         public Text Loading;
-
         public Image Logo;
-        public Button StartButton;
-
         public Image StartImg;
 
         private void Awake()
@@ -31,12 +28,12 @@ namespace Script
         {
             for (var i = 0f; i <= 1; i += 0.1f)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.08f);
                 Color color = new Vector4(1, 1, 1, i);
                 Logo.color = color;
             }
 
-            yield return new WaitForSeconds(0.2f);
+            /*yield return new WaitForSeconds(0.2f);
             Loading.text = "Loading...";
             Loading.color = new Vector4(1, 1, 1, 1);
             while (!DataController.Instance.LoadingFinish)
@@ -50,7 +47,7 @@ namespace Script
             }
 
             Loading.text = "Start";
-            Loading.enabled = true;
+            Loading.enabled = true;*/
             StartCoroutine("FadeBtn");
         }
 
@@ -58,7 +55,7 @@ namespace Script
         {
             for (var i = -0.7f; i <= 0.7; i += 0.05f)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.05f);
                 Color color = new Vector4(1, 1, 1, 1 - Mathf.Abs(i));
                 StartImg.color = color;
             }

@@ -45,32 +45,8 @@ namespace Script
                 ShowingQuestIndex = Quest.Progress;
         }
 
-        // 슬라이드 기능 구현
         private void Update() 
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                //Debug.Log(startPosX);
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                /*var posXGap = Input.mousePosition.x - startPosX;*/
-
-                //        if (Math.Abs(posXGap) > minimumDiff)
-                //        {
-                //            // ->
-                //            if (posXGap > 0)
-                //            {
-                //                OnLeftQuestBtnClick();
-                //            }
-                //            // <-
-                //            else if (posXGap < 0)
-                //            {
-                //                OnRightQuestBtnClick();
-                //            }
-                //        }
-            }
-
             // 두 버튼의 활성화 담당. 첫 별자리일 때 참이 되는 조건이다.
             if (CurrentScene < 1)
             {

@@ -127,6 +127,8 @@ namespace Script
             ReadDataFile("dataTable/newquestTable2", Fileinfo.Questtable);
             ReadDataFile("dataTable/upgradeTable", Fileinfo.Upgradetable);
             ReadDataFile("dataTable/dialogue", Fileinfo.Dialoguetable);
+            
+            Screen.SetResolution(1080, 1920, true);
         }
 
         private void ReadDataFile(string fileName, Fileinfo fileType)

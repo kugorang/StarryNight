@@ -9,6 +9,17 @@ namespace Script
     {
         private DataController _dataController;
         private int _minimumDiff;
+        
+        private float _startPosX;
+        public int MaxSceneNum;
+
+        public static bool FocusOnItem { private get; set; }
+        
+        private static string NowScene 
+        {
+            get { return SceneManager.GetActiveScene().name; }
+        }
+        
         private static int NowSceneNum
         {
             get
@@ -19,9 +30,9 @@ namespace Script
                         return PlayerPrefs.GetInt("MainSceneNum", 0);
                     case "QuestList":
                         return PlayerPrefs.GetInt("QuestListSceneNum", 0);
+                    default:
+                        return 0;
                 }
-
-                return 0;
             }
             set 
             {
@@ -33,25 +44,13 @@ namespace Script
                     case "QuestList":
                         PlayerPrefs.SetInt("QuestListSceneNum", value);
                         break;
+                    default:
+                        PlayerPrefs.SetInt("MainSceneNum", 0);
+                        PlayerPrefs.SetInt("QuestListSceneNum", 0);
+                        break;
                 }
             }
         }
-        
-        private static string NowScene 
-        {
-            get { return SceneManager.GetActiveScene().name; }
-        }
-        
-        private float _startPosX;
-        
-        public GameObject MainCamera;
-        public int MaxSceneNum;
-
-        // 210 이상, 시작 위치가 지구본과 겹치지 않게.
-        [Tooltip("지구본과 겹치지 않게 적절한 X를 주세요.")] 
-        public float MinimumX;
-
-        public static bool FocusOnItem { private get; set; }
 
         private void Awake()
         {
@@ -84,18 +83,17 @@ namespace Script
                     
                     iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x - 1080.0f, 
                         "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-                    --NowSceneNum;
+                    
+                    MoveToLeft();
                 }
                 // 왼쪽에서 오른쪽 (->)
-                else if (posXGap < 0 && _startPosX > MinimumX && NowSceneNum < MaxSceneNum - 1)
+                else if (posXGap < 0 && NowSceneNum < MaxSceneNum - 1)
                 {
                     // 관찰자들에게 Slide 이벤트 메세지 송출
                     foreach (var target in _dataController.Observers) 
                         ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnSlide(false, 1));
 
-                    iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x + 1080.0f, 
-                        "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-                    ++NowSceneNum;
+                    MoveToRight();
                 }
             }
         }
@@ -106,9 +104,7 @@ namespace Script
             foreach (var target in _dataController.Observers) 
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this, 1));
             
-            iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x - 1080.0f, 
-                "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
-            --NowSceneNum;
+            MoveToLeft();
         }
 
         public void OnClickRightBtn()
@@ -117,8 +113,22 @@ namespace Script
             foreach (var target in _dataController.Observers) 
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this, 0));
             
-            iTween.MoveTo(MainCamera, iTween.Hash("x", transform.position.x + 1080.0f, 
+            MoveToRight();
+        }
+
+        private void MoveToLeft()
+        {
+            iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x - 1080.0f, 
                 "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+            
+            --NowSceneNum;
+        }
+
+        private void MoveToRight()
+        {
+            iTween.MoveTo(gameObject, iTween.Hash("x", transform.position.x + 1080.0f, 
+                "time", 0.5f, "easetype", iTween.EaseType.easeOutQuad));
+            
             ++NowSceneNum;
         }
     }
