@@ -395,6 +395,36 @@ namespace Script
                     _nowIndex = 303301;
                     return 0;
                 }
+                else if (_nowIndex == 303350)
+                {
+                    _nowIndex = 303401;
+                    return 0;
+                }
+                else if (_nowIndex == 303421)
+                {
+                    _nowIndex = 303501;
+                    return 0;
+                }
+                else if (_nowIndex == 303520)
+                {
+                    _nowIndex = 303601;
+                    return 0;
+                }
+                else if (_nowIndex == 303631)
+                {
+                    _nowIndex = 303701;
+                    return 0;
+                }
+                else if (_nowIndex == 303716)
+                {
+                    _nowIndex = 303801;
+                    return 0;
+                }
+                else if (_nowIndex == 303839)
+                {
+                    _nowIndex = 303901;
+                    return 0;
+                }
 
                 return _nowIndex;
             }
