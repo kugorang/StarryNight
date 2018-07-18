@@ -143,7 +143,6 @@ namespace Script
         // 아래 두 함수 하나로, 실패 구현
         public void Upgrade(int upgradeIndex)
         {
-            
             var id = upgradeIndex - 50001;
             
             if (IsMaxUpgraded(upgradeIndex))
@@ -169,7 +168,6 @@ namespace Script
             if (Random.value < prob) 
             {
                 Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!");
-                
                 
                 PopUpWindow.AnimateSlider(1, 0.6f, onComplete);
                 DataController.UpgradeLv.LevelUp(id);

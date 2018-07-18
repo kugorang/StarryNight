@@ -1,33 +1,33 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Script
 {
-    public class SwitchSunMoon : MonoBehaviour
+    public class SwitchMode : MonoBehaviour
     {
-        private static SwitchSunMoon _instance;
         private DataController _dataController;
-        public Sprite Moon, Sun;
-        private bool _state;
+        public Sprite Star, Tree;
+        public Button Button;
 
-        public Button SunMoonbtn;
+        private static SwitchMode _instance;
 
-        public static SwitchSunMoon Instance
+        public static SwitchMode Instance
         {
             get
             {
                 if (_instance != null)
                     return _instance;
                 
-                _instance = FindObjectOfType<SwitchSunMoon>();
+                _instance = FindObjectOfType<SwitchMode>();
 
                 if (_instance != null) 
                     return _instance;
                 
-                var container = new GameObject("SwitchSunMoon");
+                var container = new GameObject("SwitchMode");
 
-                _instance = container.AddComponent<SwitchSunMoon>();
+                _instance = container.AddComponent<SwitchMode>();
 
                 return _instance;
             }
@@ -39,21 +39,23 @@ namespace Script
         /// </summary>
         public bool State
         {
-            get { return _state; }
-
+            get { return Convert.ToBoolean(_dataController.SwitchButtonMode); }
             private set
             {
-                gameObject.GetComponent<Image>().sprite = value ? Sun : Moon;
-                _state = value;
+                var nowState = Convert.ToBoolean(value);
+                
+                gameObject.GetComponent<Image>().sprite = nowState ? Tree : Star;
+                _dataController.SwitchButtonMode = nowState ? 1 : 0;
             }
         }
 
         private void Start()
         {
-            if (SunMoonbtn == null) 
-                SunMoonbtn = gameObject.GetComponent<Button>();
+            if (Button == null) 
+                Button = gameObject.GetComponent<Button>();
 
             _dataController = DataController.Instance;
+            gameObject.GetComponent<Image>().sprite = State ? Tree : Star;
         }
 
         // 버튼 스위치
@@ -64,7 +66,7 @@ namespace Script
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
 
             // true가 sun, false가 moon
-            State = !_state; 
+            State = !State;
         }
     }
 }

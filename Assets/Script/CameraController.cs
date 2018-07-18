@@ -11,11 +11,9 @@ namespace Script
         private int _minimumDiff;
         
         private float _startPosX;
-        public int MaxSceneNum;
-
         public static bool FocusOnItem { private get; set; }
         
-        private static string NowScene 
+        public static string NowScene
         {
             get { return SceneManager.GetActiveScene().name; }
         }
@@ -87,7 +85,7 @@ namespace Script
                     MoveToLeft();
                 }
                 // 왼쪽에서 오른쪽 (->)
-                else if (posXGap < 0 && NowSceneNum < MaxSceneNum - 1)
+                else if (posXGap < 0 && NowSceneNum < DataController.MaxSceneNum - 1)
                 {
                     // 관찰자들에게 Slide 이벤트 메세지 송출
                     foreach (var target in _dataController.Observers) 

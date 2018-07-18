@@ -135,7 +135,7 @@ namespace Script
             }
 
             // sun일 때 나뭇가지 등 생성해야 함
-            if (SwitchSunMoon.Instance.State)
+            if (SwitchMode.Instance.State)
             {
                 GenerateItem(
                     Random.Range(0, 100) >= DataController.AtlasItemProb

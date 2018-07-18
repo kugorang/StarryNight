@@ -42,8 +42,7 @@ namespace Script
     public class DataDictionary : MonoBehaviour
     {
         private static DataDictionary _instance;
-
-        public List<int> FirstQuestsOfScene = new List<int>();
+        public List<int> FirstQuestsOfScene;
 
         /// <summary>
         ///     NOTE: 재료를 찾을 때 사용하는 Dictionary
@@ -112,6 +111,8 @@ namespace Script
         {
             DontDestroyOnLoad(this);
 
+            FirstQuestsOfScene = new List<int>();
+
             // 두 Dictionary들을 초기화
             FindItemDic = new Dictionary<int, ItemInfo>();
             CombineDic = new Dictionary<Tuple<int, int>, List<int>>();
@@ -124,7 +125,7 @@ namespace Script
             ReadDataFile("dataTable/combineTable", Fileinfo.Combinetable);
             ReadDataFile("dataTable/itemTable", Fileinfo.Itemtable);
             ReadDataFile("dataTable/setItemTable", Fileinfo.Setitemtable);
-            ReadDataFile("dataTable/newquestTable2", Fileinfo.Questtable);
+            ReadDataFile("dataTable/questTable", Fileinfo.Questtable);
             ReadDataFile("dataTable/upgradeTable", Fileinfo.Upgradetable);
             ReadDataFile("dataTable/dialogue", Fileinfo.Dialoguetable);
             
@@ -142,7 +143,7 @@ namespace Script
 
             for (var i = 0; i < lineListLen; i++)
             {
-                var wordList = lineList[i].Split(',', '\t');
+                var wordList = lineList[i].Split('\t');
                 int index;
                 
                 switch (fileType)
@@ -203,13 +204,20 @@ namespace Script
                         index = Convert.ToInt32(wordList[0]);
                         var dialogueStart = Convert.ToInt32(wordList[2]);
                         var dialogueEnd = Convert.ToInt32(wordList[3]);
-                        var termsItem = Convert.ToInt32(wordList[6]);
-                        var termsCount = Convert.ToInt32(wordList[7]);
-                        var reward = Convert.ToInt32(wordList[8]);
-                        var rewardCount = Convert.ToInt32(wordList[9]);
+                        var termsNum = Convert.ToInt32(wordList[6]);
+                        var rewardNum = Convert.ToInt32(wordList[19]);
 
-                        FindQuestDic[index] = new QuestInfo(index, wordList[1], dialogueStart, dialogueEnd, 
-                            wordList[4], wordList[5], termsItem, termsCount, reward, rewardCount);
+                        FindQuestDic[index] = new QuestInfo(index, wordList[1], dialogueStart, dialogueEnd, wordList[4], wordList[5]);
+
+                        for (var arrIdx = 0; arrIdx < termsNum; arrIdx++)
+                        {
+                            FindQuestDic[index].SetTermsDic(Convert.ToInt32(wordList[7 + 2 * arrIdx]), Convert.ToInt32(wordList[8 + 2 * arrIdx]));    
+                        }
+                        
+                        for (var arrIdx = 0; arrIdx < rewardNum; arrIdx++)
+                        {
+                            FindQuestDic[index].SetRewardDic(Convert.ToInt32(wordList[20 + 2 * arrIdx]), Convert.ToInt32(wordList[21 + 2 * arrIdx]));    
+                        }
 
                         /*Debug.Log(wordList[4]);*/
 

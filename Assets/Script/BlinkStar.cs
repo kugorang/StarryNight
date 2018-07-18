@@ -2,8 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 namespace Script
@@ -64,10 +62,10 @@ namespace Script
 
             _blinkAlive = true;
 
-            var findQuestInfo = _dataDic.FindQuestDic[QuestIndex];
-            _ownQuest = new QuestInfo(QuestIndex, findQuestInfo.Act, findQuestInfo.DialogueStartIndex,
+            _ownQuest = _dataDic.FindQuestDic[QuestIndex];
+            /*_ownQuest = new QuestInfo(QuestIndex, findQuestInfo.Act, findQuestInfo.DialogueStartIndex,
                 findQuestInfo.DialogueEndIndex, findQuestInfo.Title, findQuestInfo.Content,
-                findQuestInfo.TermsItem, findQuestInfo.TermsCount, findQuestInfo.Reward, findQuestInfo.RewardCount);
+                findQuestInfo.TermsNum, findQuestInfo.RewardNum);*/
 
             // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
             if (QuestIndex > Quest.Progress) // 진행 전 퀘스트
@@ -136,9 +134,21 @@ namespace Script
                 nextStar.BlingBling();
             }
             // 황소자리일 때 수 주의. 나중에 변수나 상수로 쓸 것
-            else if (Quest.Progress > 90104 && Quest.Progress < 90124) 
+            else if (Quest.Progress < 90212) 
             {                
                 var nextStar = GameObject.Find("Taurus_" + Quest.Progress).GetComponent<BlinkStar>();
+                nextStar.BlingBling();
+            }
+            // 쌍둥이자리
+            else if (Quest.Progress < 90318) 
+            {                
+                var nextStar = GameObject.Find("Gemini_" + Quest.Progress).GetComponent<BlinkStar>();
+                nextStar.BlingBling();
+            }
+            // 게자리
+            else if (Quest.Progress < 90406) 
+            {                
+                var nextStar = GameObject.Find("Cancer_" + Quest.Progress).GetComponent<BlinkStar>();
                 nextStar.BlingBling();
             }
         }
@@ -148,87 +158,86 @@ namespace Script
             // 퀘스트 제목 출력
             GameObject.Find("Name Displayer").GetComponent<Text>().text = _ownQuest.Title;
 
+            // 퀘스트 진행상태 출력
             switch (QuestIndex)
             {
-                // 퀘스트 진행상태 출력
-                case 90101:
+                case 90101:    // 별의 원석 아무거나 1개 획득
                 {
-                    int[] itemIndex = {1001, 1006, 1011};
+                    int[] itemIndex = { 1001, 1006, 1011 };
                     var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
 
-                    if (QuestIndex < Quest.Progress)
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                    else
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                            "별의 원석 " + questItemNum + "/" + _ownQuest.TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text 
+                        = QuestIndex < Quest.Progress ? "퀘스트 완료" : string.Format("별의 원석 {0} / 1", questItemNum);
                     break;
                 }
-                case 90102:
+                case 90102:    // 재료 아이템 아무거나 1개 획득
                 {
-                    int[] itemIndex = {2001, 2006, 2011, 2016, 2021, 2026 };
+                    int[] itemIndex = { 2001, 2006, 2011, 2016, 2021, 2026 };
                     var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
                     
-                    if (QuestIndex < Quest.Progress)
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                    else
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                            "재료 아이템 " + questItemNum + "/" + _ownQuest.TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text 
+                        = QuestIndex < Quest.Progress ? "퀘스트 완료" : string.Format("재료 아이템 {0} / 1", questItemNum);
                     break;
                 }
-                case 90103:
+                case 90103:    // 별의 파편 아무거나 1개 획득
                 {
                     int[] itemIndex = { 1002, 1007, 1012 };
                     var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
 
-                    if (QuestIndex < Quest.Progress)
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                    else
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                            "별의 파편 " + questItemNum + "/" + _ownQuest.TermsCount;
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text 
+                        = QuestIndex < Quest.Progress ? "퀘스트 완료" : string.Format("별의 파편 {0} / 1", questItemNum);
                     break;
                 }
-                    /*
-                case 90104:
+                case 90202:    // 세트 아이템 재료 1개 획득 성공
                 {
-                    int[] itemIndex = {3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 3046, 3047, 3048, 3061, 3062, 3063, 3076, 3077, 3078};
+                    int[] itemIndex = { 
+                        4001, 4002, 4003, 4004, 4006, 4007, 4008,	4009,
+                        4011, 4012, 4013, 4014, 4016, 4017, 4018, 4019,
+                        4021, 4022,	 4023, 4024, 4026, 4027, 4028, 4029,
+                        4031, 4032,	 4033, 4034, 4036, 4037, 4038, 4039,
+                        4041, 4042,	 4043, 4044, 4046, 4047, 4048, 4049,
+                        4051, 4052, 4053, 4054, 4056, 4057, 4058
+                    };
                     var questItemNum = itemIndex.Sum(i => _dataController.GetItemNum(i));
 
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text 
+                        = QuestIndex < Quest.Progress ? "퀘스트 완료" : string.Format("세트 아이템 재료 {0} / 1", questItemNum);
+                    break;
+                }
+                default:
+                    GameObject.Find("Progress Displayer").GetComponent<Text>().text = "";
+                    
                     if (QuestIndex < Quest.Progress)
                         GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
                     else
-                        GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                            "골드 " + questItemNum + "/" + _ownQuest.TermsCount;
-                    break;
-                }
-                */
-                default:
-                    var termItemIndex = _ownQuest.TermsItem;
+                    {
+                        var isTermFirst = true;
+                        
+                        foreach (var term in _ownQuest.TermsDic)
+                        {
+                            var termItemIndex = term.Key;
                     
-                    if (termItemIndex == 9999) // 조건이 골드일 때
-                    {
-                        if (QuestIndex < Quest.Progress)
-                            GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                        else
-                            GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                                "골드 " + _dataController.Gold + "/" + _ownQuest.TermsCount;
-                    }
-                    else if (termItemIndex > 50000) // 조건이 업그레이드일 때
-                    {
-                        if (QuestIndex < Quest.Progress)
-                            GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                        else
-                            GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                                _dataDic.FindUpgrade(termItemIndex).Name + DataController.UpgradeLv[termItemIndex] + "/" +
-                                _ownQuest.TermsCount;
-                    }
-                    else
-                    {
-                        if (QuestIndex < Quest.Progress)
-                            GameObject.Find("Progress Displayer").GetComponent<Text>().text = "퀘스트 완료";
-                        else
-                            GameObject.Find("Progress Displayer").GetComponent<Text>().text =
-                                _dataDic.FindItemDic[termItemIndex].Name + _dataController.GetItemNum(termItemIndex) + "/" +
-                                _ownQuest.TermsCount;
+                            if (termItemIndex == 9999)     // 조건이 골드일 때
+                            {
+                                GameObject.Find("Progress Displayer").GetComponent<Text>().text += isTermFirst 
+                                    ? string.Format("골드 {0} / {1}", _dataController.Gold, term.Value) 
+                                    : string.Format("\n골드 {0} / {1}", _dataController.Gold, term.Value);
+                            }
+                            else if (termItemIndex > 50000) // 조건이 업그레이드일 때
+                            {
+                                GameObject.Find("Progress Displayer").GetComponent<Text>().text += isTermFirst 
+                                    ? string.Format("{0} {1} / {2}", _dataDic.FindUpgrade(termItemIndex).Name, DataController.UpgradeLv[termItemIndex], term.Value) 
+                                    : string.Format("\n{0} {1} / {2}", _dataDic.FindUpgrade(termItemIndex).Name, DataController.UpgradeLv[termItemIndex], term.Value);
+                            }
+                            else
+                            {
+                                GameObject.Find("Progress Displayer").GetComponent<Text>().text += isTermFirst 
+                                    ? string.Format("{0} {1} / {2}", _dataDic.FindItemDic[termItemIndex].Name, _dataController.GetItemNum(termItemIndex), term.Value) 
+                                    : string.Format("\n{0} {1} / {2}", _dataDic.FindItemDic[termItemIndex].Name, _dataController.GetItemNum(termItemIndex), term.Value);
+                            }
+                            
+                            isTermFirst = false;
+                        }
                     }
 
                     break;
@@ -236,18 +245,29 @@ namespace Script
 
             // 퀘스트 내용 출력
             GameObject.Find("Content Displayer").GetComponent<Text>().text = _ownQuest.Content;
-
-            // 퀘스트 보상 출력
-            var rewardIndex = _ownQuest.Reward;
             
-            if (rewardIndex == 9999)
-                GameObject.Find("Reward Displayer").GetComponent<Text>().text = "골드 " + _ownQuest.RewardCount;
-            else if (rewardIndex > 50000)
-                GameObject.Find("Reward Displayer").GetComponent<Text>().text =
-                    _dataDic.FindUpgrade(rewardIndex).Name + " Lv." + _ownQuest.RewardCount + " 오픈";
-            else
-                GameObject.Find("Reward Displayer").GetComponent<Text>().text =
-                    _dataDic.FindItem(rewardIndex).Name + " " + _ownQuest.RewardCount;
+            // 퀘스트 보상 출력
+            GameObject.Find("Reward Displayer").GetComponent<Text>().text = "";
+            var isRewardFirst = true;
+            
+            foreach (var reward in _ownQuest.RewardDic)
+            {
+                var rewardIndex = reward.Key;
+            
+                if (rewardIndex == 9999)
+                    GameObject.Find("Reward Displayer").GetComponent<Text>().text = isRewardFirst 
+                        ? string.Format("골드 {0}", reward.Value) : string.Format("\n골드 {0}", reward.Value);
+                else if (rewardIndex > 50000)
+                    GameObject.Find("Reward Displayer").GetComponent<Text>().text = isRewardFirst 
+                        ? string.Format("{0} Lv. {1} 해제", _dataDic.FindUpgrade(rewardIndex).Name, reward.Value) 
+                        : string.Format("\n{0} Lv. {1} 해제", _dataDic.FindUpgrade(rewardIndex).Name, reward.Value);
+                else
+                    GameObject.Find("Reward Displayer").GetComponent<Text>().text = isRewardFirst 
+                        ? string.Format("{0} {1}", _dataDic.FindItem(rewardIndex).Name, reward.Value) 
+                        : string.Format("\n{0} {1}", _dataDic.FindItem(rewardIndex).Name, reward.Value);
+
+                isRewardFirst = false;
+            }
         }
 
         private void BlingBling()

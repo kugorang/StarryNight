@@ -490,12 +490,20 @@ namespace Script
                     }
                     break;
                 case "유노":    case "??? (유노)":
-                    // TODO : 유노 이미지가 나오면 유노 이미지로 바꿀 것. 현재는 없는 상태
-                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
+                    // TODO : 유노 기본 이미지 이외에 표정 이미지가 나오면 분기문 작성할 것
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/uno/default-right");
                     break;
                 case "아나":    case "??? (아나)":
-                    // TODO : 아나 이미지가 나오면 아나 이미지로 바꿀 것. 현재는 없는 상태
-                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
+                    // TODO : 아나 기본 이미지 이외에 표정 이미지가 나오면 분기문 작성할 것
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/ana/default-right");
+                    break;
+                case "이르":
+                    // TODO : 이르 정식 이미지가 나오면 임시 이미지에서 교체할 것
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/ire/default-right");
+                    break;
+                case "네퓨스":
+                    // TODO : 네퓨스 정식 이미지가 나오면 임시 이미지에서 교체할 것
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/nefus/default-right");
                     break;
                 case "나레이션":
                     BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/none");
@@ -504,6 +512,9 @@ namespace Script
                     TextDisplayer.gameObject.SetActive(false);
                     PopUpWindow.ShowDialogue(textInfo.Dialogue);
                     return;
+                default:
+                    BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/tmp");
+                    break;
             }
         }
 
@@ -529,7 +540,7 @@ namespace Script
             {
                 case "Script.BlinkStar":
                     // 반짝이는 별을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300136) 
+                    if (_dataController.NowIndex == 300136 || _dataController.NowIndex == 300311) 
                         ContinueDialogue();
                     break;
                 case "Script.BookListManager":
@@ -579,7 +590,7 @@ namespace Script
                     if (_dataController.NowIndex == 300619) 
                         ContinueDialogue();
                     break;
-                case "Script.SwitchSunMoon":
+                case "Script.SwitchMode":
                     // 별 버튼을 클릭하는 퀘스트
                     if (_dataController.NowIndex == 300212) 
                         ContinueDialogue();

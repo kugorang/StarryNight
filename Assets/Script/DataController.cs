@@ -98,8 +98,8 @@ namespace Script
         {
             _upgradeLv = new int[12]
             {
-                invenLv, enegyPerClickLv, waitTime1Lv, item1LVint, saleGoldLv, waitTime2Lv, item2Lv, atlasItemLv,
-                combineItemLv, waitTime3Lv, item3Lv, twiceAll
+                invenLv, enegyPerClickLv, waitTime1Lv, item1LVint, saleGoldLv, waitTime2Lv, 
+                item2Lv, atlasItemLv, combineItemLv, waitTime3Lv, item3Lv, twiceAll
             };
         }
 
@@ -179,9 +179,6 @@ namespace Script
         public static UpgradeClass UpgradeLv;
         private DataDictionary _dataDic;
 
-        // 튜토리얼 완료 여부
-        public int TutorialEnd;
-
         /// <summary>
         ///     NOTE: 열린 도감을 저장하는 Dictionary
         ///     <para>-> key(int) : 도감이 열린 재료 Index</para>
@@ -197,8 +194,52 @@ namespace Script
 
         // 아이템 타이머 시간
         private float[] _leftTimer;
+        
+        // 현재 
+        public static int MaxSceneNum
+        {
+            get
+            {
+                switch (CameraController.NowScene)
+                {
+                    case "Main":
+                        return PlayerPrefs.GetInt("MainMaxNum", 2);
+                    case "QuestList":
+                        return PlayerPrefs.GetInt("QuestListMaxNum", 1);
+                    default:
+                        return 1;
+                }
+            }
+            set 
+            {
+                switch (CameraController.NowScene)
+                {
+                    case "Main":
+                        PlayerPrefs.SetInt("MainMaxNum", value);
+                        break;
+                    case "QuestList":
+                        PlayerPrefs.SetInt("QuestListMaxNum", value);
+                        break;
+                    default:
+                        PlayerPrefs.SetInt("MainMaxNum", 2);
+                        PlayerPrefs.SetInt("QuestListMaxNum", 1);
+                        break;
+                }
+            }
+        }
+        
+        // 아이템 생성 모드 상태
+        public int SwitchButtonMode
+        {
+            // 0이 별, 1이 나무
+            get { return PlayerPrefs.GetInt("SwitchButtonMode", 0); }
+            set
+            {
+                PlayerPrefs.SetInt("SwitchButtonMode", value);   
+            }
+        }
 
-        // 신규 항목알림을 위한 더티 플래그. 서적과 아이템 리스트는 새로운 아이템들의 인덱스를 담음. 길이 0이면 신규 없음.
+        // 신규 항목 알림을 위한 더티 플래그. 서적과 아이템 리스트는 새로운 아이템들의 인덱스를 담음. 길이 0이면 신규 없음.
         [HideInInspector]
         // public bool newQuest; 나중에 사용 안 하면 지울 것.
         public List<int> NewBookList;
@@ -206,9 +247,6 @@ namespace Script
 
         [HideInInspector] 
         private int _newUpgradeInt;
-
-        // 튜토리얼 현재 인덱스
-        private int _nowIndex;
 
         /// <summary>
         ///     (임시) 이벤트 관찰자 목록. 각관찰자가 등록함.
@@ -221,6 +259,9 @@ namespace Script
         // itemOpenList 정보 저장 경로
         public string ItemOpenListPath { get; private set; }
 
+        // 튜토리얼 완료 여부
+        public int TutorialEnd;
+        
         public bool IsTutorialEnd
         {
             get
@@ -233,6 +274,9 @@ namespace Script
                 PlayerPrefs.SetInt("TutorialEnd", TutorialEnd);
             }
         }
+        
+        // 튜토리얼 현재 인덱스
+        private int _nowIndex;
 
         public int NowIndex
         {
@@ -252,6 +296,7 @@ namespace Script
                 }
                 else if (_nowIndex == 300427)
                 {
+                    // 황소자리 시작
                     _nowIndex = 300501;
                 }
                 else if (_nowIndex == 300515)
@@ -307,6 +352,7 @@ namespace Script
                 }
                 else if (_nowIndex == 301539)
                 {
+                    // 쌍둥이자리 시작
                     _nowIndex = 301601;
                     return 0;
                 }
@@ -392,6 +438,7 @@ namespace Script
                 }
                 else if (_nowIndex == 303228)
                 {
+                    // 게자리 시작
                     _nowIndex = 303301;
                     return 0;
                 }

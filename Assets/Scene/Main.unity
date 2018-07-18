@@ -4967,7 +4967,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -8556,7 +8556,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -8635,9 +8635,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b8cde85fbf2db40b1682d4456e82b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Moon: {fileID: 21300000, guid: 02c8a9b4d8159794c835960985a5ba95, type: 3}
-  Sun: {fileID: 21300000, guid: b3a50174b0c2da94d9df49bbaaaad4fd, type: 3}
-  SunMoonbtn: {fileID: 1184656861}
+  Star: {fileID: 21300000, guid: 02c8a9b4d8159794c835960985a5ba95, type: 3}
+  Tree: {fileID: 21300000, guid: b3a50174b0c2da94d9df49bbaaaad4fd, type: 3}
+  Button: {fileID: 1184656861}
 --- !u!1 &1210835974
 GameObject:
   m_ObjectHideFlags: 0
@@ -11488,7 +11488,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc59a7d3770c7744c81b6556c880331f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSceneNum: 2
 --- !u!1 &1631531812
 GameObject:
   m_ObjectHideFlags: 0

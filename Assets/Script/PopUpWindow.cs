@@ -89,10 +89,7 @@ namespace Script
             {
                 return;
             }
-                
-            /*var pos = _alertPanel.transform.position;*/
             
-            /*_alertPanel.transform.position = new Vector3(0, pos.y, pos.z);*/
             _this.StartCoroutine(FadeOut(_alertPanel.GetComponent<Image>(), _alertText));
         }
 
@@ -292,7 +289,6 @@ namespace Script
             HideSlider();
             onComplete();
         }
-     
 
         private static IEnumerator NormalSliderAnimationCoroutine(float goalValue, float second, Action onComplete)
         {

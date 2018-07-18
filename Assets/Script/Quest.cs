@@ -1,25 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Script
 {
     public class QuestInfo
     {
-        public QuestInfo(int index, string act, int dialogueStartIndex, int dialogueEndIndex, 
-            string title, string content, int termsItem, int termsCount, int reward, int rewardCount)
-        {
-            Index = index;
-            Act = act;
-            DialogueStartIndex = dialogueStartIndex;
-            DialogueEndIndex = dialogueEndIndex;
-            Title = title;
-            Content = content;
-            TermsItem = termsItem;
-            TermsCount = termsCount;
-            Reward = reward;
-            RewardCount = rewardCount;
-        }
-
         // 퀘스트 기준 표 index
         public int Index { get; private set; }
 
@@ -38,20 +24,39 @@ namespace Script
         // 퀘스트 내용
         public string Content { get; private set; }
 
-        // 퀘스트 조건 아이템
-        public int TermsItem { get; private set; }
+        // 퀘스트 조건 리스트
+        public List<KeyValuePair<int, int>> TermsDic { get; private set; }
 
-        // 퀘스트 조건 아이템 갯수
-        public int TermsCount { get; private set; }
+        // 퀘스트 보상 리스트
+        public List<KeyValuePair<int, int>> RewardDic { get; private set; }
+        
+        // 생성자
+        public QuestInfo(int index, string act, int dialogueStartIndex, int dialogueEndIndex, 
+            string title, string content)
+        {
+            Index = index;
+            Act = act;
+            DialogueStartIndex = dialogueStartIndex;
+            DialogueEndIndex = dialogueEndIndex;
+            Title = title;
+            Content = content;
 
-        // 퀘스트 보상 아이템
-        public int Reward { get; private set; }
+            TermsDic = new List<KeyValuePair<int, int>>();
+            RewardDic = new List<KeyValuePair<int, int>>();
+        }
 
-        // 퀘스트 보상 아이템 갯수
-        public int RewardCount { get; private set; }
+        public void SetTermsDic(int index, int num)
+        {
+            TermsDic.Add(new KeyValuePair<int, int>(index, num));
+        }
+        
+        public void SetRewardDic(int index, int num)
+        {
+            RewardDic.Add(new KeyValuePair<int, int>(index, num));
+        }
     }
 
-    public class Quest : MonoBehaviour
+    public static class Quest
     {
         #region Zodiac
 
@@ -110,7 +115,7 @@ namespace Script
         /// <returns>별자리 순서</returns>
         private static int ZodiacIndex(int questIndex)
         {
-            return ((questIndex / 100)%100)-1;
+            return ((questIndex / 100) % 100) - 1;
         }
 
         /*
@@ -154,13 +159,16 @@ namespace Script
         public static void NextQuest()
         {
             var currentIndex = Progress;
-            if (DataDictionary.Instance.FindQuestDic.ContainsKey(currentIndex + 1))//+1한 퀘스트 인덱스가 있으면 +1이 다음 퀘스트 인덱스 
+            
+            // +1 한 퀘스트 인덱스가 있으면 +1 이 다음 퀘스트 인덱스
+            if (DataDictionary.Instance.FindQuestDic.ContainsKey(currentIndex + 1)) 
             {
                 Progress += 1;
             }
-            else//아니면 다음 별자리로 넘어감.
+            else // 아니면 다음 별자리로 넘어감.
             {
-                Progress = DataDictionary.Instance.FirstQuestsOfScene[ZodiacIndex(currentIndex)+1];
+                Progress = DataDictionary.Instance.FirstQuestsOfScene[ZodiacIndex(currentIndex) + 1];
+                DataController.MaxSceneNum += 1;
             }
         }
 
@@ -175,106 +183,119 @@ namespace Script
         {
             var dataController = DataController.Instance;
             var currentQuest = DataDictionary.Instance.FindQuest(Progress);
-            
-            // 진행중인 퀘스트 조건 아이템의 인덱스
-            var checkItemIndex = currentQuest.TermsItem;
+            var isClear = true;
 
-            // 진행중인 퀘스트 조건을 만족하는 아이템 개수 
-            var checkItemCount = currentQuest.TermsCount;
-
-            // 현재 가지고 있는 조건 아이템 갯수
-            var currentItemNum = 0;
-
-            // 조건이 [골드/업그레이드/아이템] 인지 확인
-            if (checkItemIndex == 9999) // 골드일 때
+            foreach (var term in currentQuest.TermsDic)
             {
-                currentItemNum = (int) dataController.Gold;
-            }
-            else if (checkItemIndex > 50000) // 업그레이드일 때
-            {
-                currentItemNum = DataController.UpgradeLv[checkItemIndex];
-            }
-            else // 아이템일 때
-            {
-                int[] itemIndex;
-
-                switch (currentQuest.Index)
+                // 진행중인 퀘스트 조건 아이템의 인덱스
+                var checkItemIndex = term.Key;
+    
+                // 진행중인 퀘스트 조건을 만족하는 아이템 개수 
+                var checkItemCount = term.Value;
+    
+                // 현재 가지고 있는 조건 아이템 갯수
+                var currentItemNum = 0;
+    
+                // 조건이 [골드/업그레이드/아이템] 인지 확인
+                if (checkItemIndex == 9999) // 골드일 때
                 {
-                    // 퀘스트 인덱스 90101의 경우
-                    case 90101:
-                        itemIndex = new[] {1001, 1006, 1011};
-                        currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
-                        break;
-                    // 퀘스트 인덱스 90102의 경우
-                    case 90102:
-                        itemIndex = new[] {2001, 2006, 2011, 2016, 2021, 2026 };
-                        currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
-                        break;
-                    // 퀘스트 인덱스 90103의 경우
-                    case 90103:
-                        itemIndex = new[] { 1002, 1007, 1012 };
-                        currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
-                        break;
-                       /*
-                    // 퀘스트 인덱스 90104의 경우
-                    case 90104:
-                        itemIndex = new[]
-                        {
-                            3001, 3002, 3003, 3016, 3017, 3018, 3031, 3032, 3033, 
-                            3046, 3047, 3048, 3061, 3062, 3063, 3076, 3077, 3078
-                        };
-                        currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
-                        break;
-                        */
-                    default:
-                        currentItemNum = dataController.GetItemNum(checkItemIndex);
-                        break;
+                    currentItemNum = (int) dataController.Gold;
                 }
-            }
-
-            // 조건 아이템의 갯수 확인 및 보상 지급
-            if (checkItemCount > currentItemNum) 
-                return false;
-            
-            // 보상이 골드일 때
-            if (currentQuest.Reward == 9999) 
-            {
-                dataController.Gold += (ulong)currentQuest.RewardCount;
-            }
-            else
-            {
-                // 아이템 인벤토리가 꽉 차있는지 확인
-                if (dataController.ItemCount >= dataController.ItemLimit) 
-                    return true;
-                    
-                // 보상이 업그레이드 오픈일 때
-                if (currentQuest.Reward > 50000) 
+                else if (checkItemIndex > 50000) // 업그레이드일 때
                 {
-                    // 조건이 골드일 때 골드 감소
-                    if (currentQuest.TermsItem == 9999) 
-                        dataController.Gold -= (ulong)currentQuest.TermsCount;
+                    currentItemNum = DataController.UpgradeLv[checkItemIndex];
+                }
+                else // 아이템일 때
+                {
+                    int[] itemIndex;
+    
+                    switch (currentQuest.Index)
+                    {
+                        case 90101:    // 별의 원석 아무거나 1개 획득
+                            itemIndex = new[] { 1001, 1006, 1011 };
+                            currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
+                            break;
+                        case 90102:    // 재료 아이템 아무거나 1개 획득
+                            itemIndex = new[] { 2001, 2006, 2011, 2016, 2021, 2026 };
+                            currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
+                            break;
+                        case 90103:    // 별의 파편 아무거나 1개 획득
+                            itemIndex = new[] { 1002, 1007, 1012 };
+                            currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
+                            break;
+                        case 90202:    // 퀘스트 인덱스 90202의 경우
+                            itemIndex = new[] { 
+                                4001, 4002, 4003, 4004, 4006, 4007, 4008,	4009,
+                                4011, 4012, 4013, 4014, 4016, 4017, 4018, 4019,
+                                4021, 4022, 4023, 4024, 4026, 4027, 4028, 4029,
+                                4031, 4032, 4033, 4034, 4036, 4037, 4038, 4039,
+                                4041, 4042, 4043, 4044, 4046, 4047, 4048, 4049,
+                                4051, 4052, 4053, 4054, 4056, 4057, 4058
+                            };
+                            currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
+                            break;
+                        default:
+                            currentItemNum = dataController.GetItemNum(checkItemIndex);
+                            break;
+                    }
+                }
+                
+                // 조건 아이템의 갯수 확인 및 보상 지급
+                if (checkItemCount <= currentItemNum) 
+                    continue;
+                
+                isClear = false;
+                break;
+            }
 
-                    // 업그레이드가 순차적으로 열릴 것을 가정한 코드.
-                    dataController.LatestUpgradeIndex = currentQuest.Reward; 
+            if (!isClear)
+                return false;
+
+            foreach (var reward in currentQuest.RewardDic)
+            {
+                // 보상이 골드일 때
+                if (reward.Key == 9999) 
+                {
+                    dataController.Gold += (ulong)reward.Value;
                 }
                 else
                 {
-                    // 조건이 골드일 경우 골드 감소
-                    if (currentQuest.TermsItem == 9999)
-                        dataController.Gold -= (ulong)currentQuest.TermsCount;
+                    // 아이템 인벤토리가 꽉 차있는지 확인
+                    if (dataController.ItemCount >= dataController.ItemLimit) 
+                        return true;
+                
+                    // 보상이 업그레이드 오픈일 때
+                    if (reward.Key > 50000) 
+                    {
+                        // 조건이 골드일 때 골드 감소
+                        DecreseGold(currentQuest);
 
-                    dataController.InsertNewItem(currentQuest.Reward, currentQuest.RewardCount);
-                    //dataController.AddItemCount(); 서적 아이템 인벤토리 차지 안 함;
+                        // 업그레이드가 순차적으로 열릴 것을 가정한 코드.
+                        dataController.LatestUpgradeIndex = reward.Key; 
+                    }
+                    else
+                    {
+                        // 조건이 골드일 경우 골드 감소
+                        DecreseGold(currentQuest);
+                        dataController.InsertNewItem(reward.Key, reward.Value);
+                    }
                 }
             }
-
+            
             return true;
         }
 
-        /*
-            public QuestInfo CurrentQuestInfo() { }
-            public bool HasQuestFinished;
-        */
+        private static void DecreseGold(QuestInfo questInfo)
+        {
+            foreach (var term in questInfo.TermsDic)
+            {
+                if (term.Key != 9999) 
+                    continue;
+                
+                DataController.Instance.Gold -= (ulong) term.Value;
+                return;
+            }
+        }
     }
 }
 
