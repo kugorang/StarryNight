@@ -224,7 +224,8 @@ namespace Script
                             currentItemNum += itemIndex.Sum(i => dataController.GetItemNum(i));
                             break;
                         case 90202:    // 퀘스트 인덱스 90202의 경우
-                            itemIndex = new[] { 
+                            itemIndex = new[] 
+                            { 
                                 4001, 4002, 4003, 4004, 4006, 4007, 4008,	4009,
                                 4011, 4012, 4013, 4014, 4016, 4017, 4018, 4019,
                                 4021, 4022, 4023, 4024, 4026, 4027, 4028, 4029,

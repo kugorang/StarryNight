@@ -2392,7 +2392,7 @@ GameObject:
   - component: {fileID: 517194686}
   - component: {fileID: 517194685}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: DivisionLine Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2856,7 +2856,7 @@ GameObject:
   - component: {fileID: 588302386}
   - component: {fileID: 588302385}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: DivisionLine Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7371,7 +7371,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc59a7d3770c7744c81b6556c880331f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSceneNum: 2
 --- !u!124 &1890590969
 Behaviour:
   m_ObjectHideFlags: 0
@@ -7450,7 +7449,7 @@ GameObject:
   - component: {fileID: 1901191868}
   - component: {fileID: 1901191867}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: DivisionLine Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8102,7 +8101,7 @@ GameObject:
   - component: {fileID: 2043975847}
   - component: {fileID: 2043975846}
   m_Layer: 5
-  m_Name: Image
+  m_Name: DivisionLine Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -13,12 +13,11 @@ namespace Script
         private static int _idCount;
 
         private static CreateItem _instance;
-        public Button Btn;
 
         private DataController _dataController;
-        //public GameObject alarmWindow;    // 알림창
-
         private DataDictionary _dataDic;
+        
+        public Button Btn;
         private int _energyMaxValue;        // 에너지 충전 최대량
         private int _energyPerClick;        // 클릭당 에너지 증가량
         public Image ImgEarthback;          // 게이지 이미지
@@ -48,8 +47,9 @@ namespace Script
             _dataController = DataController.Instance;
 
             _dataDic = DataDictionary.Instance;
-            // energyPerClick = DataController.Instance.EnergyPerClick;
-            _energyPerClick = 100; // 개발 시 시간 절약을 위해 100으로 설정.
+            /*_energyPerClick = DataController.Instance.EnergyPerClick;*/
+            // TODO: 개발 시 시간 절약을 위해 100으로 설정. 개발이 끝나고 출시하면 지울 것!
+            _energyPerClick = 100; 
             _energyMaxValue = 100;
 
             _idCount = PlayerPrefs.GetInt("IdCount", 0);
@@ -63,14 +63,13 @@ namespace Script
             if (Btn == null) 
                 Btn = gameObject.GetComponent<Button>();
 
-            // List<SetItemInfo> tmpSetItemInfo = new List<SetItemInfo>();
-
             if (_dataController.HaveDic != null)
                 foreach (var entry in _dataController.HaveDic)
                 {
                     // 서적이면 만들지 않는다.
                     if (entry.Key > 4000) 
                         continue;
+                    
                     // do something with entry. Value or entry.Key                
                     foreach (var secondEntry in entry.Value)
                         GenerateItem(entry.Key, false, secondEntry.Key, secondEntry.Value);
@@ -79,21 +78,51 @@ namespace Script
             ImgEarthback.fillAmount = (float) _dataController.Energy / _energyMaxValue;
         }
 
-        // 클릭 수 증가
-        private void AddEnergy() 
+        // 게이지 클릭
+        public void OnClick()
         {
+            // 아이템 갯수 제한
+            if (_dataController.ItemCount >= _dataController.ItemLimit) 
+            {
+                PopUpWindow.Alert("창고가 꽉 차있어요!");
+                return;
+            }
+            
             var energy = _dataController.Energy + _energyPerClick;
             ImgEarthback.fillAmount = (float)energy / _energyMaxValue;
             _dataController.Energy = energy;
-        }
+            
+            // 현재 에너지가 필요한 에너지보다 작은 경우
+            if (_dataController.Energy < _energyMaxValue)
+                return;
 
-        // 클릭 수 초기화
-        private void ResetEnergy() 
-        {
+            // 나무일 때
+            if (SwitchMode.Instance.State)
+            {
+                GenerateItem(Random.Range(0, 100) >= DataController.AtlasItemProb
+                    ? Random.Range(0, 6) * 5 + 2002 : Random.Range(0, 6) * 5 + 2001, true);
+            }
+            else // 별일 때
+            {
+                // 5%의 확률로 별의 잔재 등장
+                if (Random.Range(0, 100) < 5)
+                    GenerateItem(5001, true);
+                else
+                    GenerateItem(Random.Range(0, 100) >= DataController.AtlasItemProb
+                        ? Random.Range(0, 3) * 5 + 1002 : Random.Range(0, 3) * 5 + 1001, true);
+            }
+
             Btn.enabled = false;
             StartCoroutine(DecreaseEnergy());
+            
+            AudioManager.Instance.ClickSound();
+            AudioManager.Instance.ItemSound();
+            
+            // 관찰자들에게 Click 이벤트 메세지 송출
+            foreach (var target in _dataController.Observers) 
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
         }
-
+        
         // 에너지 감소
         private IEnumerator DecreaseEnergy()
         {
@@ -107,51 +136,6 @@ namespace Script
             Btn.enabled = true;
 
             yield return null;
-        }
-
-        // 게이지 클릭
-        public void OnClick()
-        {
-            // 관찰자들에게 Click 이벤트 메세지 송출
-            foreach (var target in _dataController.Observers) 
-                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
-
-            AudioManager.Instance.ClickSound();
-            AddEnergy();
-            NewObject();
-        }
-
-        // 아이템 생성
-        private void NewObject()
-        {
-            if (_dataController.Energy < _energyMaxValue) 
-                return;
-            
-            // 아이템 갯수 제한
-            if (_dataController.ItemCount >= _dataController.ItemLimit) 
-            {
-                PopUpWindow.Alert("창고가 꽉 차있어요!");
-                return;
-            }
-
-            // sun일 때 나뭇가지 등 생성해야 함
-            if (SwitchMode.Instance.State)
-            {
-                GenerateItem(
-                    Random.Range(0, 100) >= DataController.AtlasItemProb
-                        ? Random.Range(0, 6) * 5 + 2002
-                        : Random.Range(0, 6) * 5 + 2001, true);
-            }
-            else
-            {
-                GenerateItem(
-                    Random.Range(0, 100) >= DataController.AtlasItemProb
-                        ? Random.Range(0, 3) * 5 + 1002
-                        : Random.Range(0, 3) * 5 + 1001, true);
-            }
-
-            ResetEnergy();
-            AudioManager.Instance.ItemSound();
         }
 
         // C# 에서는 디폴트 파라미터를 허용하지 않기 때문에 이렇게 함수 오버로딩을 통해 구현하였습니다.

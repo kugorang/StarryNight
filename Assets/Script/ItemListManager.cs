@@ -15,9 +15,9 @@ namespace Script
 
         public GameObject PanelPrefab, ItemInfoPanel;
 
-        private RectTransform _starContentPanel, _materialContentPanel, _combineContentPanel;
-        private int _starIdxMax, _materialIdxMax, _combineIdxMax;
-        private int _starIdxStart, _materialIdxStart, _combineIdxStart;
+        private RectTransform _starContentPanel, _materialContentPanel, _combineContentPanel, _etcContentPanel;
+        private int _starIdxMax, _materialIdxMax, _combineIdxMax, _etcIdxMax;
+        private int _starIdxStart, _materialIdxStart, _combineIdxStart, _etcIdxStart;
 
         public static ItemListManager Instance
         {
@@ -46,14 +46,17 @@ namespace Script
             _starIdxStart = 1000;
             _materialIdxStart = 2000;
             _combineIdxStart = 3000;
+            _etcIdxStart = 5000;
 
             _starIdxMax = _starIdxStart + _dataDic.StarNum;
             _materialIdxMax = _materialIdxStart + _dataDic.MaterialNum;
             _combineIdxMax = _combineIdxStart + _dataDic.CombineNum;
+            _etcIdxMax = _etcIdxStart + _dataDic.EtcNum;
 
             _starContentPanel = GameObject.Find("StarContentPanel").GetComponent<RectTransform>();
             _materialContentPanel = GameObject.Find("MaterialContentPanel").GetComponent<RectTransform>();
             _combineContentPanel = GameObject.Find("CombineContentPanel").GetComponent<RectTransform>();
+            _etcContentPanel = GameObject.Find("EtcContentPanel").GetComponent<RectTransform>();
         }
 
         private void Start()
@@ -68,6 +71,9 @@ namespace Script
                 AddItemButton(idx, _combineContentPanel);
             
             /*SetDynamicGrid(_combineContentPanel, _combineContentPanel.gameObject.GetComponent<GridLayoutGroup>(), _dataDic.CombineNum, 5, 35);*/
+            
+            for (var idx = _etcIdxStart + 1; idx <= _etcIdxMax; idx++) 
+                AddItemButton(idx, _etcContentPanel);
         }
 
         private void AddItemButton(int idx, Transform tf)
@@ -148,8 +154,8 @@ namespace Script
             infoWindow.ItemImg.sprite = Resources.Load<Sprite>(itemInfo.ImagePath);
             infoWindow.ItemName.text = itemInfo.Name;
             infoWindow.ItemSort.text = itemInfo.Group;
-            infoWindow.ItemGrade.text = itemInfo.Grade + "레벨 아이템";
-            infoWindow.ItemCost.text = "판매 가격 : " + itemInfo.SellPrice;
+            infoWindow.ItemGrade.text = string.Format("{0}레벨 아이템", itemInfo.Grade);
+            infoWindow.ItemCost.text = string.Format("판매 가격 : {0}", itemInfo.SellPrice);
             infoWindow.ItemText.text = itemInfo.Description;
         }
 

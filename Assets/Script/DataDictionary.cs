@@ -86,6 +86,7 @@ namespace Script
         public int StarNum { get; private set; }
         public int MaterialNum { get; private set; }
         public int CombineNum { get; private set; }
+        public int EtcNum { get; private set; }
 
         public static DataDictionary Instance
         {
@@ -186,6 +187,9 @@ namespace Script
                                 break;
                             case "아이템":        // 아이템
                                 CombineNum++;
+                                break;
+                            case "기타":          // 기타
+                                EtcNum++;
                                 break;
                         }
                         

@@ -255,14 +255,14 @@ namespace Script
                 var rewardIndex = reward.Key;
             
                 if (rewardIndex == 9999)
-                    GameObject.Find("Reward Displayer").GetComponent<Text>().text = isRewardFirst 
+                    GameObject.Find("Reward Displayer").GetComponent<Text>().text += isRewardFirst 
                         ? string.Format("골드 {0}", reward.Value) : string.Format("\n골드 {0}", reward.Value);
                 else if (rewardIndex > 50000)
-                    GameObject.Find("Reward Displayer").GetComponent<Text>().text = isRewardFirst 
+                    GameObject.Find("Reward Displayer").GetComponent<Text>().text += isRewardFirst 
                         ? string.Format("{0} Lv. {1} 해제", _dataDic.FindUpgrade(rewardIndex).Name, reward.Value) 
                         : string.Format("\n{0} Lv. {1} 해제", _dataDic.FindUpgrade(rewardIndex).Name, reward.Value);
                 else
-                    GameObject.Find("Reward Displayer").GetComponent<Text>().text = isRewardFirst 
+                    GameObject.Find("Reward Displayer").GetComponent<Text>().text += isRewardFirst 
                         ? string.Format("{0} {1}", _dataDic.FindItem(rewardIndex).Name, reward.Value) 
                         : string.Format("\n{0} {1}", _dataDic.FindItem(rewardIndex).Name, reward.Value);
 
