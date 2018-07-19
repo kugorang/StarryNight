@@ -60,5 +60,11 @@ namespace Script
 
             SceneManager.LoadScene("Main");
         }
+
+        public void OnQuitButtonClick()
+        {
+            Debug.Log("Application.Quit does Not Work in Editor.");
+            Application.Quit();
+        }
     }
 }

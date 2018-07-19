@@ -10,6 +10,7 @@ namespace Script
     {
         private static bool _isLocked;
         private static float _shakingTime, _waitingTime;
+        private static string _formerText="";
         private static Text _alertText;
         private static Queue _alertQueue;
         private static Slider _upgradeSlider;
@@ -83,8 +84,12 @@ namespace Script
                 return;
             }
 
-            _alertQueue.Enqueue(text);
+            if (_formerText != text)
+            {
+                _alertQueue.Enqueue(text);
+            }
 
+            _formerText = text;
             if (_alertQueue.Count > 1)
             {
                 return;
