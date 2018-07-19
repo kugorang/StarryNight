@@ -43,6 +43,7 @@ namespace Script
     {
         private static DataDictionary _instance;
         public List<int> FirstQuestsOfScene;
+        public List<int> LastQuestsOfScene;//임시로 추가. 필요 없으면 삭제.
 
         /// <summary>
         ///     NOTE: 재료를 찾을 때 사용하는 Dictionary
@@ -141,6 +142,7 @@ namespace Script
             var lineListLen = lineList.Length;
 
             var formerSceneName = "";
+            int formerIndex = 0;
 
             for (var i = 0; i < lineListLen; i++)
             {
@@ -206,6 +208,8 @@ namespace Script
                         break;
                     case Fileinfo.Questtable:
                         index = Convert.ToInt32(wordList[0]);
+                       
+
                         var dialogueStart = Convert.ToInt32(wordList[2]);
                         var dialogueEnd = Convert.ToInt32(wordList[3]);
                         var termsNum = Convert.ToInt32(wordList[6]);
@@ -228,9 +232,19 @@ namespace Script
                         if (wordList[1] != formerSceneName) // 씬의 첫 퀘스트의 인덱스 구하기
                         {
                             FirstQuestsOfScene.Add(index);
+                            if (formerSceneName != "")
+                            {
+                                LastQuestsOfScene.Add(formerIndex);
+                            }
                             formerSceneName = wordList[1];
+                           
                         }
 
+                        if (i == lineListLen - 1)//마지막 인덱스 집어넣기
+                        {
+                            LastQuestsOfScene.Add(index);                        
+                        }
+                        formerIndex = index;
                         break;
                     case Fileinfo.Upgradetable:
                         index = Convert.ToInt32(wordList[0]);

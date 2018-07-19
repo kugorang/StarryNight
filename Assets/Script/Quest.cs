@@ -78,17 +78,6 @@ namespace Script
             Pisces = 91200
         }
 
-        /*
-	    /// <summary>
-	    /// 이름으로 index 반환
-	    /// </summary>
-	    /// <param name="zodiac">Name of scene</param>
-	    /// <returns></returns>
-	    public int GetZodiacIndex(string zodiac)
-	    {
-	        return (int)Enum.Parse(typeof(Zodiac), zodiac);
-	    }
-        */
         /// <summary>
         ///  별자리의 인덱스를 9nn00형식으로 반환.
         /// </summary>
@@ -118,30 +107,8 @@ namespace Script
             return ((questIndex / 100) % 100) - 1;
         }
 
-        /*
-	    /// <summary>
-	    ///    QuestIndex에 맞는 이름 반환.
-	    /// </summary>
-	    /// <param name="index">퀘스트 인덱스</param>
-	    /// <returns></returns>
-	    public string GetZodiacName(int index)
-	    {
-	        return GetZodiacName((Zodiac)index);
-	    }
-
-	    /// <summary>
-	    ///     Enum.GetName(type, object)와 동일.
-	    ///     ZodiacName에 해당하는 이름 반환.
-	    /// </summary>
-	    /// <param name="zodiac"></param>
-	    /// <returns></returns>
-	    private static string GetZodiacName(Zodiac zodiac)
-	    {
-	        return Enum.GetName(typeof(Zodiac), zodiac);
-	    }*/
-
         #endregion
-
+   
         #region Progress
 
         public static int Progress

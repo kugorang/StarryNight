@@ -18,7 +18,7 @@ namespace Script
             get { return SceneManager.GetActiveScene().name; }
         }
         
-        private static int NowSceneNum
+        public static int NowSceneNum
         {
             get
             {
@@ -32,7 +32,7 @@ namespace Script
                         return 0;
                 }
             }
-            set 
+            private set 
             {
                 switch (NowScene)
                 {

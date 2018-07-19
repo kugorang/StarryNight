@@ -690,7 +690,7 @@ namespace Script
             var actualItemCount = 0;
             foreach (var key in HaveDic.Keys)
             {
-                if (!(key > 4000))
+                if ((key < 4000))//서적 아이템이 아니면
                 {
                     actualItemCount += HaveDic[key].Count;
                 }

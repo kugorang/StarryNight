@@ -27,23 +27,38 @@ namespace Script
         private QuestInfo _ownQuest;
         public int QuestIndex;
 
-        // 퀘스트 진행 상태에 따른 별 이미지 가져오기
-        public void OnOtherClick()
-        {
-            if (QuestIndex > Quest.Progress)
-            {
-                _btn.enabled = false;
-                _btnImg.sprite = Resources.Load<Sprite>("questImg/quest_uncomplete");
-            }
-            else
-            {
-                _btn.enabled = true;
-                _btnImg.sprite = Resources.Load<Sprite>("questImg/quest_complete");
+        #region ShowingIndex;
 
-                if (QuestIndex == Quest.Progress)
-                    _btnImg.sprite = Resources.Load<Sprite>("questImg/quest_ongoing");
+        private static int FirstQuest;
+
+
+        private static int LastQuest; // 원래는 90247
+
+        private static int _showingQuestIndex;
+       
+
+       /* private static readonly Dictionary<int, string> CurrentSceneName = new Dictionary<int, string>()
+        {
+            {0,"Aries"},
+            {1,"Taurus"}
+        };*/
+
+        public static int ShowingQuestIndex
+        {
+            get { return _showingQuestIndex; }
+            private set
+            {
+                if (value < FirstQuest)
+                    _showingQuestIndex = FirstQuest;
+                else if (value > LastQuest)
+                    _showingQuestIndex = LastQuest;
+                else
+                    _showingQuestIndex = value;
             }
         }
+        #endregion
+
+       
 
         private void Awake()
         {
@@ -63,6 +78,9 @@ namespace Script
             _blinkAlive = true;
 
             _ownQuest = _dataDic.FindQuestDic[QuestIndex];
+
+            FirstQuest = _dataDic.FirstQuestsOfScene.First();
+            LastQuest = _dataDic.LastQuestsOfScene.Last();
             /*_ownQuest = new QuestInfo(QuestIndex, findQuestInfo.Act, findQuestInfo.DialogueStartIndex,
                 findQuestInfo.DialogueEndIndex, findQuestInfo.Title, findQuestInfo.Content,
                 findQuestInfo.TermsNum, findQuestInfo.RewardNum);*/
@@ -89,8 +107,13 @@ namespace Script
 
         private void Start()
         {
-            if (QuestUIButton.ShowingQuestIndex < 90101 && Quest.Progress == QuestIndex) 
-                OnClick();
+            if (ShowingQuestIndex < FirstQuest)
+            {
+                ShowingQuestIndex = Quest.Progress;
+                if (Quest.Progress == QuestIndex)
+                    OnClick();
+            }
+              
         }
 
         // 퀘스트 정보 확인 및 퀘스트 완료 보상 지급
@@ -112,7 +135,7 @@ namespace Script
                 DialogueManager.Instance.ShowDialogue();
             }
 
-            QuestUIButton.ShowingQuestIndex = QuestIndex;
+            ShowingQuestIndex = QuestIndex;
             ShowQuestInfo();
 
             // 클릭 메시지를 다른 별들에게 송출
@@ -120,6 +143,24 @@ namespace Script
             
             foreach (var target in stars) 
                 ExecuteEvents.Execute<IClickables>(target, null, (x, y) => x.OnOtherClick());
+        }
+
+        // 퀘스트 진행 상태에 따른 별 이미지 가져오기
+        public void OnOtherClick()
+        {
+            if (QuestIndex > Quest.Progress)
+            {
+                _btn.enabled = false;
+                _btnImg.sprite = Resources.Load<Sprite>("questImg/quest_uncomplete");
+            }
+            else
+            {
+                _btn.enabled = true;
+                _btnImg.sprite = Resources.Load<Sprite>("questImg/quest_complete");
+
+                if (QuestIndex == Quest.Progress)
+                    _btnImg.sprite = Resources.Load<Sprite>("questImg/quest_ongoing");
+            }
         }
 
         private void OnQuestClear()
