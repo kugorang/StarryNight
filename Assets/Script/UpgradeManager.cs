@@ -10,7 +10,7 @@ namespace Script
     {
         private const int MaxLevel = 20;
         private const int LastUpgradeMaxLevel = 1;
-        private readonly UpgradeClass _currentUpgradeLv = DataController.UpgradeLv;
+        private UpgradeClass _currentUpgradeLv;
 
         private DataController _dataController;
         private DataDictionary _dataDic;
@@ -54,7 +54,7 @@ namespace Script
             }
 
             _dataController = DataController.Instance;
-
+               _currentUpgradeLv = DataController.UpgradeLv;
             if (SuccessRate.Length < 12) 
                 SuccessRate = new int[12];
         }
@@ -88,7 +88,7 @@ namespace Script
                     var nextUpgradeValue = _dataDic.FindUpDic[upgradeIndex].Value[_currentUpgradeLv[i]];
                     var str = "";
                     
-                    switch (i)
+                    switch (i) //TODO:Datacontroller.Instance로 되어있는 부분 수정
                     {
                         case 0:
                             str = "인벤토리 +" + DataController.Instance.ItemLimit + " -> +" + (10 + nextUpgradeValue);

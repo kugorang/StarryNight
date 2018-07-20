@@ -62,12 +62,7 @@ namespace Script
             }
         }
 
-        // 쿨타임 시간 지났는지 확인
-        /*public bool CheckCooltime()
-        {
-            return !(_leftTimer[Index] > 0);
-        }*/
-
+       
         public void ResetCooltime()
         {
             // 관찰자들에게 Click 이벤트 메세지 송출

@@ -45,6 +45,13 @@ namespace Script
 
             SceneManager.sceneLoaded += OnSceneChange;
 
+            
+
+        
+        }
+
+        private void Start()//Awake 때 PopUpWindow및 Notify가 설정이 끝남.
+        {
             if (!_dataController.IsTutorialEnd)
             {
                 ShowDialogue();
@@ -52,14 +59,12 @@ namespace Script
             else
             {
                 TextDisplayer.gameObject.SetActive(false);
-                
+
                 // 튜토리얼 끝나면 구독 해제
                 if (_dataController.Observers.Contains(gameObject))
                     _dataController.Observers.Remove(gameObject);
             }
-
-            /*_dataController.NowIndex = 300133;*/
-        }
+        } 
 
         private void OnSceneChange(Scene scene, LoadSceneMode mode)
         {
@@ -69,15 +74,6 @@ namespace Script
                 // 다이얼로그가 로드되지 않았으면 로드. count는 일반 씬 + Dialog인 경우만 정상으로 규정
                 if (SceneManager.GetSceneByName("Dialog").isLoaded || SceneManager.sceneCount >= 2) 
                     return;
-            
-               // Debug.Log(scene.name + ", Count: " + SceneManager.sceneCount + " Active: " + SceneManager.GetActiveScene().name);
-            
-                /*var str = "";
-            
-                for (var i = 0; i < SceneManager.sceneCount; i++)
-                    str += i + ":" + SceneManager.GetSceneAt(i).name + '\n';
-            
-                Debug.Log(str);*/
             
                 SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
             }
@@ -94,7 +90,6 @@ namespace Script
 
                 TextDisplayer = dialoguePanel.Find("Text Displayer").GetComponent<TextDisplayer>();
                 BgImg = TextDisplayer.transform.Find("Holder").GetComponent<Image>();
-                /*TextDisplayer.gameObject.GetComponent<Button>().onClick.AddListener(OnClick);*/
                 
                 // 튜토리얼 끝나면 구독 해제
                 if (!_dataController.IsTutorialEnd) 
@@ -123,7 +118,7 @@ namespace Script
             {
                 case 0:
                     // NowIndex가 0을 반환한 경우는 다이얼로그를 끝내는 인덱스이므로 TextDisplayer를 비활성화한 후 메소드를 종료한다.
-                    /*TextDisplayer.HideDialogueHolder(); // 이전에 사용했던 TextDisplayer 비활성화 코드*/
+                    
                     TextDisplayer.gameObject.SetActive(false);
                     return;
                 // 아래는 손가락 이미지를 표시하기 위한 코드
@@ -379,8 +374,8 @@ namespace Script
                 StopCoroutine(_fingerAnim);
                 FinishFingerAnim();
             }
-            
-            PopUpWindow.HideDialogue();
+
+            Notify.Text = "";
             TextDisplayer.gameObject.SetActive(true);
 
             _dataController.NowIndex++;
@@ -394,7 +389,7 @@ namespace Script
             if (textInfo.Name == "알림창")
             {
                 TextDisplayer.gameObject.SetActive(false);
-                PopUpWindow.ShowDialogue(textInfo.Dialogue);
+                Notify.Text=textInfo.Dialogue;
             }
             else
             {
@@ -510,7 +505,7 @@ namespace Script
                     break;
                 case "알림창":
                     TextDisplayer.gameObject.SetActive(false);
-                    PopUpWindow.ShowDialogue(textInfo.Dialogue);
+                    Notify.Text=textInfo.Dialogue;
                     return;
                 default:
                     BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/tmp");
