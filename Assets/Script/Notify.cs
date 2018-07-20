@@ -62,25 +62,21 @@ public class Notify : MonoBehaviour
     {
         if (enabled)
         {
-            
-            
-                _btnImage.raycastTarget = false;
-                _btnImage.color = new Color(0.5f, 0.5f, 0.5f, 0);
-                _notifyText.color = new Color(1, 1, 1, 0);
+            if (_isMinimized)
+            {
+                Toggle();
+            }
 
-         }
-         else
-         {
-             if (_isMinimized)
-             {
-                   Toggle();
-             }
-
-                _btnImage.raycastTarget = true;
-                _btnImage.color = new Color(0f, 0f, 0f, 0.5f);
-                _notifyText.color = new Color(1, 1, 1, 1);
-         }
-        
+            _btnImage.raycastTarget = true;
+            _btnImage.color = new Color(0f, 0f, 0f, 0.5f);
+            _notifyText.color = new Color(1, 1, 1, 1);
+        }
+        else
+        {
+            _btnImage.raycastTarget = false;
+            _btnImage.color = new Color(0.5f, 0.5f, 0.5f, 0);
+            _notifyText.color = new Color(1, 1, 1, 0);
+        }
     }
 
     /// <summary>
