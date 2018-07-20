@@ -9,7 +9,6 @@ namespace Script
     public class PopUpWindow : MonoBehaviour
     {
         private static float _shakingTime, _waitingTime;
-        private static string _formerText="";
         private static Text _alertText;
         private static Queue _alertQueue;
         private static Slider _upgradeSlider;
@@ -70,12 +69,7 @@ namespace Script
                 return;
             }
 
-            if (_formerText != text)//HACK
-            {
-                _alertQueue.Enqueue(text);
-            }
-
-            _formerText = text;
+            _alertQueue.Enqueue(text);
             if (_alertQueue.Count > 1)
             {
                 return;
@@ -194,13 +188,14 @@ namespace Script
 
         private static IEnumerator FadeOut(Graphic img, Text txt)
         {
+            _blockTouchImage.raycastTarget = true;
             while (_alertQueue.Count > 0)
             {
                 txt.text = (string) _alertQueue.Peek();
                 img.color = new Color(1, 1, 1, 1);
                 txt.color = new Color(1, 1, 1, 1);
                 
-                yield return new WaitForSeconds(2.5f);
+                yield return new WaitForSeconds(1.0f);
                 
                 for (float i = 0; i <= 1; i += 0.2f)
                 {
@@ -213,6 +208,8 @@ namespace Script
                  _alertQueue.Dequeue();//작업이 끝난 후에 Dequeue하지 않으면, Fade 중에 _alertQueue.Count=0이 되어 Alert에 오류가 발생
                 }
             }
+
+            _blockTouchImage.raycastTarget = false;
         }
 
 
