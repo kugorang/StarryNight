@@ -52,6 +52,7 @@ namespace Script
 
         private void Start()
         {
+          
             foreach (var setItemInfo in _dataDic.SetCombineList)
             {
                 AddItemButton(setItemInfo.Index1, _setContentPanel);
@@ -75,9 +76,7 @@ namespace Script
 
             var findItemInfo = _dataDic.FindItemDic[idx];
 
-            var grid = tf.GetComponent<GridLayoutGroup>();
-            var cellSize = (Screen.width - (grid.spacing.x * Cols ))/Cols;
-            grid.cellSize=new Vector2(cellSize,cellSize);
+            
 
             itemListPanel.transform.SetParent(tf);
             itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);

@@ -1260,6 +1260,7 @@ GameObject:
   - component: {fileID: 1122837337}
   - component: {fileID: 1122837340}
   - component: {fileID: 1122837338}
+  - component: {fileID: 1122837339}
   m_Layer: 5
   m_Name: MaterialContentPanel
   m_TagString: Untagged
@@ -1308,6 +1309,20 @@ MonoBehaviour:
   m_Spacing: {x: 15, y: 15}
   m_Constraint: 1
   m_ConstraintCount: 5
+--- !u!114 &1122837339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1122837336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7779ee669e657c141bc6bc5498e8f17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReferenceWidth: 1080
+  DefaultCellSize: 200
+  Columns: 5
 --- !u!222 &1122837340
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1413,6 +1428,7 @@ GameObject:
   - component: {fileID: 1229554640}
   - component: {fileID: 1229554643}
   - component: {fileID: 1229554641}
+  - component: {fileID: 1229554642}
   m_Layer: 5
   m_Name: CombineContentPanel
   m_TagString: Untagged
@@ -1461,6 +1477,20 @@ MonoBehaviour:
   m_Spacing: {x: 15, y: 15}
   m_Constraint: 1
   m_ConstraintCount: 5
+--- !u!114 &1229554642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1229554639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7779ee669e657c141bc6bc5498e8f17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReferenceWidth: 1080
+  DefaultCellSize: 200
+  Columns: 5
 --- !u!222 &1229554643
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1820,6 +1850,7 @@ GameObject:
   - component: {fileID: 1624526893}
   - component: {fileID: 1624526895}
   - component: {fileID: 1624526894}
+  - component: {fileID: 1624526896}
   m_Layer: 5
   m_Name: EtcContentPanel
   m_TagString: Untagged
@@ -1861,7 +1892,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 200}
@@ -1874,6 +1905,20 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1624526892}
+--- !u!114 &1624526896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1624526892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7779ee669e657c141bc6bc5498e8f17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReferenceWidth: 1080
+  DefaultCellSize: 200
+  Columns: 5
 --- !u!1 &1739166859
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,6 +2253,7 @@ GameObject:
   - component: {fileID: 1971794209}
   - component: {fileID: 1971794212}
   - component: {fileID: 1971794210}
+  - component: {fileID: 1971794211}
   m_Layer: 5
   m_Name: StarContentPanel
   m_TagString: Untagged
@@ -2256,6 +2302,20 @@ MonoBehaviour:
   m_Spacing: {x: 15, y: 15}
   m_Constraint: 1
   m_ConstraintCount: 5
+--- !u!114 &1971794211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1971794208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7779ee669e657c141bc6bc5498e8f17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReferenceWidth: 1080
+  DefaultCellSize: 200
+  Columns: 5
 --- !u!222 &1971794212
 CanvasRenderer:
   m_ObjectHideFlags: 0
