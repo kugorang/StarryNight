@@ -759,6 +759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FirstQuestsOfScene: 
+  LastQuestsOfScene: 
 --- !u!4 &1834994926
 Transform:
   m_ObjectHideFlags: 0
@@ -783,11 +784,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32cecd98b6570645a461d80509653b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TutorialEnd: 0
   ItemOpenList: 
   NewBookList: 
   NewItemList: 
   Observers: []
+  TutorialEnd: 0
 --- !u!1 &1899601957
 GameObject:
   m_ObjectHideFlags: 0

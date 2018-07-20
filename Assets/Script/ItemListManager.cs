@@ -15,7 +15,7 @@ namespace Script
 
         public GameObject PanelPrefab, ItemInfoPanel;
 
-        private RectTransform _starContentPanel, _materialContentPanel, _combineContentPanel, _etcContentPanel;
+        private RectTransform _starContentPanel, _materialContentPanel, _combineContentPanel, _etcContentPanel, _contentPanel;
         private int _starIdxMax, _materialIdxMax, _combineIdxMax, _etcIdxMax;
         private int _starIdxStart, _materialIdxStart, _combineIdxStart, _etcIdxStart;
 
@@ -57,20 +57,21 @@ namespace Script
             _materialContentPanel = GameObject.Find("MaterialContentPanel").GetComponent<RectTransform>();
             _combineContentPanel = GameObject.Find("CombineContentPanel").GetComponent<RectTransform>();
             _etcContentPanel = GameObject.Find("EtcContentPanel").GetComponent<RectTransform>();
+            _contentPanel = GameObject.Find("Content").GetComponent<RectTransform>();
         }
 
         private void Start()
         {
             for (var idx = _starIdxStart + 1; idx <= _starIdxMax; idx++) 
                 AddItemButton(idx, _starContentPanel);
+            
+            /*SetDynamicGrid(_starContentPanel, _starContentPanel.gameObject.GetComponent<GridLayoutGroup>(), _dataDic.StarNum, 5, 35);*/
 
             for (var idx = _materialIdxStart + 1; idx <= _materialIdxMax; idx++) 
                 AddItemButton(idx, _materialContentPanel);
 
             for (var idx = _combineIdxStart + 1; idx <= _combineIdxMax; idx++) 
                 AddItemButton(idx, _combineContentPanel);
-            
-            /*SetDynamicGrid(_combineContentPanel, _combineContentPanel.gameObject.GetComponent<GridLayoutGroup>(), _dataDic.CombineNum, 5, 35);*/
             
             for (var idx = _etcIdxStart + 1; idx <= _etcIdxMax; idx++) 
                 AddItemButton(idx, _etcContentPanel);
@@ -134,8 +135,11 @@ namespace Script
 
             targetGrid.cellSize = new Vector2 (width / cols, height / rows);*/
             
-            targetGrid.cellSize = new Vector2(PxtoDp(200), PxtoDp(200));
-            targetGrid.spacing = new Vector2(PxtoDp(16), PxtoDp(16));
+            Debug.Log("Screen.width : " + Screen.width);
+            Debug.Log("_contentPanel.rect.width : "  + _contentPanel.rect.width);
+            
+            targetGrid.cellSize = new Vector2(Screen.width * 0.18518f, Screen.width * 0.18518f);
+            targetGrid.spacing = new Vector2(Screen.width * 0.01389f, Screen.width * 0.01389f);
         }
 
         private static float PxtoDp(float px)
