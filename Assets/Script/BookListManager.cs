@@ -20,6 +20,8 @@ namespace Script
         private Transform _setContentPanel;
         private int _setIdxStart, _setIdxMax;
 
+        public int Cols = 5;//열 수
+
         public static BookListManager Instance
         {
             get
@@ -72,6 +74,10 @@ namespace Script
             var itemLock = itemListPanel.transform.Find("ItemLock").GetComponent<Image>();
 
             var findItemInfo = _dataDic.FindItemDic[idx];
+
+            var grid = tf.GetComponent<GridLayoutGroup>();
+            var cellSize = (Screen.width - (grid.spacing.x * Cols ))/Cols;
+            grid.cellSize=new Vector2(cellSize,cellSize);
 
             itemListPanel.transform.SetParent(tf);
             itemBtn.GetComponent<Image>().sprite = Resources.Load<Sprite>(findItemInfo.ImagePath);
