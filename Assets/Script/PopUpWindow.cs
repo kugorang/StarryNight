@@ -8,7 +8,6 @@ namespace Script
 {
     public class PopUpWindow : MonoBehaviour
     {
-        private static bool _isLocked;
         private static float _shakingTime, _waitingTime;
         private static string _formerText="";
         private static Text _alertText;
@@ -27,16 +26,13 @@ namespace Script
             get { return _alertQueue.Count > 0; }
         }
 
-        /*private static GameObject AlertPanelR;
-    private static Text AlertTextR;*/
+
         
         // Use this for initialization
         private void Awake()
         {
             Initialize();
-            //SceneManager.sceneLoaded += (scene, mode) => Initialize();
             _alertQueue = new Queue();
-            _isLocked = false;
             _shakingTime = ShakingTime > 0 ? ShakingTime : 0.5f;
             _waitingTime = WaitingTime > 0 ? WaitingTime : 0.3f;
         }
@@ -66,17 +62,7 @@ namespace Script
         /// <param name="text">띄울 알림 문자열</param>
         public static void Alert(string text)//TODO: 동일한 요청 여러 번 올시 Fade하지 않거나 무시하는 기능 구현
         {
-            if (_isLocked)
-            {
-                var temp = _alertText.text;
-                _alertText.text = text;
-                
-                Debug.LogWarning("Queue is Locked.");
-                
-                _this.StartCoroutine(ChangeDialogueText(temp, 0.8f));
-                
-                return;
-            }
+          
 
             if (_alertPanel == null)
             {
@@ -84,7 +70,7 @@ namespace Script
                 return;
             }
 
-            if (_formerText != text)
+            if (_formerText != text)//HACK
             {
                 _alertQueue.Enqueue(text);
             }
@@ -98,42 +84,7 @@ namespace Script
             _this.StartCoroutine(FadeOut(_alertPanel.GetComponent<Image>(), _alertText));
         }
 
-        /// <summary>
-        ///     알림창을 숨깁니다. 큐 잠금을 풉니다.
-        /// </summary>
-        public static void HideDialogue()
-        {
-            if (_alertPanel == null)
-            {
-                Debug.LogWarning("Alert Pannel is Null Object.");
-                return;
-            }
-
-            _isLocked = false;
-
-            _alertPanel.GetComponent<Image>().color = new Color(1, 1, 1, 0);
-            _alertText.color = new Color(1, 1, 1, 0);
-        }
-
-        /// <summary>
-        ///     알림창에 문자열을 띄웁니다. 충돌방지를 위해 사용중인 큐를 삭제하고 잠급니다.
-        /// </summary>
-        /// <param name="dialogue">알림창에 보여줄 문자열</param>
-        public static void ShowDialogue(string dialogue)
-        {
-            if (_alertPanel == null)
-            {
-                Debug.LogWarning("Alert Pannel is Null Object.");
-                return;
-            }
-
-            _alertQueue.Clear();
-            _isLocked = true;
-
-            _alertText.text = dialogue;
-            _alertPanel.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-            _alertText.color = new Color(1, 1, 1, 1);
-        }
+       
 
         /// <summary>
         ///     지연시간 안에 문자열만 바꿉니다.
