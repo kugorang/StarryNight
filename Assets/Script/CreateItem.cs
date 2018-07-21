@@ -146,9 +146,7 @@ namespace Script
 
         private void GenerateItem(int productId, bool isNew, int itemId, Vector3 itemPos)
         {
-            // 알 수 없는 이유로 왼쪽 화면에 생성되어 판매할 수 없을 경우
-            /*if (itemPos.x < 0) 
-                Debug.LogWarning("Generated in wrong place.");*/
+           
             var newItem = Instantiate(Item, itemPos, Quaternion.identity);
 
             var findItemInfo = _dataDic.FindItemDic[productId];
@@ -170,6 +168,7 @@ namespace Script
             }
             else
             {
+
                 itemInstance.Id = itemId;
                 DataController.SaveGameData(_dataController.HaveDic, _dataController.HaveDicPath);
             }

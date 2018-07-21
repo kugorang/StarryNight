@@ -7,18 +7,22 @@ public class Notify : MonoBehaviour
 {
     private static Text _notifyText;
     private static RectTransform _rtf;
-    private static bool _isMinimized;
+    private static bool _isMinimized=false;
+    private static bool _enabled=true;
     private static GameObject _gameObj;
     private static Image _btnImage;
+    private const int ReferenceW = 1080;
 
-    private static string _notification;
+    private static string _notification="";
 
     // Use this for initialization
-    void Awake()
+    void Awake()//Notify는 Dialog에 있어 매 씬 이동마다 파괴후 재 생성된다.
     {
        Initialize();
-        _isMinimized = false;
-        Text = "";
+        if (_notification == "")//씬 전환 전에도 빈 문자열이면 숨긴다.
+        {
+            Text = "";
+        }
     }
 
     private void Initialize()
@@ -34,39 +38,13 @@ public class Notify : MonoBehaviour
         _rtf = _gameObj.GetComponent<RectTransform>();
         _btnImage = _gameObj.GetComponent<Image>();
     }
-
     /// <summary>
-    /// 최소화 상태와 최대화 상태에 따라 크기 전환.
+    /// 창의 크기와 위치를 알맞게 변경.
     /// </summary>
-    public void Toggle()
+    private static void Refresh()
     {
-        _isMinimized = !_isMinimized;
-        if (_isMinimized) //TODO: 해상도에 따라 다르게 지원할 것.
+        if (_enabled)
         {
-            _rtf.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100);
-            _rtf.anchoredPosition3D = new Vector3((Screen.width / 2) - 60, 740, 0);
-            _notifyText.text = "?";
-        }
-        else
-        {
-            _rtf.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Screen.width);
-            _rtf.anchoredPosition3D = new Vector3(0, 750, 0);
-            _notifyText.text = _notification;
-        }
-    }
-    /// <summary>
-    /// 버튼을 활성화/비활성화함. 실제로는 투명화함.
-    /// </summary>
-    /// <param name="enabled">True면 활성화</param>
-    private void Enable(bool enabled)
-    {
-        if (enabled)
-        {
-            if (_isMinimized)
-            {
-                Toggle();
-            }
-
             _btnImage.raycastTarget = true;
             _btnImage.color = new Color(0f, 0f, 0f, 0.5f);
             _notifyText.color = new Color(1, 1, 1, 1);
@@ -77,6 +55,32 @@ public class Notify : MonoBehaviour
             _btnImage.color = new Color(0.5f, 0.5f, 0.5f, 0);
             _notifyText.color = new Color(1, 1, 1, 0);
         }
+        if (_isMinimized) //TODO: 해상도에 따라 다르게 지원할 것.
+        {
+
+            _rtf.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100);
+            _rtf.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100);
+            _rtf.anchoredPosition3D = new Vector3((ReferenceW / 2) - 60, -220, 0);//현재 Canvas Scaler설정 탓에 Screen.Width를 쓸 필요가 없음.
+            _notifyText.text = "?";
+        }
+        else
+        {
+            var height = (_notification.Length / 15) * 50 + 100;//한 줄 당 약 15글자, 줄 하나당 추가로 높이 약 50 필요. 3줄 이상(띄어쓰기 포함 45 자 이상)은 필요 없을 거라 추정함.
+            _rtf.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, ReferenceW);
+            _rtf.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+            _rtf.anchoredPosition3D = new Vector3(0, -160 - height / 2, 0);//-160은 Displayer 패널의 끝, 따라서 중심은 그보다 height/2만큼.
+            _notifyText.text = _notification;
+        }
+    }
+
+    /// <summary>
+    /// 최소화 상태와 최대화 상태에 따라 크기 전환.
+    /// </summary>
+    public void Toggle()//버튼으로 호출할 수 있어야해서 static이 아님
+    {
+        _isMinimized = !_isMinimized;
+        Refresh();
+        
     }
 
     /// <summary>
@@ -89,7 +93,16 @@ public class Notify : MonoBehaviour
     {
         _notification = value;
         _notifyText.text = _notification;
-        _gameObj.GetComponent<Notify>().Enable(_notification != "");//빈 문자열이 아니면 활성화, 빈 문자열이면 비활성화
+        _enabled=(_notification != "");//빈 문자열이 아니면 활성화, 빈 문자열이면 비활성화
+        if (_isMinimized)
+        {
+            _gameObj.GetComponent<Notify>().Toggle();
+        }
+        else //Toggle엔 Refresh가 포함되어 있다.
+        {
+            Refresh();
+        }
+
     }
 }
     private void OnEnable()                         // Awake 이후 재 검증

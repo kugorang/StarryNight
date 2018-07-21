@@ -270,6 +270,7 @@ namespace Script
                         index = Convert.ToInt32(wordList[0]);
 
                         // wordList[1] : name, wordList[2] : dialogue, wordList[3] : face, wordList[4] : sound
+                        //Debug.Log(String.Format("{0} {1}: {2} {3} + {4}",index, wordList[1], wordList[2], wordList[3], wordList[4])); 메테스가 민 대사 말하는 현상 수정용
                         DialogueDic[index] = new TextInfo(wordList[1], wordList[2], wordList[3], wordList[4]);
                         break;
                     default:

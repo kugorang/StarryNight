@@ -407,6 +407,7 @@ namespace Script
 
         private void SwitchCharacterImage(TextInfo textInfo)
         {
+            Debug.Log(String.Format("{0}: {1} {2} {3}", textInfo.Name, textInfo.Dialogue, textInfo.Face, textInfo.Sound));
             switch (textInfo.Name)
             {
                 case "메테스":
