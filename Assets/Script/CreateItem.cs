@@ -99,7 +99,7 @@ namespace Script
             // 나무일 때
             if (SwitchMode.Instance.State)
             {
-                GenerateItem(Random.Range(0, 100) >= DataController.AtlasItemProb
+                GenerateItem(Random.Range(0, 100) >= (_dataController.AtlasItemProb*_dataController.TwiceAll)
                     ? Random.Range(0, 6) * 5 + 2002 : Random.Range(0, 6) * 5 + 2001, true);
             }
             else // 별일 때
@@ -108,7 +108,7 @@ namespace Script
                 if (Random.Range(0, 100) < 5)
                     GenerateItem(5001, true);
                 else
-                    GenerateItem(Random.Range(0, 100) >= DataController.AtlasItemProb
+                    GenerateItem(Random.Range(0, 100) >= (_dataController.AtlasItemProb * _dataController.TwiceAll)
                         ? Random.Range(0, 3) * 5 + 1002 : Random.Range(0, 3) * 5 + 1001, true);
             }
 

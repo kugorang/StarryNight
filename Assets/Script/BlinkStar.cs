@@ -267,8 +267,8 @@ namespace Script
                             else if (termItemIndex > 50000) // 조건이 업그레이드일 때
                             {
                                 GameObject.Find("Progress Displayer").GetComponent<Text>().text += isTermFirst 
-                                    ? string.Format("{0} {1} / {2}", _dataDic.FindUpgrade(termItemIndex).Name, DataController.UpgradeLv[termItemIndex], term.Value) 
-                                    : string.Format("\n{0} {1} / {2}", _dataDic.FindUpgrade(termItemIndex).Name, DataController.UpgradeLv[termItemIndex], term.Value);
+                                    ? string.Format("{0} {1} / {2}", _dataDic.FindUpgrade(termItemIndex).Name, UpgradeManager.GetUpgradeLV(termItemIndex), term.Value) 
+                                    : string.Format("\n{0} {1} / {2}", _dataDic.FindUpgrade(termItemIndex).Name, UpgradeManager.GetUpgradeLV(termItemIndex), term.Value);
                             }
                             else
                             {

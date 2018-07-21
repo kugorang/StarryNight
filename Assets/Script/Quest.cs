@@ -170,7 +170,7 @@ namespace Script
                 }
                 else if (checkItemIndex > 50000) // 업그레이드일 때
                 {
-                    currentItemNum = DataController.UpgradeLv[checkItemIndex];
+                    currentItemNum = UpgradeManager.GetUpgradeLV(checkItemIndex);
                 }
                 else // 아이템일 때
                 {

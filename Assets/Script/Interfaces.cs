@@ -13,6 +13,14 @@ namespace Script
         void OnOtherClick();
     }
 
+    public interface IResetables : IEventSystemHandler
+    {
+        /// <summary>
+        /// Reset신호를 받는 것들
+        /// </summary>
+        void OnReset();
+    }
+
     public interface IEventListener : IEventSystemHandler
     {
         //void OnClick(GameObject obj);

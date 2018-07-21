@@ -4,12 +4,14 @@ using UnityEngine.SceneManagement;
 
 namespace Script
 {
-    public class AndroidBackButtonManager : MonoBehaviour
+    public class AndroidBackButtonManager : MonoBehaviour,IResetables
     {
         private static AndroidBackButtonManager _instance;
         private bool _isPaused;
         private GameObject _panel;//주의: _panel은 Main에만 존재하므로 Main 이외에 씬에서 참조하지 못하게 막을 것.
         private float _deltaTime;
+        private DataController _dataController;
+
         public float TimeBetweenUpdate = 0.2f;
 
         public static AndroidBackButtonManager Instance
@@ -36,6 +38,13 @@ namespace Script
         {
             DontDestroyOnLoad(this);
             _deltaTime = 0;
+        }
+
+        private void Start()
+        {
+            _dataController=DataController.Instance;
+            if (!_dataController.ResetList.Contains(gameObject))
+                _dataController.ResetList.Add(gameObject);
         }
 
         private void Update()
@@ -78,6 +87,16 @@ namespace Script
             {
                 _panel = null;//_panel은 main에만 존재하므로 null넣어줌.
             }
+        }
+
+        public void OnReset()
+        {
+            _panel = null;
+        }
+
+        private void OnDisable()
+        {
+            _dataController.ResetList.Remove(gameObject);
         }
     }
 }

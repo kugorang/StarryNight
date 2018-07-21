@@ -6,12 +6,59 @@ using Random = UnityEngine.Random;
 
 namespace Script
 {
-    public class UpgradeManager : MonoBehaviour
+
+   
+    public class UpgradeManager : MonoBehaviour, IResetables
     {
+
+        #region Upgrade Variables
+        
+        public static int[] MaxLv = new int[12];
+
+        private static int[] _upgradeLv=new int[12];//Readonly로 만들지 말 것.
+       
+        public void OnReset()
+        {
+            _upgradeLv = new int[12];
+        }
+
+        /// <summary>
+        /// id를 통해 현재 업그레이드 레벨을 반환합니다.
+        /// </summary>
+        /// <param name="index">양자리(0)~물고기자리(11)</param>
+        /// <returns></returns>
+        public static int GetUpgradeLV(int index)
+        {
+            if (-1 < index && index < 12)
+            {
+                _upgradeLv[index] = PlayerPrefs.GetInt("Upgrade[" + index + "]LV", 0);
+                return _upgradeLv[index];
+            }
+
+
+            if (50000 < index && index <= 50012)
+            {
+                _upgradeLv[index - 50001] = PlayerPrefs.GetInt("Upgrade[" + (index - 50001) + "]LV", 0);
+                return _upgradeLv[index - 50001];
+            }
+
+        Debug.LogError("Out of Index; Index should between 0~11 or 50001~50012");
+            return 0;
+        }
+
+        /// <summary>
+        /// id에 해당하는 별자리 레벨을 올림.
+        /// </summary>
+        /// <param name="id">양자리(0)~물고기자리(11)</param>
+        public static void LevelUp(int id)
+        {
+            _upgradeLv[id]++;
+            PlayerPrefs.SetInt("Upgrade[" + id + "]LV", _upgradeLv[id]);
+        }
+        #endregion
+
         private const int MaxLevel = 20;
         private const int LastUpgradeMaxLevel = 1;
-        private UpgradeClass _currentUpgradeLv;
-
         private DataController _dataController;
         private DataDictionary _dataDic;
 
@@ -28,7 +75,7 @@ namespace Script
         {
             _dataDic = GameObject.FindWithTag("DataController").GetComponent<DataDictionary>();
 
-            _parentPanels = new Transform[12]
+            _parentPanels = new[]
             {
                 GameObject.Find("Upgrade Panel (0)").transform,
                 GameObject.Find("Upgrade Panel (1)").transform,
@@ -54,7 +101,7 @@ namespace Script
             }
 
             _dataController = DataController.Instance;
-               _currentUpgradeLv = DataController.UpgradeLv;
+
             if (SuccessRate.Length < 12) 
                 SuccessRate = new int[12];
         }
@@ -85,47 +132,47 @@ namespace Script
                 }
                 else
                 {
-                    var nextUpgradeValue = _dataDic.FindUpDic[upgradeIndex].Value[_currentUpgradeLv[i]];
-                    var str = "";
+                    var nextUpgradeValue = _dataDic.FindUpDic[upgradeIndex].Value[GetUpgradeLV(i)];
+                    string str;
                     
-                    switch (i) //TODO:Datacontroller.Instance로 되어있는 부분 수정
+                    switch (i) 
                     {
                         case 0:
-                            str = "인벤토리 +" + DataController.Instance.ItemLimit + " -> +" + (10 + nextUpgradeValue);
+                            str = "인벤토리 +" + _dataController.ItemLimit + " -> +" + (10 + nextUpgradeValue);
                             break;
                         case 1:
-                            str = "클릭당 게이지 +" + DataController.Instance.EnergyPerClick + " -> +" + (2 + nextUpgradeValue);
+                            str = "클릭당 게이지 +" + _dataController.EnergyPerClick + " -> +" + (2 + nextUpgradeValue);
                             break;
                         case 2:
-                            str = "아이템 타이머1 시간 감소 -" + DataController.Instance + "초 -> -" + nextUpgradeValue + "초";
+                            str = "아이템 타이머1 시간 감소 " + _dataController.CoolTimeReduction(0) + "초 -> " + nextUpgradeValue + "초";
                             break;
                         case 3:
-                            str = "아이템 타이머1에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue +
+                            str = "아이템 타이머1에서 좋은 아이템 나올 확률 증가 +" + _dataController.BetterItemProb(0) + "% -> +" + nextUpgradeValue +
                                   "%";
                             break;
                         case 4:
-                            str = "판매시 골드 추가 지급 +" + DataController.Instance + "골드 -> +" + nextUpgradeValue + "골드";
+                            str = "판매시 골드 추가 지급 +" + _dataController.BonusGold + "골드 -> +" + nextUpgradeValue + "골드";
                             break;
                         case 5:
-                            str = "아이템 타이머2 시간 감소 -" + DataController.Instance + "초 -> -" + nextUpgradeValue + "초";
+                            str = "아이템 타이머2 시간 감소 " + _dataController.CoolTimeReduction(1) + "초 -> " + nextUpgradeValue + "초";
                             break;
                         case 6:
-                            str = "아이템 타이머2에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue +
+                            str = "아이템 타이머2에서 좋은 아이템 나올 확률 증가 +" + _dataController.BetterItemProb(1) + "% -> +" + nextUpgradeValue +
                                   "%";
                             break;
                         case 7:
-                            str = "지구본에서 한 단계 상위 아이템 나올 확률 증가" + DataController.Instance + "% -> +" + nextUpgradeValue +
+                            str = "지구본에서 한 단계 상위 아이템 나올 확률 증가" + _dataController.AtlasItemProb + "% -> +" + nextUpgradeValue +
                                   "%";
                             break;
                         case 8:
-                            str = "아이템 조합 시 한 단계 상위 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" +
+                            str = "아이템 조합 시 한 단계 상위 아이템 나올 확률 증가 +" + _dataController.BetterCombineResultProb + "% -> +" +
                                   nextUpgradeValue + "%";
                             break;
                         case 9:
-                            str = "아이템 타이머3 시간 감소 -" + DataController.Instance + "초 -> -" + nextUpgradeValue + "초";
+                            str = "아이템 타이머3 시간 감소 " + _dataController.CoolTimeReduction(2) + "초 -> " + nextUpgradeValue + "초";
                             break;
                         case 10:
-                            str = "아이템 타이머3에서 좋은 아이템 나올 확률 증가 +" + DataController.Instance + "% -> +" + nextUpgradeValue +
+                            str = "아이템 타이머3에서 좋은 아이템 나올 확률 증가 +" + _dataController.BetterItemProb(2) + "% -> +" + nextUpgradeValue +
                                   "%";
                             break;
                         // 최종 업그레이드
@@ -135,7 +182,7 @@ namespace Script
                     }
 
                     _upgradeDisplayers[i].text = str;
-                    _upgradeCostDisplayers[i].text = _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[i]] + "골드";
+                    _upgradeCostDisplayers[i].text = _dataDic.FindUpgrade(upgradeIndex).Cost[GetUpgradeLV(i)] + "골드";
                 }
             }
         }
@@ -152,9 +199,9 @@ namespace Script
             }
 
             // Debug.Log("Upgrade index: " + upgradeIndex);
-            var prob = SuccessRate[_currentUpgradeLv[id]] / 100f;
+            var prob = SuccessRate[GetUpgradeLV(id)] / 100f;
 
-            if (DataController.Instance.Gold < (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[id]])
+            if (_dataController.Gold < (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[GetUpgradeLV(id)])
             {
                 PopUpWindow.Alert("골드가 부족해요.");
                 return;
@@ -162,7 +209,7 @@ namespace Script
 
             Random.InitState((int) Time.time);
             PopUpWindow.SetSliderValue(prob);
-            DataController.Instance.Gold -= (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[_currentUpgradeLv[id]];
+            _dataController.Gold -= (ulong) _dataDic.FindUpgrade(upgradeIndex).Cost[GetUpgradeLV(id)];
             
             // 업그레이드 레벨은 0 ~ 20이고 20에선 업글 불가
             if (Random.value < prob) 
@@ -170,7 +217,7 @@ namespace Script
                 Action onComplete = () => PopUpWindow.Alert("업그레이드 성공!");
                 
                 PopUpWindow.AnimateSlider(1, 0.6f, onComplete);
-                DataController.UpgradeLv.LevelUp(id);
+                LevelUp(id);
                 
                 // 관찰자들에게 이벤트 메세지 송출
                 foreach (var target in _dataController.Observers) 
@@ -185,18 +232,18 @@ namespace Script
             }
         }
 
-        // 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
+        //TODO: 테스트 중. "다음 업그레이드"가 0인 업그레이드를 선택했을 때 작동해야함.
         public void RemoveAlert() 
         {
-            DataController.Instance.NewUpgrade = false;
+            _dataController.NewUpgrade = false;
         }
 
         private bool IsMaxUpgraded(int upgradeIndex)
         {
             if (upgradeIndex == 50012)
-                return _currentUpgradeLv[upgradeIndex] >= LastUpgradeMaxLevel;
+                return GetUpgradeLV(upgradeIndex) >= LastUpgradeMaxLevel;
             
-            return _currentUpgradeLv[upgradeIndex] >= MaxLevel;
+            return GetUpgradeLV(upgradeIndex) >= MaxLevel;
         }
     }
 }
