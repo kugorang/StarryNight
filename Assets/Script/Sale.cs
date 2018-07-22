@@ -20,8 +20,7 @@ namespace Script
             AudioManager.Instance.SaleSound();
             var item = col.GetComponent<Item>();
             var itemInfo = item.Info;
-
-            _dataController.Gold += (ulong) itemInfo.SellPrice;
+            _dataController.Gold += (ulong)( itemInfo.SellPrice+_dataController.BonusGold*_dataController.TwiceAll);
             _dataController.DeleteItem(itemInfo.Index, item.Id);
 
             Destroy(col.gameObject);

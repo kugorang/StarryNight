@@ -66,8 +66,9 @@ namespace Script
             if (_dataController.HaveDic != null)
                 foreach (var entry in _dataController.HaveDic)
                 {
+                   
                     // 서적이면 만들지 않는다.
-                    if (entry.Key > 4000) 
+                    if (_dataDic.IndexToGroup(entry.Key)==ItemGroup.Book) 
                         continue;
                     
                     // do something with entry. Value or entry.Key                
@@ -99,7 +100,7 @@ namespace Script
             // 나무일 때
             if (SwitchMode.Instance.State)
             {
-                GenerateItem(Random.Range(0, 100) >= DataController.AtlasItemProb
+                GenerateItem(Random.Range(0, 100) >= (_dataController.AtlasItemProb*_dataController.TwiceAll)
                     ? Random.Range(0, 6) * 5 + 2002 : Random.Range(0, 6) * 5 + 2001, true);
             }
             else // 별일 때
@@ -108,7 +109,7 @@ namespace Script
                 if (Random.Range(0, 100) < 5)
                     GenerateItem(5001, true);
                 else
-                    GenerateItem(Random.Range(0, 100) >= DataController.AtlasItemProb
+                    GenerateItem(Random.Range(0, 100) >= (_dataController.AtlasItemProb * _dataController.TwiceAll)
                         ? Random.Range(0, 3) * 5 + 1002 : Random.Range(0, 3) * 5 + 1001, true);
             }
 
@@ -146,9 +147,7 @@ namespace Script
 
         private void GenerateItem(int productId, bool isNew, int itemId, Vector3 itemPos)
         {
-            // 알 수 없는 이유로 왼쪽 화면에 생성되어 판매할 수 없을 경우
-            /*if (itemPos.x < 0) 
-                Debug.LogWarning("Generated in wrong place.");*/
+           
             var newItem = Instantiate(Item, itemPos, Quaternion.identity);
 
             var findItemInfo = _dataDic.FindItemDic[productId];
@@ -170,6 +169,7 @@ namespace Script
             }
             else
             {
+
                 itemInstance.Id = itemId;
                 DataController.SaveGameData(_dataController.HaveDic, _dataController.HaveDicPath);
             }

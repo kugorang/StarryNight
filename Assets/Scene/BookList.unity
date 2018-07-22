@@ -363,6 +363,7 @@ MonoBehaviour:
   ItemInfoPanel: {fileID: 355010976}
   ExchangePanel: {fileID: 478854133}
   ExchangeRatio: 0a00000008000000060000000400000003000000
+  Cols: 5
 --- !u!1 &355010976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,6 +1225,7 @@ GameObject:
   - component: {fileID: 775925836}
   - component: {fileID: 775925835}
   - component: {fileID: 775925834}
+  - component: {fileID: 775925837}
   m_Layer: 5
   m_Name: SetContentPanel
   m_TagString: Untagged
@@ -1265,7 +1267,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 200, y: 200}
@@ -1305,6 +1307,20 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 775925832}
+--- !u!114 &775925837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 775925832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7779ee669e657c141bc6bc5498e8f17d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReferenceWidth: 1080
+  DefaultCellSize: 200
+  Columns: 5
 --- !u!1 &788267453
 GameObject:
   m_ObjectHideFlags: 0

@@ -73,110 +73,10 @@ namespace Script
         }
     }
 
-    // 업그레이드 변수들 모아놓기
-    public class UpgradeClass
-    {
-        // 업그레이드 관련 변수. 참조 쉽게 하려고 Array로.
-        public delegate void UpgradeMethod();
-        private const int FirstUpgradeIndex = 50001;
-        public readonly int[] MaxLv = new int[12];
-
-        private int[] _upgradeLv;//Readonly로 만들지 말 것.
-        public UpgradeMethod[] UpgradeMethods;
-
-        public UpgradeClass()
-        {
-            /*for (int i = 0; i < 12; i++)
-        {
-            this.UpgradeMethods[i] = new UpgradeMethod(() => LevelUp(i));
-        }*/
-            _upgradeLv = new int[12];
-        }
-
-        public UpgradeClass(int invenLv, int enegyPerClickLv, int waitTime1Lv, int item1LVint, int saleGoldLv, 
-            int waitTime2Lv, int item2Lv, int atlasItemLv, int combineItemLv, int waitTime3Lv, int item3Lv, int twiceAll)
-        {
-            _upgradeLv = new int[12]
-            {
-                invenLv, enegyPerClickLv, waitTime1Lv, item1LVint, saleGoldLv, waitTime2Lv, 
-                item2Lv, atlasItemLv, combineItemLv, waitTime3Lv, item3Lv, twiceAll
-            };
-        }
-
-        /*~UpgradeClass()
-        {    
-            Debug.LogWarning("UpgradeClass is Destroyed. At: "+Time.time);//게임 중 파괴된다면 에러가 날 수 밖에 없다.
-        }*/
-
-        public void Reset()
-        {
-            _upgradeLv=new int[12];
-        }
-
-        /// <summary>
-        /// id를 통해 현재 업그레이드 레벨을 반환합니다.
-        /// </summary>
-        /// <param name="id">양자리(0)~물고기자리(11)</param>
-        /// <returns></returns>
-        public int this[int id]
-        {
-            get
-            {
-                if (-1 < id && id < 12) 
-                    return _upgradeLv[id];
-
-                if (50000 < id && id <= 50012) 
-                    return _upgradeLv[id - 50001];
-
-                Debug.LogError("Out of Index; Index should between 0~11 or 50001~50012");
-                return 0;
-            }
-            set
-            {
-                if (value >= 0)
-                {
-                    if (-1 < id && id < 12)
-                    {
-                        _upgradeLv[id] = value;
-                        PlayerPrefs.SetInt("Upgrade[" + id + "]LV", value);
-                    }
-                    else if (50000 < id && id <= 50012)
-                    {
-                        _upgradeLv[id - 50001] = value;
-                        PlayerPrefs.SetInt("Upgrade[" + (id - 50001) + "]LV", value);
-                    }
-                    else
-                    {
-                        Debug.LogError("Out of Index; Index should between 0~11 or 50001~50012");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("Level Can not be minus.");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     업그레이드 인덱스를 통해 현재 레벨을 반환합니다.
-        /// </summary>
-        /// <param name="index">업그레이드 인덱스(50001~50012)</param>
-        /// <returns></returns>
-        public int GetLvByUpgradeIndex(int index)
-        {
-            return this[index - FirstUpgradeIndex];
-        }
-
-        public void LevelUp(int id)
-        {
-            _upgradeLv[id]++;
-            PlayerPrefs.SetInt("Upgrade[" + id + "]LV", _upgradeLv[id]);
-        }
-    }
 
     public class DataController : MonoBehaviour
     {
-        public static UpgradeClass UpgradeLv;
+       
         private DataDictionary _dataDic;
 
         /// <summary>
@@ -192,41 +92,8 @@ namespace Script
         // 현재 보유 아이템 개수, 퀘스트 진행도(인덱스)
         private int _itemcount, _energy, _latestUpgradeIndex;
 
-        // 아이템 타이머 시간
-        private float[] _leftTimer;
-        
-        // 현재 
-        public static int MaxSceneNum
-        {
-            get
-            {
-                switch (CameraController.NowScene)
-                {
-                    case "Main":
-                        return PlayerPrefs.GetInt("MainMaxNum", 2);
-                    case "QuestList":
-                        return PlayerPrefs.GetInt("QuestListMaxNum", 1);
-                    default:
-                        return 1;
-                }
-            }
-            set 
-            {
-                switch (CameraController.NowScene)
-                {
-                    case "Main":
-                        PlayerPrefs.SetInt("MainMaxNum", value);
-                        break;
-                    case "QuestList":
-                        PlayerPrefs.SetInt("QuestListMaxNum", value);
-                        break;
-                    default:
-                        PlayerPrefs.SetInt("MainMaxNum", 2);
-                        PlayerPrefs.SetInt("QuestListMaxNum", 1);
-                        break;
-                }
-            }
-        }
+      
+       
         
         // 아이템 생성 모드 상태
         public int SwitchButtonMode
@@ -252,6 +119,10 @@ namespace Script
         ///     (임시) 이벤트 관찰자 목록. 각관찰자가 등록함.
         /// </summary>
         public List<GameObject> Observers;
+        /// <summary>
+        /// 리셋가능한 리스트
+        /// </summary>
+        public List<GameObject> ResetList;
 
         // HaveDic 정보 저장 경로
         public string HaveDicPath { get; private set; }
@@ -491,7 +362,9 @@ namespace Script
 
         public string NewBookListPath { get; private set; }
         public string NewItemListPath { get; private set; }
-
+        /// <summary>
+        /// 새로운 업그레이드가 열렸으면 true
+        /// </summary>
         public bool NewUpgrade
         {
             get { return _newUpgradeInt > 0; }
@@ -502,22 +375,12 @@ namespace Script
             }
         }
 
-        // 종료 후 지난 시간 계산
-        private static int TimeAfterLastPlay
-        {
-            get
-            {
-                var currentTime = DateTime.Now;
-                var lastTime = GetLastPlayDate();
-
-                var subTime = (int) currentTime.Subtract(lastTime).TotalSeconds;
-                return subTime;
-            }
-        }
-
+       
         // 로딩 상태 가져오기
         public bool LoadingFinish { get; private set; }
 
+        #region Properties
+        //private const int FirstUpgradeIndex = 50001;
         /// <summary>
         ///     gold 설정
         /// </summary>
@@ -534,12 +397,15 @@ namespace Script
                 PlayerPrefs.SetString("Gold", _gold.ToString());
 
                 // 관찰자들에게 이벤트 메세지 송출
-                foreach (var target in Observers) 
+                foreach (var target in Observers)
                     ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnChangeValue(ValueType.Gold, value, delta));
             }
         }
 
-        // item 개수 세는 함수
+      
+        /// <summary>
+        /// item 개수
+        /// </summary>
         public int ItemCount
         {
             get
@@ -553,18 +419,24 @@ namespace Script
             }
         }
 
-        // item 최대 개수 가져오기 
+       
+        /// <summary>
+        /// item 최대 개수
+        /// </summary>
         public int ItemLimit
         {
             get
             {
-                if (UpgradeLv[0] == 0)
-                    return 10;
-                return 10 + _dataDic.FindUpgrade(50001).Value[UpgradeLv[0] - 1];
+                var upgradeLV = UpgradeManager.GetUpgradeLV(0);
+                return (upgradeLV == 0)
+                        ?10 
+                        :10 + _dataDic.FindUpgrade(50001).Value[upgradeLV - 1];
             }
         }
 
-        // 에너지량 가져오기
+        /// <summary>
+        /// 에너지량 가져오기
+        /// </summary>
         public int Energy
         {
             get { return _energy; }
@@ -576,48 +448,90 @@ namespace Script
         }
 
         /// <summary>
-        ///     EnergyPerClick을 얻는 함수
+        ///  EnergyPerClick을 얻는 함수
         /// </summary>
         /// <returns></returns>
         public int EnergyPerClick
         {
             get
             {
-                if (UpgradeLv[1] == 0)
-                    return 2;
-                return 2 + _dataDic.FindUpgrade(50002).Value[UpgradeLv[1] - 1];
+                var upgradeLV = UpgradeManager.GetUpgradeLV(1);
+                return ((upgradeLV == 0)
+                    ?2
+                    : 2 + _dataDic.FindUpgrade(50002).Value[upgradeLV - 1])*TwiceAll;
             }
         }
 
         /// <summary>
-        ///     지구본에서 일반 아이템이 나올 확률(0~95)
+        /// 쿨타임 감소량 반환.
         /// </summary>
-        public static int AtlasItemProb
-        {
-            get { return 95 - UpgradeLv[7]; }
+        /// <param name="index">ItemTimer Index(0~2)</param>
+        /// <returns></returns>
+        public float CoolTimeReduction(int index)
+        {            
+            int[] idList= {2,5,9};
+            var upgradeLV = UpgradeManager.GetUpgradeLV(idList[index]);
+            return (upgradeLV == 0) ? 0 : _dataDic.FindUpgrade(50001 + idList[index]).Value[upgradeLV - 1];
         }
 
-        #region Item Timer
+        /// <summary>
+        /// 좋은 아이템 나올 확률
+        /// </summary>
+        /// <param name="index">ItemTimer Index(0~2)</param>
+        /// <returns></returns>
+        public int BetterItemProb(int index)
+        {
+            int[] idList = { 3, 6, 10 };
+            var upgradeLV = UpgradeManager.GetUpgradeLV(idList[index]);
+            return (upgradeLV == 0) ? 0 : _dataDic.FindUpgrade(50001 + idList[index]).Value[upgradeLV - 1];
+        }
 
         /// <summary>
-        ///     인덱서. id를 통해 타이머 남은 시간 반환.
+        /// 판매시 추가 골드
         /// </summary>
-        /// <param name="index">ItemTimer의 id</param>
-        /// <returns>t남은 시간</returns>
-        public float this[int index]
+        public int BonusGold
         {
-            get { return _leftTimer[index]; }
-            set
+            get
             {
-                _leftTimer[index] = value;
-                PlayerPrefs.SetFloat("LeftTimer" + (index + 1), _leftTimer[index]);
+                var upgradeLV = UpgradeManager.GetUpgradeLV(4);
+                return (upgradeLV == 0)
+                    ? 10
+                    : 10 + _dataDic.FindUpgrade(50005).Value[upgradeLV - 1];
             }
         }
 
-        #endregion
+        /// <summary>
+        /// 지구본에서 일반 아이템이 나올 확률(0~95)
+        /// </summary>
+        public int AtlasItemProb
+        {
+            get { return 95 - UpgradeManager.GetUpgradeLV(7); }
+        }
 
         /// <summary>
-        ///     열려있는 업그레이드 중 가장 큰 인덱스를 반환합니다. (50001~50012)
+        /// 조합시 상위 아이템 나올 확률
+        /// </summary>
+        public int BetterCombineResultProb
+        {
+            get
+            {
+                var upgradeLV = UpgradeManager.GetUpgradeLV(8);
+                return (upgradeLV == 0)
+                    ? 10
+                    : 10 + _dataDic.FindUpgrade(50009).Value[upgradeLV - 1];
+            }
+        }
+
+        /// <summary>
+        /// 마지막 업그레이드가 완료되면 2, 아니면 1.
+        /// </summary>
+        public int TwiceAll
+        {
+            get { return (UpgradeManager.GetUpgradeLV(11) > 0)?2:1; }
+        }
+
+        /// <summary>
+        /// 열려있는 업그레이드 중 가장 큰 인덱스를 반환합니다. (50001~50012)
         /// </summary>
         public int LatestUpgradeIndex
         {
@@ -637,6 +551,10 @@ namespace Script
             }
         }
 
+        #endregion
+
+
+
         // 게임 초기화될 때 
         public void Awake()
         {
@@ -649,20 +567,9 @@ namespace Script
             // Key : Value로써 PlayerPrefs에 저장
             _gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
             _itemcount = PlayerPrefs.GetInt("ItemCount", 0);
-            _leftTimer = new[]
-            {
-                PlayerPrefs.GetFloat("LeftTimer1", 300.0f), 
-                PlayerPrefs.GetFloat("LeftTimer2", 300.0f),
-                PlayerPrefs.GetFloat("LeftTimer3", 300.0f)
-            };
+            
             _energy = PlayerPrefs.GetInt("Energy", 0);
             _latestUpgradeIndex = PlayerPrefs.GetInt("LatestUpgrade", 50000);
-
-            // 업그레이드 레벨 변수들을 하나로 합침
-            UpgradeLv = new UpgradeClass();
-
-            for (var i = 0; i < 12; i++) 
-                UpgradeLv[i] = PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
 
             _newUpgradeInt = PlayerPrefs.GetInt("NewUpgrade", 0);
             TutorialEnd = PlayerPrefs.GetInt("TutorialEnd", 0);
@@ -685,31 +592,21 @@ namespace Script
         private void Start()
         {
             // 종료 후 실행 시간 계산
-            for (var i = 0; i < 3; i++)
-                _leftTimer[i] -= TimeAfterLastPlay;
+           
             var actualItemCount = 0;
             foreach (var key in HaveDic.Keys)
             {
-                if ((key < 4000))//서적 아이템이 아니면
+
+                if   (_dataDic.IndexToGroup(key) != ItemGroup.Book)//서적 아이템이 아니면
                 {
                     actualItemCount += HaveDic[key].Count;
                 }
             }
 
             ItemCount = actualItemCount;
-            InvokeRepeating("OnApplicationQuit", 0f, 5f);
-
             LoadingFinish = true;
         }
 
-        private void Update()
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                _leftTimer[i] -= Time.deltaTime;
-                PlayerPrefs.SetFloat("LeftTimer" + (i + 1), _leftTimer[i]);
-            }
-        }
 
         // 게임 데이터를 불러오는 함수
         private static object LoadGameData(string dataPath)
@@ -749,23 +646,11 @@ namespace Script
             return mStream.ToArray();
         }
 
-        // 플레이 종료 시간 가져오기
-        private static DateTime GetLastPlayDate()
-        {
-            return !PlayerPrefs.HasKey("Time") ? DateTime.Now : DateTime.FromBinary(Convert.ToInt64(PlayerPrefs.GetString("Time")));
-        }
-
-        // 어플 종료 시 플레이 시간 저장
-        private void OnApplicationQuit()
-        {
-            PlayerPrefs.SetString("Time", DateTime.Now.ToBinary().ToString());
-        }
-
         // 인벤토리 레벨 업그레이드
         public void UpgradeInvenLv()
         {
-            UpgradeLv[0] += 1;
-            //PlayerPrefs.SetInt("InvenLevel", UpgradeLv[0]);
+            UpgradeManager.LevelUp(0);
+    
         }
 
         /// <summary>
@@ -773,14 +658,14 @@ namespace Script
         /// </summary>
         public void UpgradeEnergyPerClickLv()
         {
-            UpgradeLv[1] += 1;
+            UpgradeManager.LevelUp(1);
         }
 
         // 업그레이드 인덱스로 최대 업그레이드 레벨 올리기
         public void UnlockUpgrade(int index)
         {
             // 값 길이 = 최대 길이
-            UpgradeLv.MaxLv[index - 50001] = _dataDic.FindUpgrade(index).Value.Length; 
+            UpgradeManager.MaxLv[index - 50001] = _dataDic.FindUpgrade(index).Value.Length; 
             NewUpgrade = true;
         }
 
@@ -802,19 +687,14 @@ namespace Script
             _itemcount = PlayerPrefs.GetInt("ItemCount", 0);
             Quest.ProgressReset();
             
-            // 리셋 즉시 시험할 수 있게
-            _leftTimer = new[]
-            {
-                PlayerPrefs.GetFloat("LeftTimer1", 0f), PlayerPrefs.GetFloat("LeftTimer2", 0f),
-                PlayerPrefs.GetFloat("LeftTimer3", 0f)
-            }; 
+           
             _energy = PlayerPrefs.GetInt("Energy", 0);
             _latestUpgradeIndex = PlayerPrefs.GetInt("LatestUpgrade", 50000);
 
-            UpgradeLv.Reset();
-
-            for (var i = 0; i < 12; i++) 
-                UpgradeLv[i] = PlayerPrefs.GetInt("Upgrade[" + i + "]LV", 0);
+            // 관찰자들에게 이벤트 메세지 송출
+            foreach (var target in ResetList)
+                ExecuteEvents.Execute<IResetables>(target, null, (x, y) => x.OnReset());
+           
         }
 
         #region Singleton
@@ -866,6 +746,7 @@ namespace Script
         /// <param name="itemPos">아이템 위치</param>
         public void InsertNewItem(int key, int itemId, Vector3 itemPos)
         {
+            var isBook =  _dataDic.IndexToGroup(key) == ItemGroup.Book;
             if (!CheckExistItem(key))
             {
                 ItemOpenList.Add(key);
@@ -881,7 +762,7 @@ namespace Script
                 HaveDic.Add(key, posList);
 
                 // !마크 띄우기
-                if (key > 4000) //서적
+                if (isBook) //서적
                 {
                     NewBookList.Add(key);
                     SaveGameData(NewBookList, NewBookListPath);
@@ -905,7 +786,7 @@ namespace Script
                 HaveDic[key].Add(id, itemPos);
             }
 
-            if (key < 4000)//서적이 아니면 아이템 카운트 늘림
+            if (!isBook)//서적이 아니면 아이템 카운트 늘림
             {
                 ItemCount += 1;
             }
@@ -940,7 +821,7 @@ namespace Script
         public void DeleteItem(int index, int itemId)
         {
             if (!HaveDic[index].Remove(itemId)) Debug.Log("DataController - DeleteItem : Item Cannot Delete.");
-            else if (index < 4000)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
+            else if (_dataDic.IndexToGroup(index)!=ItemGroup.Book)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
             {
                 ItemCount -= 1;
             }

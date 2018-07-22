@@ -4,6 +4,22 @@ using UnityEngine;
 
 namespace Script
 {
+    public enum Zodiac //이후 인덱스 변경 또는 추가에 대비해, 각 별자리의 인덱스를 Enum으로 만듦.
+    {
+        Aries = 90100,
+        Taurus = 90200,
+        Gemini = 90300,
+        Cancer = 90400,
+        Leo = 90500,
+        Virgo = 90600,
+        Libra = 90700,
+        Scorpio = 90800,
+        Sagittarius = 90900,
+        Capricorn = 91000,
+        Aquarius = 91100,
+        Pisces = 91200
+    }
+
     public class QuestInfo
     {
         // 퀘스트 기준 표 index
@@ -62,21 +78,7 @@ namespace Script
 
         public const int NumberOfZodiac = 12;
 
-        public enum Zodiac //이후 인덱스 변경 또는 추가에 대비해, 각 별자리의 인덱스를 Enum으로 만듦.
-        {
-            Aries = 90100,
-            Taurus = 90200,
-            Gemini = 90300,
-            Cancer = 90400,
-            Leo = 90500,
-            Virgo = 90600,
-            Libra = 90700,
-            Scorpio = 90800,
-            Sagittarius = 90900,
-            Capricorn = 91000,
-            Aquarius = 91100,
-            Pisces = 91200
-        }
+       
 
         /// <summary>
         ///  별자리의 인덱스를 9nn00형식으로 반환.
@@ -135,7 +137,7 @@ namespace Script
             else // 아니면 다음 별자리로 넘어감.
             {
                 Progress = DataDictionary.Instance.FirstQuestsOfScene[ZodiacIndex(currentIndex) + 1];
-                DataController.MaxSceneNum += 1;
+                  CameraController.AddScene("QuestList");
             }
         }
 
@@ -170,7 +172,7 @@ namespace Script
                 }
                 else if (checkItemIndex > 50000) // 업그레이드일 때
                 {
-                    currentItemNum = DataController.UpgradeLv[checkItemIndex];
+                    currentItemNum = UpgradeManager.GetUpgradeLV(checkItemIndex);
                 }
                 else // 아이템일 때
                 {
@@ -228,9 +230,9 @@ namespace Script
                 }
                 else
                 {
-                    // 아이템 인벤토리가 꽉 차있는지 확인
+                    /*// 아이템 인벤토리가 꽉 차있어도 준다.
                     if (dataController.ItemCount >= dataController.ItemLimit) 
-                        return true;
+                        return true;*/
                 
                     // 보상이 업그레이드 오픈일 때
                     if (reward.Key > 50000) 
@@ -249,7 +251,7 @@ namespace Script
                     }
                 }
             }
-            
+            NextQuest();
             return true;
         }
 
