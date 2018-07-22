@@ -58,7 +58,7 @@ namespace Script
             if (!_dataController.ResetList.Contains(gameObject))
                 _dataController.ResetList.Add(gameObject);
             _reducedCooltime = Cooltime - _dataController.CoolTimeReduction(Index)*_dataController.TwiceAll;
-            LeftTimer = _reducedCooltime-TimeAfterLastPlay;
+            LeftTimer = (LeftTimer>0)?_reducedCooltime-TimeAfterLastPlay:0;
             if (Img == null)
                 Img = gameObject.GetComponent<Image>();
 

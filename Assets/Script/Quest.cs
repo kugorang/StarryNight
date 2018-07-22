@@ -135,7 +135,7 @@ namespace Script
             else // 아니면 다음 별자리로 넘어감.
             {
                 Progress = DataDictionary.Instance.FirstQuestsOfScene[ZodiacIndex(currentIndex) + 1];
-                DataController.MaxSceneNum += 1;
+                  CameraController.AddScene("QuestList");
             }
         }
 
@@ -228,9 +228,9 @@ namespace Script
                 }
                 else
                 {
-                    // 아이템 인벤토리가 꽉 차있는지 확인
+                    /*// 아이템 인벤토리가 꽉 차있어도 준다.
                     if (dataController.ItemCount >= dataController.ItemLimit) 
-                        return true;
+                        return true;*/
                 
                     // 보상이 업그레이드 오픈일 때
                     if (reward.Key > 50000) 
@@ -249,7 +249,7 @@ namespace Script
                     }
                 }
             }
-            
+            NextQuest();
             return true;
         }
 

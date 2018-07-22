@@ -93,39 +93,7 @@ namespace Script
         private int _itemcount, _energy, _latestUpgradeIndex;
 
       
-        
-        // 현재 
-        public static int MaxSceneNum
-        {
-            get
-            {
-                switch (CameraController.NowScene)
-                {
-                    case "Main":
-                        return PlayerPrefs.GetInt("MainMaxNum", 2);
-                    case "QuestList":
-                        return PlayerPrefs.GetInt("QuestListMaxNum", 1);
-                    default:
-                        return 1;
-                }
-            }
-            set 
-            {
-                switch (CameraController.NowScene)
-                {
-                    case "Main":
-                        PlayerPrefs.SetInt("MainMaxNum", value);
-                        break;
-                    case "QuestList":
-                        PlayerPrefs.SetInt("QuestListMaxNum", value);
-                        break;
-                    default:
-                        PlayerPrefs.SetInt("MainMaxNum", 2);
-                        PlayerPrefs.SetInt("QuestListMaxNum", 1);
-                        break;
-                }
-            }
-        }
+       
         
         // 아이템 생성 모드 상태
         public int SwitchButtonMode

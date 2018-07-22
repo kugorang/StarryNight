@@ -394,7 +394,7 @@ namespace Script
             else
             {
                 // 퀘스트를 눌렀을 때 다이얼로그를 띄우기 위한 코드
-                if (TextDisplayer.gameObject.activeSelf == false)
+                if (!TextDisplayer.gameObject.activeSelf)
                 {
                     // 평소에 비활성화 되어 있는 TextDisplayer를 활성화 시킨 후 배경 이미지 변경
                     TextDisplayer.gameObject.SetActive(true);

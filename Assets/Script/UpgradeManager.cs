@@ -238,7 +238,7 @@ namespace Script
             _dataController.NewUpgrade = false;
         }
 
-        private bool IsMaxUpgraded(int upgradeIndex)
+        private static bool IsMaxUpgraded(int upgradeIndex)
         {
             if (upgradeIndex == 50012)
                 return GetUpgradeLV(upgradeIndex) >= LastUpgradeMaxLevel;

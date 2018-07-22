@@ -81,9 +81,7 @@ namespace Script
 
             FirstQuest = _dataDic.FirstQuestsOfScene.First();
             LastQuest = _dataDic.LastQuestsOfScene.Last();
-            /*_ownQuest = new QuestInfo(QuestIndex, findQuestInfo.Act, findQuestInfo.DialogueStartIndex,
-                findQuestInfo.DialogueEndIndex, findQuestInfo.Title, findQuestInfo.Content,
-                findQuestInfo.TermsNum, findQuestInfo.RewardNum);*/
+            
 
             // 퀘스트 진행도 확인 후 별 sprite 설정 및 버튼 활성화
             if (QuestIndex > Quest.Progress) // 진행 전 퀘스트
@@ -125,14 +123,17 @@ namespace Script
             foreach (var target in _dataController.Observers) 
                 ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnObjClick(this));
 
-            if (Quest.CheckQuestClear(QuestIndex))
+            if (Quest.Progress==QuestIndex)//진행중인 퀘스트면
             {
-                OnQuestClear();
-            }
-            else if (_dataController.IsTutorialEnd && _ownQuest.DialogueStartIndex >= 300701)
-            {
-                _dataController.NowIndex = _ownQuest.DialogueStartIndex;
-                DialogueManager.Instance.ShowDialogue();
+                if (Quest.CheckQuestClear(QuestIndex))//퀘스트 완료 여부 확인
+                {
+                    OnQuestClear();
+                }
+                else if (_dataController.IsTutorialEnd && _ownQuest.DialogueStartIndex >= 300701)
+                {
+                    _dataController.NowIndex = _ownQuest.DialogueStartIndex;
+                    DialogueManager.Instance.ShowDialogue();
+                }
             }
 
             ShowingQuestIndex = QuestIndex;
@@ -165,7 +166,7 @@ namespace Script
 
         private void OnQuestClear()
         {
-            Quest.NextQuest();
+            
             _blinkAlive = false;
 
             // 다음 퀘스트 별 반짝 거리기
