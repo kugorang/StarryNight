@@ -40,7 +40,7 @@ namespace Script
         }
 
         // 종료 후 지난 시간 계산
-        private static int TimeAfterLastPlay
+        private static int TimeAfterDisabled
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Script
             if (!_dataController.ResetList.Contains(gameObject))
                 _dataController.ResetList.Add(gameObject);
             _reducedCooltime = Cooltime - _dataController.CoolTimeReduction(Index)*_dataController.TwiceAll;
-            LeftTimer = (LeftTimer>0)?_reducedCooltime-TimeAfterLastPlay:0;
+            LeftTimer -= TimeAfterDisabled;
             if (Img == null)
                 Img = gameObject.GetComponent<Image>();
 
@@ -132,6 +132,8 @@ namespace Script
         public void OnDisable()
         {
             _dataController.ResetList.Remove(gameObject);
+            // 파괴된 시간 저장
+                PlayerPrefs.SetString("Time", DateTime.Now.ToBinary().ToString());
         }
 
     }

@@ -4,6 +4,22 @@ using UnityEngine;
 
 namespace Script
 {
+    public enum Zodiac //이후 인덱스 변경 또는 추가에 대비해, 각 별자리의 인덱스를 Enum으로 만듦.
+    {
+        Aries = 90100,
+        Taurus = 90200,
+        Gemini = 90300,
+        Cancer = 90400,
+        Leo = 90500,
+        Virgo = 90600,
+        Libra = 90700,
+        Scorpio = 90800,
+        Sagittarius = 90900,
+        Capricorn = 91000,
+        Aquarius = 91100,
+        Pisces = 91200
+    }
+
     public class QuestInfo
     {
         // 퀘스트 기준 표 index
@@ -62,21 +78,7 @@ namespace Script
 
         public const int NumberOfZodiac = 12;
 
-        public enum Zodiac //이후 인덱스 변경 또는 추가에 대비해, 각 별자리의 인덱스를 Enum으로 만듦.
-        {
-            Aries = 90100,
-            Taurus = 90200,
-            Gemini = 90300,
-            Cancer = 90400,
-            Leo = 90500,
-            Virgo = 90600,
-            Libra = 90700,
-            Scorpio = 90800,
-            Sagittarius = 90900,
-            Capricorn = 91000,
-            Aquarius = 91100,
-            Pisces = 91200
-        }
+       
 
         /// <summary>
         ///  별자리의 인덱스를 9nn00형식으로 반환.

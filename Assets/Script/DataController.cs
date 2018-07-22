@@ -596,15 +596,14 @@ namespace Script
             var actualItemCount = 0;
             foreach (var key in HaveDic.Keys)
             {
-                if ((key < 4000))//서적 아이템이 아니면
+
+                if   (_dataDic.IndexToGroup(key) != ItemGroup.Book)//서적 아이템이 아니면
                 {
                     actualItemCount += HaveDic[key].Count;
                 }
             }
 
             ItemCount = actualItemCount;
-            InvokeRepeating("OnApplicationQuit", 0f, 5f);
-
             LoadingFinish = true;
         }
 
@@ -645,14 +644,6 @@ namespace Script
             binFormmater.Serialize(mStream, data);
 
             return mStream.ToArray();
-        }
-
-       
-
-        // 어플 종료 시 플레이 시간 저장
-        private void OnApplicationQuit()
-        {
-            PlayerPrefs.SetString("Time", DateTime.Now.ToBinary().ToString());
         }
 
         // 인벤토리 레벨 업그레이드
@@ -755,6 +746,7 @@ namespace Script
         /// <param name="itemPos">아이템 위치</param>
         public void InsertNewItem(int key, int itemId, Vector3 itemPos)
         {
+            var isBook =  _dataDic.IndexToGroup(key) == ItemGroup.Book;
             if (!CheckExistItem(key))
             {
                 ItemOpenList.Add(key);
@@ -770,7 +762,7 @@ namespace Script
                 HaveDic.Add(key, posList);
 
                 // !마크 띄우기
-                if (key > 4000) //서적
+                if (isBook) //서적
                 {
                     NewBookList.Add(key);
                     SaveGameData(NewBookList, NewBookListPath);
@@ -794,7 +786,7 @@ namespace Script
                 HaveDic[key].Add(id, itemPos);
             }
 
-            if (key < 4000)//서적이 아니면 아이템 카운트 늘림
+            if (!isBook)//서적이 아니면 아이템 카운트 늘림
             {
                 ItemCount += 1;
             }
@@ -829,7 +821,7 @@ namespace Script
         public void DeleteItem(int index, int itemId)
         {
             if (!HaveDic[index].Remove(itemId)) Debug.Log("DataController - DeleteItem : Item Cannot Delete.");
-            else if (index < 4000)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
+            else if (_dataDic.IndexToGroup(index)!=ItemGroup.Book)//정상적으로 삭제되었고, 서적이 아니면 아이템 카운트 줄임
             {
                 ItemCount -= 1;
             }

@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace Script
 {
+    public enum ItemGroup//아이템 종류를 명확하게 하기위한 Enum
+    {
+        Star=1,
+        Ingredient,
+        Combined,
+        Book,
+        Etc
+    }
     public struct SetItemInfo
     {
         public readonly int Index1, Index2, Index3, Index4, Result;
@@ -353,6 +361,16 @@ namespace Script
         public UpgradeInfo FindUpgrade(int key)
         {
             return FindUpDic[key];
+        }
+
+        /// <summary>
+        /// Index에서 ItemGroup 반환.
+        /// </summary>
+        /// <param name="index">아이템 인덱스(1001~5002)</param>
+        /// <returns></returns>
+        public ItemGroup IndexToGroup(int index)
+        {
+            return (ItemGroup)(index / 1000);
         }
 
         private enum Fileinfo

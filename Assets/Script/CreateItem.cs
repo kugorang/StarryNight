@@ -66,8 +66,9 @@ namespace Script
             if (_dataController.HaveDic != null)
                 foreach (var entry in _dataController.HaveDic)
                 {
+                   
                     // 서적이면 만들지 않는다.
-                    if (entry.Key > 4000) 
+                    if (_dataDic.IndexToGroup(entry.Key)==ItemGroup.Book) 
                         continue;
                     
                     // do something with entry. Value or entry.Key                

@@ -190,17 +190,22 @@ namespace Script
                 var starIdx = 1001 + btnIdx  + i*5;
                 deleteAmount[i] = _dataController.GetItemNum(starIdx);
             }
-            
+
+            var reqireedAmount = ExchangeRatio[btnIdx];
             // 별 아이템 개수가 필요한 양(ExchangeRatio[btnIdx])보다 많거나 같을 경우
-            if (deleteAmount.Sum() >= ExchangeRatio[btnIdx])
+            if (deleteAmount.Sum() >=reqireedAmount)
             {
+                var deleted = 0;
                 for (var i = 0; i < 3; i++)
                 {
                     // 별 아이템의 index
                     var starIdx = 1001 + btnIdx + i * 5;
                     for (var j = 0; j < deleteAmount[i]; j++)
                     {
+                        if (deleted >= reqireedAmount) break;
                         _dataController.DeleteItem(starIdx);
+                        deleted++;
+                       //요구량 다 채우면 안 하기
                     }
                 }
 
