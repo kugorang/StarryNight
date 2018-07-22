@@ -399,16 +399,17 @@ namespace Script
                 {
                     // 평소에 비활성화 되어 있는 TextDisplayer를 활성화 시킨 후 배경 이미지 변경
                     TextDisplayer.gameObject.SetActive(true);
-                    SwitchCharacterImage(textInfo);
                 }
                 
+                // 이미지 변경 후 대사 출력
+                SwitchCharacterImage(textInfo);
                 TextDisplayer.SetSay(textInfo.Dialogue);
             }
         }
 
         private void SwitchCharacterImage(TextInfo textInfo)
         {
-            Debug.Log(String.Format("{0}: {1} {2} {3}", textInfo.Name, textInfo.Dialogue, textInfo.Face, textInfo.Sound));
+            /*Debug.Log(string.Format("{0}: {1} {2} {3}", textInfo.Name, textInfo.Dialogue, textInfo.Face, textInfo.Sound));*/
             switch (textInfo.Name)
             {
                 case "메테스":
