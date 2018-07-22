@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Script;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +16,7 @@ public class Notify : MonoBehaviour
     private const int ReferenceW = 1080;
 
     private static string _notification="";
+    private static string _formerString = "";//ShowQuestProgress를 했을 때만 _formerString이 ""이 아님.
 
     // Use this for initialization
     void Awake()//Notify는 Dialog에 있어 매 씬 이동마다 파괴후 재 생성된다.
@@ -81,6 +84,103 @@ public class Notify : MonoBehaviour
         _isMinimized = !_isMinimized;
         Refresh();
         
+    }
+
+    public void ShowQuestProgress()//임시 코드. ItemLimit Image에 버튼과 Raycast Target을 둠. 이 기능을 삭제하면 이것도 원상복구할 것
+    {
+        if (_formerString == "")
+        {
+            _formerString = Text;
+            var questIndex = Quest.Progress;
+            var dataDic = DataDictionary.Instance;
+            var ownQuest = dataDic.FindQuestDic[questIndex];
+            var dataController = DataController.Instance;
+            // 퀘스트 진행상태 출력
+            switch (questIndex)
+            {
+                case 90101: // 별의 원석 아무거나 1개 획득
+                {
+                    int[] itemIndex = {1001, 1006, 1011};
+                    var questItemNum = itemIndex.Sum(i => dataController.GetItemNum(i));
+
+                    Text = string.Format("별의 원석 {0} / 1", questItemNum);
+                    break;
+                }
+                case 90102: // 재료 아이템 아무거나 1개 획득
+                {
+                    int[] itemIndex = {2001, 2006, 2011, 2016, 2021, 2026};
+                    var questItemNum = itemIndex.Sum(i => dataController.GetItemNum(i));
+
+                    Text = string.Format("재료 아이템 {0} / 1", questItemNum);
+                    break;
+                }
+                case 90103: // 별의 파편 아무거나 1개 획득
+                {
+                    int[] itemIndex = {1002, 1007, 1012};
+                    var questItemNum = itemIndex.Sum(i => dataController.GetItemNum(i));
+
+                    Text = string.Format("별의 파편 {0} / 1", questItemNum);
+                    break;
+                }
+                case 90202: // 세트 아이템 재료 1개 획득 성공
+                {
+                    int[] itemIndex =
+                    {
+                        4001, 4002, 4003, 4004, 4006, 4007, 4008, 4009,
+                        4011, 4012, 4013, 4014, 4016, 4017, 4018, 4019,
+                        4021, 4022, 4023, 4024, 4026, 4027, 4028, 4029,
+                        4031, 4032, 4033, 4034, 4036, 4037, 4038, 4039,
+                        4041, 4042, 4043, 4044, 4046, 4047, 4048, 4049,
+                        4051, 4052, 4053, 4054, 4056, 4057, 4058
+                    };
+                    var questItemNum = itemIndex.Sum(i => dataController.GetItemNum(i));
+
+                    Text = string.Format("세트 아이템 재료 {0} / 1", questItemNum);
+                    break;
+                }
+                default:
+                    var text = "";
+                    var isTermFirst = true;
+
+                    foreach (var term in ownQuest.TermsDic)
+                    {
+                        var termItemIndex = term.Key;
+
+                        if (termItemIndex == 9999) // 조건이 골드일 때
+                        {
+                            text += isTermFirst
+                                ? string.Format("골드 {0} / {1}", dataController.Gold, term.Value)
+                                : string.Format("\n골드 {0} / {1}", dataController.Gold, term.Value);
+                        }
+                        else if (termItemIndex > 50000) // 조건이 업그레이드일 때
+                        {
+                            text += isTermFirst
+                                ? string.Format("{0} {1} / {2}", dataDic.FindUpgrade(termItemIndex).Name,
+                                    UpgradeManager.GetUpgradeLV(termItemIndex), term.Value)
+                                : string.Format("\n{0} {1} / {2}", dataDic.FindUpgrade(termItemIndex).Name,
+                                    UpgradeManager.GetUpgradeLV(termItemIndex), term.Value);
+                        }
+                        else
+                        {
+                            text += isTermFirst
+                                ? string.Format("{0} {1} / {2}", dataDic.FindItemDic[termItemIndex].Name,
+                                    dataController.GetItemNum(termItemIndex), term.Value)
+                                : string.Format("\n{0} {1} / {2}", dataDic.FindItemDic[termItemIndex].Name,
+                                    dataController.GetItemNum(termItemIndex), term.Value);
+                        }
+
+                        isTermFirst = false;
+                    }
+
+                    Text = text;
+                    break;
+            }
+        }
+        else
+        {
+            Text = _formerString;
+            _formerString = "";
+        }
     }
 
     /// <summary>
