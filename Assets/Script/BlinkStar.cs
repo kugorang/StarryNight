@@ -35,7 +35,6 @@ namespace Script
         private static int LastQuest; // 원래는 90247
 
         private static int _showingQuestIndex;
-       
 
        /* private static readonly Dictionary<int, string> CurrentSceneName = new Dictionary<int, string>()
         {
@@ -107,13 +106,13 @@ namespace Script
 
         private void Start()
         {
-            if (ShowingQuestIndex < FirstQuest)
-            {
-                ShowingQuestIndex = Quest.Progress;
-                if (Quest.Progress == QuestIndex)
-                    OnClick();
-            }
-              
+            if (ShowingQuestIndex >= FirstQuest) 
+                return;
+            
+            ShowingQuestIndex = Quest.Progress;
+                
+            if (Quest.Progress == QuestIndex)
+                ShowQuestInfo();
         }
 
         // 퀘스트 정보 확인 및 퀘스트 완료 보상 지급
@@ -194,7 +193,7 @@ namespace Script
             }
         }
 
-        public void ShowQuestInfo()
+        private void ShowQuestInfo()
         {
             // 퀘스트 제목 출력
             GameObject.Find("Name Displayer").GetComponent<Text>().text = _ownQuest.Title;

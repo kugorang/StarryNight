@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ namespace Script
         public Image BgImg;
 
         // 달성 체크용 상태 변수
-        private int _condition300310;
+        /*private int _condition300310;*/
 
         //public GameObject alarmPanel;
         private DataController _dataController;
@@ -39,15 +40,9 @@ namespace Script
                 // 등록 안 되어있으면 관찰자로 등록
                 if (!_dataController.IsTutorialEnd && !_dataController.Observers.Contains(gameObject)) 
                     _dataController.Observers.Add(gameObject);
-                
-                /*DontDestroyOnLoad(gameObject);*/
             }
 
             SceneManager.sceneLoaded += OnSceneChange;
-
-            
-
-        
         }
 
         private void Start()//Awake 때 PopUpWindow및 Notify가 설정이 끝남.
@@ -109,50 +104,56 @@ namespace Script
             }
 
             // 현재 알림창이 떠 있다면, ContinueDialogue 이외의 방법으로 다음 대사로 넘어가선 안 됨.
-            if (_dialogueDic[_dataController.NowIndex].Name != "알림창") 
+            var textName = _dialogueDic[_dataController.NowIndex].Name;
+            
+            if (textName != "알림창") 
                 _dataController.NowIndex++;
+            
+            textName = _dialogueDic[_dataController.NowIndex].Name;
 
             var nowIndex = _dataController.NowIndex;
-            
-            switch (nowIndex)
+            var textInfo = _dialogueDic[nowIndex];
+            SwitchCharacterImage(textInfo);
+
+            if (textName == "알림창")
             {
-                case 0:
-                    // NowIndex가 0을 반환한 경우는 다이얼로그를 끝내는 인덱스이므로 TextDisplayer를 비활성화한 후 메소드를 종료한다.
-                    
-                    TextDisplayer.gameObject.SetActive(false);
-                    return;
-                // 아래는 손가락 이미지를 표시하기 위한 코드
-                case 300130:    // 지구본을 클릭하는 튜토리얼
-                case 300132:    // 오른쪽으로 슬라이드하는 튜토리얼
-                case 300135:    // 퀘스트 버튼을 클릭하는 튜토리얼
-                /*case 300136:    // 반짝이는 별을 클릭하는 튜토리얼
-                case 300204:    // 뒤로가기 버튼을 클릭하는 튜토리얼
-                case 300210:    // 왼쪽 화살표 버튼을 클릭하는 튜토리얼
-                case 300212:    // 별 버튼을 클릭하는 튜토리얼
-                case 300213:    // 재료 아이템 1개를 구하는 튜토리얼
-                case 300215:    // 오른쪽 화살표 버튼을 클릭하는 튜토리얼
-                case 300217:    // 퀘스트 버튼을 클릭하는 튜토리얼
-                case 300305:    // 별 아이템을 클릭하는 튜토리얼
-                case 300306:    // 조합을 하는 튜토리얼
-                case 300310:    // 별의 원석 2개로 별의 파편을 1개 만드는 튜토리얼
-                case 300422:    // 아이템을 끌어서 판매하는 튜토리얼
-                case 300426:    // 200 골드를 획득하는 튜토리얼
-                case 300514:    // 양털 가방을 업그레이드하는 튜토리얼
-                case 300609:    // 서적 버튼을 클릭하는 튜토리얼
-                case 300612:    // 느낌표가 붙은 서적 아이템을 클릭하는 튜토리얼
-                case 300617:    // 지구본이 있는 화면으로 이동하는 튜토리얼
-                case 300619:    // 왼쪽 화면 상단의 파란색 별을 클릭하는 튜토리얼
-                case 300622:    // 서적 버튼을 클릭하는 튜토리얼
-                case 300623:    // 활성화되지 않은 서적 재료 아이템을 클릭하는 튜토리얼*/
-                    _fingerAnim = FingerAnim(nowIndex);
-                    StartCoroutine(_fingerAnim);
-                    break;
+                switch (nowIndex)
+                {
+                    case 0:
+                        // NowIndex가 0을 반환한 경우는 다이얼로그를 끝내는 인덱스이므로 TextDisplayer를 비활성화한 후 메소드를 종료한다.
+                        TextDisplayer.gameObject.SetActive(false);
+                        return;
+                    // 아래는 손가락 이미지를 표시하기 위한 코드
+                    case 300130:    // 지구본을 클릭하는 튜토리얼
+                    case 300132:    // 오른쪽으로 슬라이드하는 튜토리얼
+                    case 300135:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                        /*case 300136:    // 반짝이는 별을 클릭하는 튜토리얼
+                        case 300204:    // 뒤로가기 버튼을 클릭하는 튜토리얼
+                        case 300210:    // 왼쪽 화살표 버튼을 클릭하는 튜토리얼
+                        case 300212:    // 별 버튼을 클릭하는 튜토리얼
+                        case 300213:    // 재료 아이템 1개를 구하는 튜토리얼
+                        case 300215:    // 오른쪽 화살표 버튼을 클릭하는 튜토리얼
+                        case 300217:    // 퀘스트 버튼을 클릭하는 튜토리얼
+                        case 300305:    // 별 아이템을 클릭하는 튜토리얼
+                        case 300306:    // 조합을 하는 튜토리얼
+                        case 300310:    // 별의 원석 2개로 별의 파편을 1개 만드는 튜토리얼
+                        case 300422:    // 아이템을 끌어서 판매하는 튜토리얼
+                        case 300426:    // 200 골드를 획득하는 튜토리얼
+                        case 300514:    // 양털 가방을 업그레이드하는 튜토리얼
+                        case 300609:    // 서적 버튼을 클릭하는 튜토리얼
+                        case 300612:    // 느낌표가 붙은 서적 아이템을 클릭하는 튜토리얼
+                        case 300617:    // 지구본이 있는 화면으로 이동하는 튜토리얼
+                        case 300619:    // 왼쪽 화면 상단의 파란색 별을 클릭하는 튜토리얼
+                        case 300622:    // 서적 버튼을 클릭하는 튜토리얼
+                        case 300623:    // 활성화되지 않은 서적 재료 아이템을 클릭하는 튜토리얼*/
+                        _fingerAnim = FingerAnim(nowIndex);
+                        StartCoroutine(_fingerAnim);
+                        break;
+                }
             }
 
-            var textInfo = _dialogueDic[nowIndex];
-
-            SwitchCharacterImage(textInfo);
-            TextDisplayer.SetSay(textInfo.Dialogue);
+            if (textName != "알림창")
+                TextDisplayer.SetSay(textInfo.Dialogue);
         }
 
         private IEnumerator FingerAnim(int questIndex)
@@ -389,7 +390,7 @@ namespace Script
             if (textInfo.Name == "알림창")
             {
                 TextDisplayer.gameObject.SetActive(false);
-                Notify.Text=textInfo.Dialogue;
+                Notify.Text = textInfo.Dialogue;
             }
             else
             {
@@ -505,7 +506,7 @@ namespace Script
                     break;
                 case "알림창":
                     TextDisplayer.gameObject.SetActive(false);
-                    Notify.Text=textInfo.Dialogue;
+                    Notify.Text = textInfo.Dialogue;
                     return;
                 default:
                     BgImg.gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("dialogueImg/tmp");

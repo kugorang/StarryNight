@@ -1585,7 +1585,7 @@ MonoBehaviour:
   DialougeWindowHolder: {fileID: 1687390806}
   NameDisplayer: {fileID: 100031434}
   SayDisplayer: {fileID: 840445740}
-  TimeBetUpdateLetters: 0
+  TimeBetUpdateLetters: 0.001
 --- !u!1 &1678100209
 GameObject:
   m_ObjectHideFlags: 0

@@ -100,8 +100,7 @@ namespace Script
 
             // 관찰자들에게 이벤트 메세지 송출, myItemInfo 바뀌기 전 정보 보냄.
             foreach (var target in _dataController.Observers) 
-                ExecuteEvents.Execute<IEventListener>(target, null,
-                    (x, y) => x.OnCombine(myItemInfo, collItemInfo, findItemInfo));
+                ExecuteEvents.Execute<IEventListener>(target, null, (x, y) => x.OnCombine(myItemInfo, collItemInfo, findItemInfo));
 
             myItemInfo.Index = findItemInfo.Index;
             myItemInfo.Name = findItemInfo.Name;

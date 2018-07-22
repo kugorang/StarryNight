@@ -16,7 +16,9 @@ namespace Script
 
         public bool IsTyping { get; private set; }
 
-        public void ShowDialogueHolder()
+        private IEnumerator _typeText/*, _typeAndAddText*/;
+
+        private void ShowDialogueHolder()
         {
             DialougeWindowHolder.SetActive(true);
         }
@@ -29,8 +31,8 @@ namespace Script
         // Skip and Complete Current Dialogues
         public void SkipTypingLetter()
         {
-            StopCoroutine("TypeText");
-            StopCoroutine("TypeAndAddText");
+            StopCoroutine(_typeText);
+            /*StopCoroutine(_typeAndAddText);*/
 
             IsTyping = false;
 
@@ -48,7 +50,8 @@ namespace Script
             else
             {
                 gameObject.SetActive(true);
-                StartCoroutine("TypeText", _currentTypingDialgoue);
+                _typeText = TypeText(_currentTypingDialgoue);
+                StartCoroutine(_typeText);
             }
         }
 
@@ -60,7 +63,8 @@ namespace Script
             if (TimeBetUpdateLetters <= 0f)
                 SayDisplayer.text = dialogue;
             else
-                StartCoroutine("TypeText", _currentTypingDialgoue);
+                _typeText = TypeText(_currentTypingDialgoue);
+                StartCoroutine(_typeText);
         }
 
         // Update Text from buffer
@@ -81,7 +85,7 @@ namespace Script
             IsTyping = false;
         }
 
-        // Add Text, not replace 
+        /*// Add Text, not replace 
         private IEnumerator TypeAndAddText(string texts)
         {
             IsTyping = true;
@@ -95,6 +99,6 @@ namespace Script
             }
 
             IsTyping = false;
-        }
+        }*/
     }
 }
