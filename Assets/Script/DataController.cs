@@ -157,7 +157,7 @@ namespace Script
                 {
                     _nowIndex = 300201;
                 }
-                else if (_nowIndex == 300218)
+                else if (_nowIndex == 300219)
                 {
                     _nowIndex = 300301;
                 }
@@ -165,12 +165,12 @@ namespace Script
                 {
                     _nowIndex = 300401;
                 }
-                else if (_nowIndex == 300427)
+                else if (_nowIndex == 300428)
                 {
                     // 황소자리 시작
                     _nowIndex = 300501;
                 }
-                else if (_nowIndex == 300515)
+                else if (_nowIndex == 300516)
                 {
                     _nowIndex = 300601;
                 }
