@@ -6,26 +6,23 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scene/DataLoad.unity
+    path: Assets/Scenes/DataLoad.unity
     guid: f0aff73def09a214aa32c82eeed567bc
   - enabled: 1
-    path: Assets/Scene/Main.unity
-    guid: 202586219df04f04aa7b61471f1160bd
+    path: Assets/Scenes/Logo.unity
+    guid: c4cd2936aa2c2cb47a41d85072b5fb41
   - enabled: 1
-    path: Assets/Scene/Dialog.unity
+    path: Assets/Scenes/Dialog.unity
     guid: 48aa9d20f46d97d4e80f7569784bce43
   - enabled: 1
-    path: Assets/Scene/ItemList.unity
+    path: Assets/Scenes/Main.unity
+    guid: 202586219df04f04aa7b61471f1160bd
+  - enabled: 1
+    path: Assets/Scenes/ItemList.unity
     guid: 8646beddefe62fa4b9342426002b71ef
   - enabled: 1
-    path: Assets/Scene/Quest.unity
-    guid: ff41cfe3e019b214fb5790e8e0d3f8d6
-  - enabled: 1
-    path: Assets/Scene/BookList.unity
+    path: Assets/Scenes/BookList.unity
     guid: aa448e0e416962a43baee11bb73297d4
   - enabled: 1
-    path: Assets/Scene/Cartoon.unity
-    guid: e2c607b254e6b6d46a4f031453fa8124
-  - enabled: 1
-    path: Assets/Scene/QuestList.unity
+    path: Assets/Scenes/QuestList.unity
     guid: d4c128585f4803c48927229e29a29bb6

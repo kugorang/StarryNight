@@ -1,0 +1,8 @@
+{
+    "name": "MainAD",
+    "references": [
+        "CommonAD"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

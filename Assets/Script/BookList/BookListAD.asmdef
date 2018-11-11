@@ -1,0 +1,8 @@
+{
+    "name": "BookListAD",
+    "references": [
+        "CommonAD"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

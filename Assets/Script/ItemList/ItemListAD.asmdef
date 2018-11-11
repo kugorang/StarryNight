@@ -1,0 +1,8 @@
+{
+    "name": "ItemListAD",
+    "references": [
+        "CommonAD"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
