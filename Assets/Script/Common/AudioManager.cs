@@ -22,13 +22,13 @@ namespace Script.Common
         // 캐릭터 대사 상태
         private int _voiceAlive;
 
-        public AudioClip Act;
-        public AudioClip Click;
-        public AudioClip Item;
-        public AudioClip Mix;
-        public AudioClip Option;
-        public AudioClip QuestStar;
-        public AudioClip Sale;
+        [SerializeField] private AudioClip Act;
+        [SerializeField] private AudioClip Click;
+        [SerializeField] private AudioClip Item;
+        [SerializeField] private AudioClip Mix;
+        [SerializeField] private AudioClip Option;
+        [SerializeField] private AudioClip QuestStar;
+        [SerializeField] private AudioClip Sale;
 
         public static AudioManager Instance
         {

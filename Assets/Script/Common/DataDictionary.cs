@@ -55,8 +55,8 @@ namespace Script.Common
     public class DataDictionary : MonoBehaviour
     {
         private static DataDictionary _instance;
-        public List<int> FirstQuestsOfScene;
-        public List<int> LastQuestsOfScene; //임시로 추가. 필요 없으면 삭제.
+        [HideInInspector] public List<int> FirstQuestsOfScene;
+        [HideInInspector] public List<int> LastQuestsOfScene; //임시로 추가. 필요 없으면 삭제.
 
         /// <summary>
         ///     NOTE: 재료를 찾을 때 사용하는 Dictionary

@@ -78,7 +78,6 @@ namespace Script.Common
         }
     }
 
-
     public class DataController : MonoBehaviour
     {
         private DataDictionary _dataDic;
@@ -101,24 +100,23 @@ namespace Script.Common
         [HideInInspector] public List<int> ItemOpenList;
 
         // 신규 항목 알림을 위한 더티 플래그. 서적과 아이템 리스트는 새로운 아이템들의 인덱스를 담음. 길이 0이면 신규 없음.
-        [HideInInspector]
-        // public bool newQuest; 나중에 사용 안 하면 지울 것.
-        public List<int> NewBookList;
+        // [HideInInspector] public bool newQuest; // 나중에 사용 안 하면 지울 것.
 
-        public List<int> NewItemList;
+        [HideInInspector] public List<int> NewBookList;
+        [HideInInspector] public List<int> NewItemList;
 
         /// <summary>
         ///     (임시) 이벤트 관찰자 목록. 각관찰자가 등록함.
         /// </summary>
-        public List<GameObject> Observers;
+        [HideInInspector] public List<GameObject> Observers;
 
         /// <summary>
         ///     리셋가능한 리스트
         /// </summary>
-        public List<GameObject> ResetList;
+        [HideInInspector] public List<GameObject> ResetList;
 
         // 튜토리얼 완료 여부
-        public int TutorialEnd;
+        private int TutorialEnd;
 
         // 아이템 생성 모드 상태
         public static int SwitchButtonMode
@@ -594,7 +592,7 @@ namespace Script.Common
         /// <returns></returns>
         public float CoolTimeReduction(int index)
         {
-            int[] idList = {2, 5, 9};
+            int[] idList = { 2, 5, 9 };
             var upgradeLv = UpgradeManager.GetUpgradeLv(idList[index]);
             return upgradeLv == 0 ? 0 : _dataDic.FindUpgrade(50001 + idList[index]).Value[upgradeLv - 1];
         }
@@ -606,7 +604,7 @@ namespace Script.Common
         /// <returns></returns>
         public int BetterItemProb(int index)
         {
-            int[] idList = {3, 6, 10};
+            int[] idList = { 3, 6, 10 };
             var upgradeLv = UpgradeManager.GetUpgradeLv(idList[index]);
             return upgradeLv == 0 ? 0 : _dataDic.FindUpgrade(50001 + idList[index]).Value[upgradeLv - 1];
         }
