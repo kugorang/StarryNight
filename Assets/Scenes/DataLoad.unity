@@ -368,6 +368,13 @@ MonoBehaviour:
   Option: {fileID: 8300000, guid: 30623862a3f3ff34795c5b704f01c938, type: 3}
   QuestStar: {fileID: 8300000, guid: 90cdbe9bbd5138f47bef4ad5256222e2, type: 3}
   Sale: {fileID: 8300000, guid: 14969cb75cd3f494d95d60e86fe09a02, type: 3}
+  Voice:
+  - {fileID: 8300000, guid: d4a789633d79f854382a054e1a3c72e2, type: 3}
+  - {fileID: 8300000, guid: 9a3aac0f50ce2b74bb492615a45ec01a, type: 3}
+  - {fileID: 8300000, guid: a49380996f627e0408584e017c57d2d0, type: 3}
+  - {fileID: 8300000, guid: c4a061230106f4442abbd8ad71dd2f94, type: 3}
+  - {fileID: 8300000, guid: df57d10f1454c70498e34a31332850bc, type: 3}
+  - {fileID: 8300000, guid: f8e003781f05e0a448792ff05978c555, type: 3}
 --- !u!4 &1901672026
 Transform:
   m_ObjectHideFlags: 0

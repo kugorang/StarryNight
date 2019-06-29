@@ -17,7 +17,6 @@ namespace Script.Common
         private int _effAlive;
 
         private AudioSource _myAudio;
-        private AudioClip _voice;
 
         // 캐릭터 대사 상태
         private int _voiceAlive;
@@ -29,6 +28,7 @@ namespace Script.Common
         [SerializeField] private AudioClip Option;
         [SerializeField] private AudioClip QuestStar;
         [SerializeField] private AudioClip Sale;
+        [SerializeField] private AudioClip[] Voice;
 
         public static AudioManager Instance
         {
@@ -214,8 +214,7 @@ namespace Script.Common
                 return;
 
             var num = Random.Range(1, 7);
-            var voice = Resources.Load<AudioClip>("audio/voice_" + num);
-            _myAudio.PlayOneShot(voice);
+            _myAudio.PlayOneShot(Voice[num]);
         }
     }
 }

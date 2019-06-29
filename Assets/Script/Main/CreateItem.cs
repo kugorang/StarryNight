@@ -54,7 +54,7 @@ namespace Script.Main
             _dataDic = DataDictionary.Instance;
             /*_energyPerClick = DataController.Instance.EnergyPerClick;*/
             // TODO: 개발 시 시간 절약을 위해 100으로 설정. 개발이 끝나고 출시하면 지울 것!
-            _energyPerClick = 100;
+            _energyPerClick = 10;
             _energyMaxValue = 100;
 
             _idCount = PlayerPrefs.GetInt("IdCount", 0);
