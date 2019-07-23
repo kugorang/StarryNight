@@ -20,7 +20,7 @@ namespace Script.Main
         private void Awake()
         {
             _dataController = DataController.Instance;
-            GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+            // GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
             _haveDic = _dataController.HaveDic;
             _item = GetComponent<Item>();
         }

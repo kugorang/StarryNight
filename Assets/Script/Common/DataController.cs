@@ -369,7 +369,6 @@ namespace Script.Common
             }
         }
 
-
         // 게임 초기화될 때 
         public void Awake()
         {
@@ -408,10 +407,14 @@ namespace Script.Common
             var actualItemCount = 0;
 
             foreach (var key in HaveDic.Keys)
+            {
                 // 서적 아이템이 아니면
                 if (DataDictionary.IndexToGroup(key) != ItemGroup.Book)
+                {
                     actualItemCount += HaveDic[key].Count;
-
+                }   
+            }
+            
             ItemCount = actualItemCount;
             SceneManager.LoadScene("Logo");
         }
@@ -478,7 +481,6 @@ namespace Script.Common
 
         public void ResetData()
         {
-            PlayerPrefs.DeleteAll();
             Notify.Text = "";
 
             if (HaveDic != null)
@@ -507,7 +509,13 @@ namespace Script.Common
 
             // 관찰자들에게 이벤트 메세지 송출
             foreach (var target in ResetList)
+            {
                 ExecuteEvents.Execute<IResetables>(target, null, (x, y) => x.OnReset());
+            }
+
+            NowIndex = 300101;
+
+            PlayerPrefs.DeleteAll();
         }
 
         // 로딩 상태 가져오기
@@ -520,17 +528,25 @@ namespace Script.Common
         /// </summary>
         public ulong Gold
         {
-            get { return _gold; }
+            get
+            {
+                _gold = Convert.ToUInt64(PlayerPrefs.GetString("Gold", "0"));
+
+                return _gold;
+            }
             set
             {
                 var delta = value - _gold;
                 _gold = value;
+
                 PlayerPrefs.SetString("Gold", _gold.ToString());
 
                 // 관찰자들에게 이벤트 메세지 송출
                 foreach (var target in Observers)
+                {
                     ExecuteEvents.Execute<IEventListener>(target, null,
                         (x, y) => x.OnChangeValue(ValueType.Gold, value, delta));
+                }
             }
         }
 
@@ -539,7 +555,12 @@ namespace Script.Common
         /// </summary>
         public int ItemCount
         {
-            get { return _itemcount; }
+            get
+            {
+                _itemcount = PlayerPrefs.GetInt("ItemCount", 0);
+
+                return _itemcount;
+            }
             private set
             {
                 _itemcount = value < 0 ? 0 : value;
@@ -658,7 +679,12 @@ namespace Script.Common
         /// </summary>
         public int LatestUpgradeIndex
         {
-            get { return _latestUpgradeIndex; }
+            get
+            {
+                _latestUpgradeIndex = PlayerPrefs.GetInt("LatestUpgrade", 50000);
+
+                return _latestUpgradeIndex;
+            }
             set
             {
                 if (value >= 50000)

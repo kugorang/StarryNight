@@ -41,13 +41,15 @@ namespace Script.Common
 
                 // 등록 안 되어있으면 관찰자로 등록
                 if (!_dataController.IsTutorialEnd && !_dataController.Observers.Contains(gameObject))
+                {
                     _dataController.Observers.Add(gameObject);
+                }
             }
 
             SceneManager.sceneLoaded += OnSceneChange;
         }
 
-        private void Start() //Awake 때 PopUpWindow및 Notify가 설정이 끝남.
+        private void Start() // Awake 때 PopUpWindow 및 Notify가 설정이 끝남.
         {
             if (!_dataController.IsTutorialEnd)
             {
@@ -59,7 +61,9 @@ namespace Script.Common
 
                 // 튜토리얼 끝나면 구독 해제
                 if (_dataController.Observers.Contains(gameObject))
+                {
                     _dataController.Observers.Remove(gameObject);
+                }
             }
         }
 
@@ -72,7 +76,9 @@ namespace Script.Common
                 if (SceneManager.GetSceneByName("Logo").isLoaded
                     || SceneManager.GetSceneByName("Dialog").isLoaded
                     || SceneManager.sceneCount >= 2)
+                {
                     return;
+                }
 
                 SceneManager.LoadScene("Dialog", LoadSceneMode.Additive);
             }
@@ -80,8 +86,7 @@ namespace Script.Common
             {
                 if (GameObject.Find("Dialogue Panel") == null)
                 {
-                    Debug.LogWarning(
-                        "Dialogue Panel is null object. Ignore this if this scene is not used in tutorial.");
+                    Debug.LogWarning("Dialogue Panel is null object. Ignore this if this scene is not used in tutorial.");
                     return;
                 }
 
@@ -93,7 +98,9 @@ namespace Script.Common
 
                 // 튜토리얼 끝나면 구독 해제
                 if (!_dataController.IsTutorialEnd)
+                {
                     return;
+                }
 
                 TextDisplayer.gameObject.SetActive(false);
             }
@@ -110,8 +117,10 @@ namespace Script.Common
 
             // 현재 알림창이 떠 있다면, ContinueDialogue 이외의 방법으로 다음 대사로 넘어가선 안 됨.
             if (_dialogueDic[_dataController.NowIndex].Name != "알림창")
-                _dataController.NowIndex++; 
-            
+            {
+                _dataController.NowIndex++;
+            }
+
             var nowIndex = _dataController.NowIndex;
 
             if (nowIndex == 0)
@@ -171,7 +180,10 @@ namespace Script.Common
         {
             _runningAnim = true;
 
-            foreach (var finger in Fingers) finger.SetActive(true);
+            foreach (var finger in Fingers)
+            {
+                finger.SetActive(true);
+            }
 
             // 반복되지 않아야 하는 초기화 작업을 여기서 진행한다.
             switch (questIndex)
@@ -418,26 +430,26 @@ namespace Script.Common
                 case "메테스":
                     switch (textInfo.Face)
                     {
-                        case "놀람":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/metes/surprise-right");
-                            break;
-                        case "슬픔":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/metes/sad-right");
-                            break;
-                        case "웃음":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/metes/laugh-right");
-                            break;
-                        case "화남":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/metes/angry-right");
-                            break;
-                        default: // 메인 혹은 기타
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/metes/default-right");
-                            break;
+                    case "놀람":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/metes/surprise-right");
+                        break;
+                    case "슬픔":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/metes/sad-right");
+                        break;
+                    case "웃음":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/metes/laugh-right");
+                        break;
+                    case "화남":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/metes/angry-right");
+                        break;
+                    default: // 메인 혹은 기타
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/metes/default-right");
+                        break;
                     }
 
                     break;
@@ -445,52 +457,52 @@ namespace Script.Common
                 case "??? (민)":
                     switch (textInfo.Face)
                     {
-                        case "놀람":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/min/surprise-right");
-                            break;
-                        case "슬픔":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/min/sad-right");
-                            break;
-                        case "웃음":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/min/laugh-right");
-                            break;
-                        case "화남":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/min/angry-right");
-                            break;
-                        default: // 메인 혹은 기타
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/min/default-right");
-                            break;
+                    case "놀람":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/min/surprise-right");
+                        break;
+                    case "슬픔":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/min/sad-right");
+                        break;
+                    case "웃음":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/min/laugh-right");
+                        break;
+                    case "화남":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/min/angry-right");
+                        break;
+                    default: // 메인 혹은 기타
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/min/default-right");
+                        break;
                     }
 
                     break;
                 case "피터":
                     switch (textInfo.Face)
                     {
-                        case "놀람":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/peter/surprise-right");
-                            break;
-                        case "슬픔":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/peter/sad-right");
-                            break;
-                        case "웃음":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/peter/laugh-right");
-                            break;
-                        case "화남":
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/peter/angry-right");
-                            break;
-                        default: // 메인 혹은 기타
-                            BgImg.gameObject.GetComponent<Image>().sprite =
-                                Resources.Load<Sprite>("dialogueImg/peter/default-right");
-                            break;
+                    case "놀람":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/peter/surprise-right");
+                        break;
+                    case "슬픔":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/peter/sad-right");
+                        break;
+                    case "웃음":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/peter/laugh-right");
+                        break;
+                    case "화남":
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/peter/angry-right");
+                        break;
+                    default: // 메인 혹은 기타
+                        BgImg.gameObject.GetComponent<Image>().sprite =
+                            Resources.Load<Sprite>("dialogueImg/peter/default-right");
+                        break;
                     }
 
                     break;
@@ -549,75 +561,75 @@ namespace Script.Common
             // Type명으로 확인
             switch (obj.GetType().ToString())
             {
-                case "Script.Main.BlinkStar":
-                    // 반짝이는 별을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300136 || _dataController.NowIndex == 300218 ||
-                        _dataController.NowIndex == 300312 || _dataController.NowIndex == 300428 || 
-                        _dataController.NowIndex == 300516)
-                        ContinueDialogue();
-                    break;
-                case "Script.BookList.BookListManager":
-                    // 느낌표가 붙은 서적 아이템을 클릭하는 퀘스트
-                    // 또는 활성화되지 않은 서적 재료 아이템을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300612 || _dataController.NowIndex == 300623)
-                        ContinueDialogue();
-                    break;
-                case "Script.Main.ButtonManager":
-                    // 모두 퀘스트 버튼을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300135 || _dataController.NowIndex == 300217 ||
-                        _dataController.NowIndex == 300311 || _dataController.NowIndex == 300427 || 
-                        _dataController.NowIndex == 300515)
-                        ContinueDialogue();
-                    break;
-                case "Script.Common.CameraController":
-                    var isLeft = options[0] > 0;
+            case "Script.Main.BlinkStar":
+                // 반짝이는 별을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300136 || _dataController.NowIndex == 300218 ||
+                    _dataController.NowIndex == 300312 || _dataController.NowIndex == 300428 || 
+                    _dataController.NowIndex == 300516)
+                    ContinueDialogue();
+                break;
+            case "Script.BookList.BookListManager":
+                // 느낌표가 붙은 서적 아이템을 클릭하는 퀘스트
+                // 또는 활성화되지 않은 서적 재료 아이템을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300612 || _dataController.NowIndex == 300623)
+                    ContinueDialogue();
+                break;
+            case "Script.Main.ButtonManager":
+                // 모두 퀘스트 버튼을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300135 || _dataController.NowIndex == 300217 ||
+                    _dataController.NowIndex == 300311 || _dataController.NowIndex == 300427 || 
+                    _dataController.NowIndex == 300515)
+                    ContinueDialogue();
+                break;
+            case "Script.Common.CameraController":
+                var isLeft = options[0] > 0;
 
-                    if (isLeft)
-                    {
-                        // 왼쪽 화살표 버튼을 클릭하는 퀘스트
-                        // 또는 지구본이 있는 화면으로 이동하는 퀘스트
-                        if (_dataController.NowIndex == 300210 || _dataController.NowIndex == 300617)
-                            ContinueDialogue();
-                    }
-                    else
-                    {
-                        // 오른쪽 화살표 버튼을 클릭하는 퀘스트
-                        if (_dataController.NowIndex == 300215)
-                            ContinueDialogue();
-                    }
+                if (isLeft)
+                {
+                    // 왼쪽 화살표 버튼을 클릭하는 퀘스트
+                    // 또는 지구본이 있는 화면으로 이동하는 퀘스트
+                    if (_dataController.NowIndex == 300210 || _dataController.NowIndex == 300617)
+                        ContinueDialogue();
+                }
+                else
+                {
+                    // 오른쪽 화살표 버튼을 클릭하는 퀘스트
+                    if (_dataController.NowIndex == 300215)
+                        ContinueDialogue();
+                }
 
-                    break;
-                case "Script.Main.CreateItem":
-                    // 지구본을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300130)
-                        ContinueDialogue();
-                    break;
-                /*case "Script.DataController":
-                    break;*/
-                case "Script.Common.ItemInfo":
-                    var index = options[0];
+                break;
+            case "Script.Main.CreateItem":
+                // 지구본을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300130)
+                    ContinueDialogue();
+                break;
+            /*case "Script.DataController":
+                break;*/
+            case "Script.Common.ItemInfo":
+                var index = options[0];
 
-                    // 별의 원석을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300305 && (index == 1001 || index == 1006 || index == 1011))
-                        ContinueDialogue();
-                    break;
-                case "Script.Main.ItemTimer":
-                    // 화면 상단의 파란색 별을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300619)
-                        ContinueDialogue();
-                    break;
-                case "Script.Main.SwitchMode":
-                    // 별 버튼을 클릭하는 퀘스트
-                    if (_dataController.NowIndex == 300212)
-                        ContinueDialogue();
-                    break;
-                case "Script.Common.UpgradeManager":
-                    var upgradeId = options[0];
+                // 별의 원석을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300305 && (index == 1001 || index == 1006 || index == 1011))
+                    ContinueDialogue();
+                break;
+            case "Script.Main.ItemTimer":
+                // 화면 상단의 파란색 별을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300619)
+                    ContinueDialogue();
+                break;
+            case "Script.Main.SwitchMode":
+                // 별 버튼을 클릭하는 퀘스트
+                if (_dataController.NowIndex == 300212)
+                    ContinueDialogue();
+                break;
+            case "Script.Common.UpgradeManager":
+                var upgradeId = options[0];
                 
-                    // 양털 가방을 업그레이드 하는 퀘스트
-                    if (upgradeId == 0 && _dataController.NowIndex == 300514) 
-                        ContinueDialogue();
-                    break;
+                // 양털 가방을 업그레이드 하는 퀘스트
+                if (upgradeId == 0 && _dataController.NowIndex == 300514) 
+                    ContinueDialogue();
+                break;
             }
         }
 
@@ -667,27 +679,27 @@ namespace Script.Common
                 ContinueDialogue();
 
             /*if (dataController.NowIndex == 300310)
-        {            
-            롤백을 대비해 기존코드 임시로 남겨 둠
-              int sum = 0;
+            {            
+                롤백을 대비해 기존코드 임시로 남겨 둠
+                  int sum = 0;
 
-            foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in dataController.HaveDic)
-            {
-                switch (entry.Key)
+                foreach (KeyValuePair<int, Dictionary<int, SerializableVector3>> entry in dataController.HaveDic)
                 {
-                    case 1004:
-                    case 1005:
-                    case 1006:
-                        sum += entry.Value.Count;
-                        break;
+                    switch (entry.Key)
+                    {
+                        case 1004:
+                        case 1005:
+                        case 1006:
+                            sum += entry.Value.Count;
+                            break;
+                    }
                 }
-            }
 
-            if (sum >= 2)
-            {
-                GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
-            }
-        }*/
+                if (sum >= 2)
+                {
+                    GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>().ContinueDialogue();
+                }
+            }*/
         }
 
         /// <inheritdoc />
@@ -705,7 +717,9 @@ namespace Script.Common
 
             // 아이템을 판매하는 퀘스트
             if (_dataController.NowIndex == 300422)
+            {
                 ContinueDialogue();
+            }
         }
 
         /// <inheritdoc />
@@ -725,11 +739,15 @@ namespace Script.Common
 
             // 아이템을 조합하는 퀘스트
             if (_dataController.NowIndex == 300306)
+            {
                 ContinueDialogue();
+            }
             // 별의 파편 1개를 만드는 퀘스트
             else if (_dataController.NowIndex == 300310
                      && (result.Index == 1002 || result.Index == 1007 || result.Index == 1012))
+            {
                 ContinueDialogue();
+            }
         }
 
         /// <inheritdoc />
@@ -751,13 +769,13 @@ namespace Script.Common
 
             switch (vt)
             {
-                case ValueType.Gold:
-                    // 200 골드를 획득하는 퀘스트
-                    if (_dataController.NowIndex == 300426 && currentValue >= 200)
-                        ContinueDialogue();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("vt", vt, null);
+            case ValueType.Gold:
+                // 200 골드를 획득하는 퀘스트
+                if (_dataController.NowIndex == 300426 && currentValue >= 200)
+                    ContinueDialogue();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("vt", vt, null);
             }
         }
 
@@ -775,13 +793,13 @@ namespace Script.Common
 
             switch (vt)
             {
-                case ValueType.Gold:
-                    // 아이템을 판매하는 퀘스트
-                    if (_dataController.NowIndex == 300426 && currentValue >= 200)
-                        ContinueDialogue();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("vt", vt, null);
+            case ValueType.Gold:
+                // 아이템을 판매하는 퀘스트
+                if (_dataController.NowIndex == 300426 && currentValue >= 200)
+                    ContinueDialogue();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("vt", vt, null);
             }
         }
 
